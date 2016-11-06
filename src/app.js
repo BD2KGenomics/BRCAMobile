@@ -1,66 +1,30 @@
-import React, { Component } from 'react';
 import {
-  StyleSheet,
-  Text,
-  View, Navigator
+  Platform
 } from 'react-native';
+import {Navigation} from 'react-native-navigation';
 
-import Home from './containers/home';
-import About from './containers/about';
+// screen related book keeping
+import {registerScreens} from './screens';
+registerScreens();
 
-export default class BRCAMobile extends Component {
-  render() {
-    return (
-      this.props.navigator
-    );
-  }
-}
-
-BRCAMobile.defaultProps = {
-  navigator: <Navigator
-    initialRoute={{ name: 'Home', index: 0 }}
-    navigationBar={
-     <Navigator.NavigationBar
-       routeMapper={{
-         LeftButton: (route, navigator, index, navState) =>
-          { return (<TouchableHighlight onPress={ () => this.props.navigator.pop() }><Text>Back</Text></TouchableHighlight>); },
-         RightButton: (route, navigator, index, navState) =>
-           { return (<Text>Done</Text>); },
-         Title: (route, navigator, index, navState) =>
-           { return (<Text>Awesome Nav Bar</Text>); },
-       }}
-       style={{backgroundColor: 'white'}}
-     />
-    }
-    renderScene={
-      (route, navigator) => {
-        if (route.name == 'Home') {
-          return <Home navigator={navigator} {...route.passProps} />
-        }
-        else if (route.name == 'About') {
-          return <About navigator={navigator} {...route.passProps} />
-        }
-      }
-    }
-    style={{padding: 10, backgroundColor: '#ff0000' }}
-  />
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+Navigation.startSingleScreenApp({
+ screen: {
+   screen: 'brca.HomeScreen',
+   title: 'Home'
+   /*
+   ,
+   navigatorStyle: {
+     navBarBackgroundColor: '#4dbce9',
+     navBarTextColor: '#ffff00',
+     navBarSubtitleTextColor: '#ff0000',
+     navBarButtonColor: '#ffffff',
+     statusBarTextColorScheme: 'light'
+   }
+   */
+ },
+ drawer: {
+   left: {
+     screen: 'brca.SideMenu'
+   }
+ }
 });
