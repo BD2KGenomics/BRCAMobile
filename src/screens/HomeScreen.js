@@ -9,21 +9,25 @@ import debounce from 'lodash/debounce';
 import {SearchBar} from '../components/FilteredTable';
 
 export default class HomeScreen extends Component {
-  static navigatorButtons = {
-    leftButtons: [{
-      icon: require('../../img/navicon_menu.png'),
-      id: 'menu'
-    }]
-  };
-
   constructor(props) {
     super(props);
     // if you want to listen on navigator events, set this up
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
 
     // makes the page wait 2 seconds before moving to the search page
-    this.onFilterChanged = debounce(this.onFilterChanged, 2000);
+    // this.onFilterChanged = debounce(this.onFilterChanged, 2000);
+
+    this.state = {
+      searchText: ''
+    }
   }
+
+  static navigatorButtons = {
+    leftButtons: [{
+      icon: require('../../img/navicon_menu.png'),
+      id: 'menu'
+    }]
+  };
 
   onNavigatorEvent(event) {
     if (event.id === 'menu') {
@@ -34,29 +38,37 @@ export default class HomeScreen extends Component {
     }
   }
 
-  onFilterChanged(text) {
-    // FIXME: should we jump to the variants page like the site does?
-    if (text !== '') {
-      // leap to the search page if we have a query
-      // (do note that this is debounced, so it'll wait 2sec before it even checks)
+  onChangeText(text) {
+    this.setState({
+      searchText: text
+    })
+  }
 
-      // FIXME: should we clear the query box before jumping, or should we sync it with the search page?
+  onSubmit() {
+    // FIXME: should we jump to the variants page like the site does?
+    if (this.state.searchText !== '') {
+      // leap to the search page if we have a query
+      var query = this.state.searchText.slice(0);
+
       // FIXME: navigating to a different page clutters the search history; maybe having it on the same page is better
       this.props.navigator.push({
         title: "Search",
         screen: "brca.SearchScreen",
         animated: false,
         passProps: {
-          initialFilterText: text
+          initialFilterText: query
         }
       })
+
+      // clear the search box before we go
+      this.setState({ searchText: '' });
     }
   }
 
   render() {
     return (
       <ScrollView style={{flex: 1, padding: 20, backgroundColor: 'white'}}>
-        <SearchBar onFilterChanged={this.onFilterChanged.bind(this)} />
+        <SearchBar  text={this.state.searchText} onChangeText={this.onChangeText.bind(this)} onSubmit={this.onSubmit.bind(this)} />
 
         <View style={styles.info}>
           <Text style={styles.paragraph}>The BRCA Exchange aims to advance our understanding of the genetic basis of breast cancer, ovarian cancer and other diseases by pooling data on BRCA1/2 genetic variants and corresponding clinical data from around the world. Search for BRCA1 or BRCA2 variants above.</Text>

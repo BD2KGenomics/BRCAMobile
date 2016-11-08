@@ -9,10 +9,21 @@ import debounce from 'lodash/debounce';
 export class SearchBar extends Component {
   constructor(props) {
     super(props);
+    // needed due to a bug on android where certain returnKeyTypes fire twice in quick succession
+    // refer to https://github.com/facebook/react-native/issues/9306
+    this.handleSubmit = debounce(this.handleSubmit, 100);
   }
 
   handleChangeText(text) {
-    this.props.onFilterChanged(text);
+    if (this.props.onChangeText) {
+      this.props.onChangeText(text);
+    }
+  }
+
+  handleSubmit() {
+    if (this.props.onSubmit) {
+      this.props.onSubmit();
+    }
   }
 
   render() {
@@ -22,6 +33,7 @@ export class SearchBar extends Component {
           placeholder='search for "c.1105G>A" or "brca1"'
           value={this.props.text}
           onChangeText={this.handleChangeText.bind(this)}
+          onSubmitEditing={this.handleSubmit.bind(this)}
           autoFocus={true}
           returnKeyType="search"
           underlineColorAndroid="transparent" />
@@ -80,22 +92,22 @@ export default class FilteredTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filterText: this.props.initialText
+      searchText: this.props.initialText
     };
   }
 
-  onFilterChanged(text) {
+  onChangeText(text) {
     this.setState({
-      filterText: text
+      searchText: text
     })
   }
 
   render() {
     return (
       <View>
-        <SearchBar text={this.state.filterText} onFilterChanged={this.onFilterChanged.bind(this)} />
+        <SearchBar text={this.state.searchText} onChangeText={this.onChangeText.bind(this)} />
 
-        <Text>{this.state.filterText}</Text>
+        <Text>{this.state.searchText}</Text>
 
         <ResultsTable />
       </View>
