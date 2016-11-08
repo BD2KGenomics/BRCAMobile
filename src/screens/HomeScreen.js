@@ -4,6 +4,7 @@ import {
   Alert, Platform
 } from 'react-native';
 import {Navigation} from 'react-native-navigation';
+import debounce from 'lodash/debounce';
 
 import {SearchBar} from '../components/FilteredTable';
 
@@ -19,6 +20,9 @@ export default class HomeScreen extends Component {
     super(props);
     // if you want to listen on navigator events, set this up
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+
+    // makes the page wait 2 seconds before moving to the search page
+    this.onFilterChanged = debounce(this.onFilterChanged, 2000);
   }
 
   onNavigatorEvent(event) {
@@ -30,10 +34,29 @@ export default class HomeScreen extends Component {
     }
   }
 
+  onFilterChanged(text) {
+    // FIXME: should we jump to the variants page like the site does?
+    if (text !== '') {
+      // leap to the search page if we have a query
+      // (do note that this is debounced, so it'll wait 2sec before it even checks)
+
+      // FIXME: should we clear the query box before jumping, or should we sync it with the search page?
+      // FIXME: navigating to a different page clutters the search history; maybe having it on the same page is better
+      this.props.navigator.push({
+        title: "Search",
+        screen: "brca.SearchScreen",
+        animated: false,
+        passProps: {
+          initialFilterText: text
+        }
+      })
+    }
+  }
+
   render() {
     return (
       <ScrollView style={{flex: 1, padding: 20, backgroundColor: 'white'}}>
-        <SearchBar />
+        <SearchBar onFilterChanged={this.onFilterChanged.bind(this)} />
 
         <View style={styles.info}>
           <Text style={styles.paragraph}>The BRCA Exchange aims to advance our understanding of the genetic basis of breast cancer, ovarian cancer and other diseases by pooling data on BRCA1/2 genetic variants and corresponding clinical data from around the world. Search for BRCA1 or BRCA2 variants above.</Text>
@@ -48,13 +71,6 @@ export default class HomeScreen extends Component {
         </View>
       </ScrollView>
     );
-  }
-
-  onPushAbout() {
-    this.props.navigator.push({
-      title: "About",
-      screen: "brca.AboutScreen"
-    });
   }
 }
 

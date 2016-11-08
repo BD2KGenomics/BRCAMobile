@@ -4,10 +4,15 @@ import {
   Alert, Platform
 } from 'react-native';
 import {Navigation} from 'react-native-navigation';
+import debounce from 'lodash/debounce';
 
 export class SearchBar extends Component {
   constructor(props) {
     super(props);
+  }
+
+  handleChangeText(text) {
+    this.props.onFilterChanged(text);
   }
 
   render() {
@@ -15,6 +20,10 @@ export class SearchBar extends Component {
       <View style={styles.searchboxContainer}>
         <TextInput style={styles.searchboxInput}
           placeholder='search for "c.1105G>A" or "brca1"'
+          value={this.props.text}
+          onChangeText={this.handleChangeText.bind(this)}
+          autoFocus={true}
+          returnKeyType="search"
           underlineColorAndroid="transparent" />
       </View>
     )
@@ -70,12 +79,23 @@ export class ResultsTable extends Component {
 export default class FilteredTable extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      filterText: this.props.initialText
+    };
+  }
+
+  onFilterChanged(text) {
+    this.setState({
+      filterText: text
+    })
   }
 
   render() {
     return (
       <View>
-        <SearchBar />
+        <SearchBar text={this.state.filterText} onFilterChanged={this.onFilterChanged.bind(this)} />
+
+        <Text>{this.state.filterText}</Text>
 
         <ResultsTable />
       </View>
@@ -97,14 +117,19 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   header: {
+    flex: 1,
+    flexDirection: 'row',
     backgroundColor: 'black'
   },
   headerCell: {
     flex: 1,
+    padding: 5,
     color: 'white',
     fontWeight: '500'
   },
   row: {
+    flex: 1,
+    flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#aaa'
   },

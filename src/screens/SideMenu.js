@@ -16,9 +16,11 @@ export default class SideMenu extends Component {
   render() {
     const navbuttonProps = {
       size: 30,
+      width: 260,
       color: "#eee",
       borderRadius: 0,
-      backgroundColor: "transparent"
+      backgroundColor: "transparent",
+      underlayColor: "#555"
     };
     // size={30} color="#eee" borderRadius={0} backgroundColor="transparent"
 
@@ -26,7 +28,8 @@ export default class SideMenu extends Component {
       <View style={styles.container}>
         <View style={styles.titlebutton}>
           <TouchableOpacity onPress={ this._toggleDrawer.bind(this) }>
-            <Image style={{width: 22, height: 22}} source={require('../../img/navicon_menu_invert.png')} />
+            <Icon name="menu" size={22} color="#fff" />
+            {/* <Image style={{width: 22, height: 22}} source={require('../../img/navicon_menu_invert.png')} /> */}
           </TouchableOpacity>
           <Text style={styles.title}>BRCA Exchange</Text>
         </View>

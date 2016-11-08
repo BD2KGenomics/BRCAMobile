@@ -19,16 +19,9 @@ export default class AboutScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <FilteredTable />
+        <FilteredTable initialText={this.props.initialFilterText} />
       </View>
     );
-  }
-  onPushHome() {
-    // try resetTo({...}) as well, and popToRoot()
-    this.props.navigator.push({
-      title: "Home",
-      screen: "brca.HomeScreen"
-    });
   }
 }
 
