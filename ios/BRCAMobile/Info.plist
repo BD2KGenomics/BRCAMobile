@@ -38,8 +38,11 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>MaterialIcons.ttf</string>
+	</array>
 	<key>NSAppTransportSecurity</key>
-	<!--See http://ste.vn/2015/06/10/configuring-app-transport-security-ios-9-osx-10-11/ -->
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
@@ -48,6 +51,21 @@
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
+			
+    	<key>brcaexchange.org</key>
+    	<dict>
+		      <!--Include to allow subdomains-->
+		      <key>NSIncludesSubdomains</key>
+		      <true/>
+
+		      <!--Include to allow HTTP requests-->
+		      <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+		      <true/>
+
+		      <!--Include to specify minimum TLS version-->
+		      <key>NSTemporaryExceptionMinimumTLSVersion</key>
+		      <string>TLSv1.1</string>
+	    </dict>
 		</dict>
 	</dict>
 </dict>
