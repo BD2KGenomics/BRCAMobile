@@ -14,6 +14,8 @@ import {
     Platform
 } from 'react-native';
 
+import {columns} from '../metadata/fields';
+
 export default class DetailDisplay extends Component {
     constructor(props) {
         super(props);
@@ -24,11 +26,11 @@ export default class DetailDisplay extends Component {
       return rows[0].map((_,c)=>rows.map(row=>row[c]));
     }
 
-    renderRow(d) {
+    renderRow(d, sectionID, rowID) {
         return (
-            <View style={styles.row}>
-              <Text style={styles.rowLabel}>{d[0]}</Text>
-              <Text style={styles.rowValue}>{d[1]}</Text>
+            <View style={[styles.row, (rowID % 2 == 1?styles.oddRow:null)]}>
+              <Text style={styles.rowLabel}>{d.title}</Text>
+              <Text style={styles.rowValue}>{d.value}</Text>
             </View>
         );
     }
@@ -37,7 +39,18 @@ export default class DetailDisplay extends Component {
     dataToSource(d) {
       // FIXME: should this be in state? probably not
       var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      return ds.cloneWithRows(this.zip([Object.keys(d), Object.values(d)]))
+
+      // converts all key/value pairs in d into [[k,v], ...]
+      // (currently unused b/c we're extracting only the columns we want)
+      // const v = this.zip([Object.keys(d), Object.values(d)]);
+
+      // only extract the fields of interest (plus their readable labels)
+      const rows = columns.map((x) => {
+        const v = d[x.prop];
+        return { title: x.title, value: (x.render)?x.render(v):v };
+      });
+
+      return ds.cloneWithRows(rows);
     }
 
     render() {
@@ -69,9 +82,13 @@ const styles = StyleSheet.create({
     },
     row: {
         flex: 1,
+        padding: 5,
         flexDirection: 'column',
         borderBottomWidth: 1,
         borderBottomColor: '#aaa'
+    },
+    oddRow: {
+      backgroundColor: '#eee'
     },
     rowLabel: {
         fontSize: 16,

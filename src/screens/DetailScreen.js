@@ -18,7 +18,7 @@ export default class DetailScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <DetailDisplay dataSource={this.props.dataSource} />
+        <DetailDisplay data={this.props.data} />
       </View>
     );
   }
