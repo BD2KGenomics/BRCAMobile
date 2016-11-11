@@ -6,9 +6,10 @@ import {
   AlertIOS
 } from 'react-native';
 
+import BaseSideMenu from './BaseSideMenu';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export default class SideMenu extends Component {
+export default class SideMenu extends BaseSideMenu {
   constructor(props) {
     super(props);
   }
@@ -16,34 +17,36 @@ export default class SideMenu extends Component {
   render() {
     const navbuttonProps = {
       size: 30,
-      width: 260,
+      width: 300,
       color: "#eee",
+      padding: 20,
       borderRadius: 0,
       backgroundColor: "transparent",
       underlayColor: "#555"
     };
-    // size={30} color="#eee" borderRadius={0} backgroundColor="transparent"
 
     return (
       <View style={styles.container}>
-        <View style={styles.titlebutton}>
+        {/* <View style={styles.titlebutton}>
           <TouchableOpacity onPress={ this._toggleDrawer.bind(this) }>
-            <Icon name="menu" size={22} color="#fff" />
-            {/* <Image style={{width: 22, height: 22}} source={require('../../img/navicon_menu_invert.png')} /> */}
+          <Icon name="menu" size={22} color="#fff" />
           </TouchableOpacity>
           <Text style={styles.title}>BRCA Exchange</Text>
-        </View>
+        </View> */}
 
         <View style={{flex: 1}}>
-          <Icon.Button name="home" {...navbuttonProps} onPress={ this.onHomePress.bind(this) }>
+          <Icon.Button name="home" {...navbuttonProps}
+            onPress={ this.navigateTo.bind(this, 'Home', 'brca.HomeScreen', true) }>
             <Text style={styles.button}>Home</Text>
           </Icon.Button>
 
-          <Icon.Button name="search" {...navbuttonProps} onPress={ this.onSearchPress.bind(this) }>
+          <Icon.Button name="search" {...navbuttonProps}
+            onPress={ this.navigateTo.bind(this, 'Search', 'brca.SearchScreen', false) }>
             <Text style={styles.button}>Search</Text>
           </Icon.Button>
 
-          <Icon.Button name="info" {...navbuttonProps} onPress={ this.onAboutPress.bind(this) }>
+          <Icon.Button name="info" {...navbuttonProps}
+            onPress={ this.navigateTo.bind(this, 'About', 'brca.AboutScreen', false) }>
             <Text style={styles.button}>About</Text>
           </Icon.Button>
         </View>
@@ -52,47 +55,13 @@ export default class SideMenu extends Component {
       </View>
     );
   }
-
-  onHomePress() {
-    this.props.navigator.resetTo({
-      title: "Home",
-      screen: "brca.HomeScreen"
-    });
-    this._toggleDrawer();
-  }
-
-  onSearchPress() {
-    this.props.navigator.push({
-      title: "Search",
-      screen: "brca.SearchScreen"
-    });
-    this._toggleDrawer();
-  }
-
-  onAboutPress() {
-    this.props.navigator.push({
-      title: "About",
-      screen: "brca.AboutScreen"
-    });
-    this._toggleDrawer();
-  }
-
-  _toggleDrawer() {
-    this.props.navigator.toggleDrawer({
-      to: 'closed',
-      side: 'left',
-      animated: true
-    });
-  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 18,
-    paddingLeft: 17,
-    opacity: 0.8,
-    backgroundColor: '#333',
+    opacity: 1,
+    backgroundColor: '#555',
     alignItems: 'flex-start',
     // backgroundColor: 'white',
     justifyContent: 'flex-start',
@@ -100,7 +69,7 @@ const styles = StyleSheet.create({
   },
   titlebutton: {
     height: 39,
-    width: 260,
+    width: 300,
     flex: 0,
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -119,8 +88,6 @@ const styles = StyleSheet.create({
   button: {
     textAlign: 'left',
     fontSize: 18,
-    marginBottom: 10,
-    marginTop:10,
     color: '#eee',
     fontWeight: '300'
   },

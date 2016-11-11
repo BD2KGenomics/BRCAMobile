@@ -6,13 +6,14 @@ import {
 import {Navigation} from 'react-native-navigation';
 import debounce from 'lodash/debounce';
 
-import {SearchBar} from '../components/FilteredTable';
+import LinkableMenuScreen from './LinkableMenuScreen';
+import SearchBar from '../components/SearchBar';
 
-export default class HomeScreen extends Component {
+export default class HomeScreen extends LinkableMenuScreen {
   constructor(props) {
     super(props);
     // if you want to listen on navigator events, set this up
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    // this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
 
     // makes the page wait 2 seconds before moving to the search page
     // this.onFilterChanged = debounce(this.onFilterChanged, 2000);
@@ -28,6 +29,14 @@ export default class HomeScreen extends Component {
       id: 'menu'
     }]
   };
+  
+  /*
+  static navigatorButtons = {
+    leftButtons: [{
+      icon: require('../../img/navicon_menu.png'),
+      id: 'menu'
+    }]
+  };
 
   onNavigatorEvent(event) {
     if (event.id === 'menu') {
@@ -37,6 +46,7 @@ export default class HomeScreen extends Component {
       });
     }
   }
+  */
 
   onChangeText(text) {
     this.setState({
@@ -68,7 +78,11 @@ export default class HomeScreen extends Component {
   render() {
     return (
       <ScrollView style={{flex: 1, padding: 20, backgroundColor: 'white'}}>
-        <SearchBar  text={this.state.searchText} onChangeText={this.onChangeText.bind(this)} onSubmit={this.onSubmit.bind(this)} />
+        <SearchBar
+          text={this.state.searchText}
+          autoFocus={false}
+          onChangeText={this.onChangeText.bind(this)}
+          onSubmit={this.onSubmit.bind(this)} />
 
         <View style={styles.info}>
           <Text style={styles.paragraph}>The BRCA Exchange aims to advance our understanding of the genetic basis of breast cancer, ovarian cancer and other diseases by pooling data on BRCA1/2 genetic variants and corresponding clinical data from around the world. Search for BRCA1 or BRCA2 variants above.</Text>

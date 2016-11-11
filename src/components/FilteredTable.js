@@ -1,152 +1,167 @@
 import React, {Component} from 'react';
 import {
-  Text, TextInput, View, ListView, ScrollView, Image, TouchableOpacity, StyleSheet,
-  Alert, Platform
+  Text, TextInput, View, ListView, ScrollView, Image, TouchableOpacity,
+  StyleSheet, Alert, Platform
 } from 'react-native';
 import {Navigation} from 'react-native-navigation';
 import debounce from 'lodash/debounce';
 
-export class SearchBar extends Component {
-  constructor(props) {
-    super(props);
-    // needed due to a bug on android where certain returnKeyTypes fire twice in quick succession
-    // refer to https://github.com/facebook/react-native/issues/9306
-    this.handleSubmit = debounce(this.handleSubmit, 100);
-  }
-
-  handleChangeText(text) {
-    if (this.props.onChangeText) {
-      this.props.onChangeText(text);
-    }
-  }
-
-  handleSubmit() {
-    if (this.props.onSubmit) {
-      this.props.onSubmit();
-    }
-  }
-
-  render() {
-    return (
-      <View style={styles.searchboxContainer}>
-        <TextInput style={styles.searchboxInput}
-          placeholder='search for "c.1105G>A" or "brca1"'
-          value={this.props.text}
-          onChangeText={this.handleChangeText.bind(this)}
-          onSubmitEditing={this.handleSubmit.bind(this)}
-          autoFocus={true}
-          returnKeyType="search"
-          underlineColorAndroid="transparent" />
-      </View>
-    )
-  }
-}
-
-export class ResultsTable extends Component {
-  constructor(props) {
-      super(props);
-      const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      this.state = {
-        dataSource: ds.cloneWithRows([
-          {name: 'BRCA1', val: 'hi'},
-          {name: 'BRCA1', val: 'yo'},
-          {name: 'BRCA1', val: 'hola'},
-          {name: 'BRCA2', val: 'meow?'},
-          {name: 'BRCA2', val: 'hey'},
-          {name: 'BRCA2', val: 'howdy'},
-          {name: 'BRCA2', val: 'wutup'},
-        ]),
-      };
-    }
-
-    renderHeader() {
-      return (
-        <View style={styles.header}>
-          <Text style={styles.headerCell}>Name</Text>
-          <Text style={styles.headerCell}>Value</Text>
-        </View>
-      )
-    }
-
-    renderRow(d) {
-      return (
-        <View style={styles.row}>
-          <Text style={styles.rowCell}>{d.name}</Text>
-          <Text style={styles.rowCell}>{d.val}</Text>
-        </View>
-      );
-    }
-
-    render() {
-      return (
-        <ListView
-          dataSource={this.state.dataSource}
-          renderHeader={this.renderHeader.bind(this)}
-          renderRow={this.renderRow.bind(this)}
-        />
-      );
-    }
-}
+import SearchBar from './SearchBar';
+import ResultsTable from './ResultsTable';
 
 export default class FilteredTable extends Component {
   constructor(props) {
     super(props);
+    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id});
+
     this.state = {
-      searchText: this.props.initialText
+      searchText: this.props.initialText,
+      itemDataSrc: this.ds.cloneWithRows([]),
+      isLoading: false,
+      pageSize: 100, // we'll grab records in increments of this
+      pageNum: 0,
+      resultsCount: 0,
+      synonyms: 0
     };
+  }
+
+  //
+  // core event and lifecycle handlers
+  //
+
+  componentDidMount() {
+    if (this.state.searchText && this.state.searchText !== '') {
+      this.onSubmit();
+    }
   }
 
   onChangeText(text) {
     this.setState({
       searchText: text
-    })
+    });
+  }
+
+  onSubmit() {
+    // we want to dismiss the previous query entirely
+    this.setState({
+      isLoading: true,
+      itemDataSrc: this.ds.cloneWithRows([]),
+      pageNum: 0,
+      synonyms: '?',
+      resultsCount: '?'
+    });
+
+    // fire off a fetch and bind the result
+    this.getItemsForQuery(this.state.searchText, this.state.pageSize, this.state.pageNum, 'init')
+      .then((responseJson) => {
+        // later we'll concatenate to this collection as we scroll
+        // this is the initial assignment
+        this._data = responseJson.data;
+
+        this.setState({
+          isLoading: false,
+          currentQuery: this.state.searchText,
+          resultsCount: responseJson.count,
+          synonyms: responseJson.synonyms,
+          pageNum: this.state.pageNum + 1, // we've moved ahead one page
+          itemDataSrc: this.ds.cloneWithRows(this._data)
+        });
+      });
+  }
+
+  onRowClicked(d) {
+    this.props.navigator.push({
+      title: "Details",
+      screen: "brca.DetailScreen",
+      passProps: {
+        data: d
+      }
+    });
+  }
+
+  onEndReached () {
+    // check if there's anything left to request
+    if (this.state.pageNum * this.state.pageSize < this.state.resultsCount) {
+      // there is, so load it up!
+      this.setState({
+        isLoading: true
+      });
+
+      this.getItemsForQuery(this.state.currentQuery, this.state.pageSize, this.state.pageNum, 'poll')
+        .then((responseJson) => {
+          // we append this new data to the existing collection for rebinding
+          this._data = this._data.concat(responseJson.data);
+
+          this.setState({
+            isLoading: false,
+            pageNum: this.state.pageNum + 1, // we've moved ahead one page
+            itemDataSrc: this.ds.cloneWithRows(this._data)
+          });
+        });
+    }
   }
 
   render() {
     return (
-      <View>
-        <SearchBar text={this.state.searchText} onChangeText={this.onChangeText.bind(this)} />
+      <View style={{flex: 1}}>
+        <SearchBar
+          style={{flex: 0}}
+          text={this.state.searchText}
+          autoFocus={true}
+          onChangeText={this.onChangeText.bind(this)}
+          onSubmit={this.onSubmit.bind(this)} />
 
-        <Text>{this.state.searchText}</Text>
-
-        <ResultsTable />
+        <View style={{flex: 1}}>
+          <ResultsTable
+            pageNum={this.state.pageNum}
+            pageSize={this.state.pageSize}
+            resultsCount={this.state.resultsCount}
+            synonyms={this.state.synonyms}
+            dataSource={this.state.itemDataSrc}
+            isLoading={this.state.isLoading}
+            onRowClicked={this.onRowClicked.bind(this)}
+            onEndReached={this.onEndReached.bind(this)} />
+        </View>
       </View>
     )
+  }
+
+  //
+  // utility methods for fetching
+  //
+
+  encodeParams(params) {
+    var esc = encodeURIComponent;
+    return Object.keys(params)
+        .map(k => esc(k) + '=' + esc(params[k]))
+        .join('&');
+  }
+
+  getItemsForQuery(query, page_size, page_num, tag) {
+    page_size = (page_size === null)?10:page_size;
+    page_num = (page_num === null)?0:page_num
+    tag = (tag === null)?'n/a':tag;
+
+    var args = {
+      format: 'json',
+      search_term: query,
+      page_size: page_size,
+      page_num: page_num
+    };
+
+    var queryString = 'http://brcaexchange.org/backend/data/?' + this.encodeParams(args);
+    console.log("Request [" + tag + "]: ", queryString);
+
+    return fetch(queryString)
+      .then((response) => {
+        return response.json();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 }
 
 const styles = StyleSheet.create({
-  searchboxContainer: {
-    marginTop: 5,
-    marginBottom: 20
-  },
-  searchboxInput: {
-    borderWidth: 1,
-    padding: 6,
-    color: '#555',
-    borderColor: 'pink',
-    borderRadius: 4,
-    fontSize: 18
-  },
-  header: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'black'
-  },
-  headerCell: {
-    flex: 1,
-    padding: 5,
-    color: 'white',
-    fontWeight: '500'
-  },
-  row: {
-    flex: 1,
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#aaa'
-  },
-  rowCell: {
-    flex: 1,
-    padding: 5
-  }
+  // moved to child classes
 });

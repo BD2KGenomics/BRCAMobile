@@ -1,28 +1,24 @@
 import React, {Component} from 'react';
 import {
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet
+  Text, View, ScrollView,
+  TouchableOpacity, StyleSheet
 } from 'react-native';
 
-import LinkableMenuScreen from './LinkableMenuScreen';
-import FilteredTable from '../components/FilteredTable';
+import DetailDisplay from '../components/DetailDisplay';
 
-export default class AboutScreen extends LinkableMenuScreen {
+export default class DetailScreen extends Component {
+  static navigatorStyle = {
+    drawUnderTabBar: true
+  };
+
   constructor(props) {
     super(props);
   }
 
-  static navigatorStyle = {
-    drawUnderTabBar: false
-  };
-
   render() {
     return (
       <View style={styles.container}>
-        <FilteredTable navigator={this.props.navigator} initialText={this.props.initialFilterText} />
+        <DetailDisplay dataSource={this.props.dataSource} />
       </View>
     );
   }

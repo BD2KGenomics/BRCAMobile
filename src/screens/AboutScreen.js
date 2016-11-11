@@ -7,13 +7,17 @@ import {
   StyleSheet
 } from 'react-native';
 
-export default class AboutScreen extends Component {
-  static navigatorStyle = {
-    drawUnderTabBar: true
-  };
+import LinkableMenuScreen from './LinkableMenuScreen';
+
+export default class AboutScreen extends LinkableMenuScreen {
   constructor(props) {
     super(props);
   }
+
+  static navigatorStyle = {
+    drawUnderTabBar: true
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -23,6 +27,7 @@ export default class AboutScreen extends Component {
       </View>
     );
   }
+
   onPushHome() {
     // try resetTo({...}) as well, and popToRoot()
     this.props.navigator.push({
