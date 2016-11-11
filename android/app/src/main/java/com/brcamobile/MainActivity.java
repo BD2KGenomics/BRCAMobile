@@ -1,5 +1,7 @@
 package com.brcamobile;
 
+import android.support.annotation.LayoutRes;
+
 import com.facebook.react.ReactActivity;
 
 import com.reactnativenavigation.controllers.SplashActivity;
@@ -15,4 +17,12 @@ public class MainActivity extends SplashActivity {
     // protected String getMainComponentName() {
     //     return "BRCAMobile";
     // }
+
+    /**
+     * @return xml layout res id
+     */
+    @LayoutRes
+    public int getSplashLayout() {
+        return R.layout.splash;
+    }
 }
