@@ -34,6 +34,8 @@ export default class SearchBar extends Component {
           value={this.props.text}
           onChangeText={this.handleChangeText.bind(this)}
           onSubmitEditing={this.handleSubmit.bind(this)}
+          autoCapitalize="none"
+          autoCorrect={false}
           autoFocus={this.props.autoFocus}
           returnKeyType="search"
           underlineColorAndroid="transparent" />
