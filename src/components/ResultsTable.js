@@ -18,7 +18,7 @@ export default class ResultsTable extends Component {
     renderHeader() {
       return (
         <View style={styles.header}>
-          <Text style={styles.headerCell}>Gene</Text>
+          <Text style={[styles.headerCell, {flex: 0.3}]}>Gene</Text>
           <Text style={styles.headerCell}>Source</Text>
         </View>
       )
@@ -28,8 +28,8 @@ export default class ResultsTable extends Component {
       return (
         <TouchableOpacity onPress={this.rowClicked.bind(this, d)}>
           <View style={styles.row}>
-            <Text style={styles.rowCell}>{d.Gene_Symbol}</Text>
-            <Text style={styles.rowCell}>{d.Source}</Text>
+            <Text style={[styles.rowCell, {flex: 0.3}]}>{d.Gene_Symbol}</Text>
+            <Text style={styles.rowCell}>{d.Source.split(",").join(", ")}</Text>
           </View>
         </TouchableOpacity>
       );
@@ -50,10 +50,7 @@ export default class ResultsTable extends Component {
           </Text>
 
           <View style={styles.headerContainer}>
-            <View style={styles.header}>
-              <Text style={styles.headerCell}>Gene Symbol</Text>
-              <Text style={styles.headerCell}>Source</Text>
-            </View>
+          {this.renderHeader()}
           </View>
 
           <ListView
