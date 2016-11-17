@@ -45,7 +45,7 @@ export default class ResultsTable extends Component {
       return (
         <View>
           <Text>
-            loaded {(this.props.pageNum) * this.props.pageSize} out of {this.props.resultsCount} results&nbsp;
+            loaded {this.props.dataSource.getRowCount()} out of {this.props.resultsCount} matching variants&nbsp;
             {(this.props.synonyms > 0)?<Text>(synonyms: {this.props.synonyms})</Text>:''}
           </Text>
 

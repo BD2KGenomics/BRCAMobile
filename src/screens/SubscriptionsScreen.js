@@ -12,9 +12,6 @@ import SearchBar from '../components/SearchBar';
 export default class HomeScreen extends LinkableMenuScreen {
   constructor(props) {
     super(props);
-    this.state = {
-      searchText: ''
-    }
   }
 
   static navigatorButtons = {
@@ -23,33 +20,6 @@ export default class HomeScreen extends LinkableMenuScreen {
       id: 'menu'
     }]
   };
-
-  onChangeText(text) {
-    this.setState({
-      searchText: text
-    })
-  }
-
-  onSubmit() {
-    // FIXME: should we jump to the variants page like the site does?
-    if (this.state.searchText !== '') {
-      // leap to the search page if we have a query
-      var query = this.state.searchText.slice(0);
-
-      // FIXME: navigating to a different page clutters the search history; maybe having it on the same page is better
-      this.props.navigator.resetTo({
-        title: "Search",
-        screen: "brca.SearchScreen",
-        animated: false,
-        passProps: {
-          initialFilterText: query
-        }
-      })
-
-      // clear the search box before we go
-      this.setState({ searchText: '' });
-    }
-  }
 
   render() {
     return (

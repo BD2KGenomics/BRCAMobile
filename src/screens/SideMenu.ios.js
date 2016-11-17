@@ -27,12 +27,9 @@ export default class SideMenu extends BaseSideMenu {
 
     return (
       <View style={styles.container}>
-        {/* <View style={styles.titlebutton}>
-          <TouchableOpacity onPress={ this._toggleDrawer.bind(this) }>
-          <Icon name="menu" size={22} color="#fff" />
-          </TouchableOpacity>
+        <View style={styles.titleBar}>
           <Text style={styles.title}>BRCA Exchange</Text>
-        </View> */}
+        </View>
 
         <View style={{flex: 1}}>
           <Icon.Button name="home" {...navbuttonProps}
@@ -67,8 +64,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     width: 300
   },
-  titlebutton: {
-    height: 39,
+  titleBar: {
+    padding: 19,
     width: 300,
     flex: 0,
     flexDirection: 'row',
@@ -81,8 +78,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 22,
     color: 'white',
-    marginLeft: 15,
-    marginTop: -5,
     fontWeight: '500'
   },
   button: {

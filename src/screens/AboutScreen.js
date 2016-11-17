@@ -14,6 +14,13 @@ export default class AboutScreen extends LinkableMenuScreen {
     super(props);
   }
 
+  static navigatorButtons = {
+    leftButtons: [{
+      icon: require('../../img/navicon_menu.png'),
+      id: 'menu'
+    }]
+  };
+  
   static navigatorStyle = {
     drawUnderTabBar: true
   };
@@ -21,19 +28,9 @@ export default class AboutScreen extends LinkableMenuScreen {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={ this.onPushHome.bind(this) }>
-          <Text style={styles.button}>Push Home Screen</Text>
-        </TouchableOpacity>
+        <Text>About text here...</Text>
       </View>
     );
-  }
-
-  onPushHome() {
-    // try resetTo({...}) as well, and popToRoot()
-    this.props.navigator.push({
-      title: "Home",
-      screen: "brca.HomeScreen"
-    });
   }
 }
 

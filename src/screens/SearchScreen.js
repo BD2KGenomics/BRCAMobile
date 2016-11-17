@@ -15,6 +15,13 @@ export default class AboutScreen extends LinkableMenuScreen {
     super(props);
   }
 
+  static navigatorButtons = {
+    leftButtons: [{
+      icon: require('../../img/navicon_menu.png'),
+      id: 'menu'
+    }]
+  };
+
   static navigatorStyle = {
     drawUnderTabBar: false
   };

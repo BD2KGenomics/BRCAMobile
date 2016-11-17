@@ -23,14 +23,17 @@ export default class LinkableMenuScreen extends Component {
         const params = JSON.parse(parts[1]);
 
         // handle the link somehow, usually run a this.props.navigator command
-        if (params.doReset === true) {
-          console.log("Deep reset to " + params.title + " from ", this.props.navigator.screenInstanceID);
+        // if (params.doReset === true) {
+        
+        console.log("Deep reset to " + params.title + " from ", this.props.navigator.screenInstanceID);
 
-          this.props.navigator.resetTo({
-            title: params.title,
-            screen: params.screen
-          })
-        }
+        this.props.navigator.resetTo({
+          title: params.title,
+          screen: params.screen
+        })
+
+        // }
+        /*
         else {
           console.log("Deep push to " + params.title + " from ", this.props.navigator.screenInstanceID);
 
@@ -39,6 +42,7 @@ export default class LinkableMenuScreen extends Component {
             screen: params.screen
           })
         }
+        */
       }
     }
     else if (this.childNavigatorEvent !== null && typeof this.childNavigatorEvent == 'function') {
