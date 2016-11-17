@@ -3,6 +3,7 @@ package com.brcamobile;
 import android.support.annotation.LayoutRes;
 
 import com.facebook.react.ReactActivity;
+import com.oblador.vectoricons.VectorIconsPackage;
 
 import com.reactnativenavigation.controllers.SplashActivity;
 
