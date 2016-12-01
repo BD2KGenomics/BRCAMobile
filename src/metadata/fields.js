@@ -1,6 +1,6 @@
-// column titles copied from
+// column titles copied from https://github.com/BD2KGenomics/brca-exchange/blob/master/website/js/VariantTable.js
 
-export var columns = [
+export const columns = [
     {title: 'Gene', prop: 'Gene_Symbol'},
     {title: 'HGVS Nucleotide', prop: 'HGVS_cDNA', render: nucleotide => nucleotide.split(':')[1]},
     {title: 'Transcript Identifier', prop: 'Reference_Sequence'},
@@ -24,7 +24,7 @@ export var columns = [
     {title: 'ClinVar Accession', prop: 'ClinVarAccession_ENIGMA'}
 ];
 
-export var researchModeColumns = [
+export const researchModeColumns = [
     {title: 'Gene Symbol', prop: 'Gene_Symbol'},
     {title: 'Genome (GRCh36)', prop: 'Genomic_Coordinate_hg36'},
     {title: 'Genome (GRCh37)', prop: 'Genomic_Coordinate_hg37'},
@@ -105,7 +105,7 @@ export var researchModeColumns = [
 
 ];
 
-export var subColumns = [
+export const subColumns = [
     {
         subColTitle: "Variant Nomenclature",
         subColList: [
