@@ -14,29 +14,20 @@ import {
     Alert,
     Platform
 } from 'react-native';
+import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Toast from 'react-native-simple-toast';
+
+import { subscribe, unsubscribe } from '../redux/actions';
+
+import SubscribeButton from './SubscribeButton';
 
 import {columns} from '../metadata/fields';
 
-export default class DetailDisplay extends Component {
+class DetailDisplay extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            subscribed: false
-        };
     }
-
-    static subscriptionProps = {
-        subscribed: {
-            backgroundColor: '#e7b34e',
-            name: 'bookmark-border' // clear
-        },
-        unsubscribed: {
-            backgroundColor: '#63c477',
-            name: 'bookmark' // check
-        }
-    };
 
     static renderRow(d, sectionID, rowID) {
         return (
@@ -48,27 +39,36 @@ export default class DetailDisplay extends Component {
     }
 
     toggleSubscription() {
-        this.setState({
-            subscribed: !this.state.subscribed
-        })
+        // holdover from relying on props before
+        const d = this.props.data;
+        const identifier = d.HGVS_cDNA.split(':')[1];
+
+        if (!this.isSubscribed()) {
+            this.props.onSubscribe(d);
+            Toast.show('Subscribed to ' + identifier, 1);
+        } else {
+            this.props.onUnsubscribe(d);
+            Toast.show('Unsubscribed from ' + identifier, 1);
+        }
     }
 
     // produces a series of listview-displayable rows from a variant data object
     dataToSource(d) {
-        // FIXME: should this be in state? probably not
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-        // converts all key/value pairs in d into [[k,v], ...]
-        // (currently unused b/c we're extracting only the columns we want)
-        // const v = this.zip([Object.keys(d), Object.values(d)]);
-
         // only extract the fields of interest (plus their readable labels)
+        // note that there's a second set of columns, researchModeColumns, used in the 'all data portal' on the site
         const rows = columns.map((x) => {
             const v = d[x.prop];
+            // if a render function exists, use it, otherwise just use the raw values
             return { title: x.title, value: (x.render)?x.render(v):v };
         });
 
         return ds.cloneWithRows(rows);
+    }
+
+    isSubscribed() {
+        return this.props.subscriptions.hasOwnProperty(this.props.data.id);
     }
 
     render() {
@@ -77,11 +77,10 @@ export default class DetailDisplay extends Component {
                 <Text style={styles.title}>Variant Detail</Text>
 
                 <View style={styles.subscribeToggleContainer}>
-                    <Icon.Button
-                        {...((this.state.subscribed) ? DetailDisplay.subscriptionProps.subscribed : DetailDisplay.subscriptionProps.unsubscribed)}
-                        onPress={this.toggleSubscription.bind(this)}>
-                    {(this.state.subscribed)?"unsubscribe from variant":"subscribe to variant"}
-                    </Icon.Button>
+                    <SubscribeButton
+                        subscribed={this.isSubscribed()}
+                        onSubscriptionChanged={this.toggleSubscription.bind(this)}
+                    />
                 </View>
 
                 <ListView style={styles.listContainer}
@@ -132,3 +131,29 @@ const styles = StyleSheet.create({
         fontSize: 16
     }
 });
+
+/* define the component-to-store connectors */
+
+const mapStateToProps = (state) => {
+    return {
+        // subscription info
+        subscriptions: state.brca.subscriptions
+    }
+};
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onSubscribe: (item_id) => {
+            dispatch(subscribe(item_id))
+        },
+        onUnsubscribe: (item_id) => {
+            dispatch(unsubscribe(item_id))
+        }
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(DetailDisplay);

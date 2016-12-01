@@ -1,83 +1,161 @@
 import React, {Component} from 'react';
 import {
-  Text, TextInput, View, ScrollView, Image, TouchableOpacity, StyleSheet,
-  Alert, Platform
+    Text, TextInput, View, ScrollView, ListView, Image, TouchableOpacity, TouchableHighlight, StyleSheet,
+    Alert, Platform
 } from 'react-native';
-import {Navigation} from 'react-native-navigation';
+import { connect } from "react-redux";
+import { Navigation } from 'react-native-navigation';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import debounce from 'lodash/debounce';
+import Toast from 'react-native-simple-toast';
+
+import { subscribe, unsubscribe } from '../redux/actions';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
-import SearchBar from '../components/SearchBar';
+import Subscriptions from '../components/Subscriptions';
 
-export default class HomeScreen extends LinkableMenuScreen {
-  constructor(props) {
-    super(props);
-  }
+class SubscriptionsScreen extends LinkableMenuScreen {
+    constructor(props) {
+        super(props);
 
-  static navigatorButtons = {
-    leftButtons: [{
-      icon: require('../../img/navicon_menu.png'),
-      id: 'menu'
-    }]
-  };
+        // store whether we originally had subscriptions on visiting this page
+        this.state = {
+            hadSubscriptions: this.props.subscriptions && Object.keys(this.props.subscriptions).length > 0
+        };
 
-  render() {
-    return (
-      <ScrollView style={{flex: 1, padding: 20, backgroundColor: 'white'}}>
-        <SearchBar
-          text={this.state.searchText}
-          autoFocus={false}
-          onChangeText={this.onChangeText.bind(this)}
-          onSubmit={this.onSubmit.bind(this)} />
+        this.onGoSearch = this.onGoSearch.bind(this);
+    }
 
-        <View style={styles.info}>
-          <Text style={styles.paragraph}>The BRCA Exchange aims to advance our understanding of the genetic basis of breast cancer, ovarian cancer and other diseases by pooling data on BRCA1/2 genetic variants and corresponding clinical data from around the world. Search for BRCA1 or BRCA2 variants above.</Text>
+    static navigatorButtons = {
+        leftButtons: [{
+            icon: require('../../img/navicon_menu.png'),
+            id: 'menu'
+        }]
+    };
 
-          <Text>&nbsp;</Text>
+    onRowClicked(d) {
+        this.props.navigator.push({
+            title: "Details",
+            screen: "brca.DetailScreen",
+            passProps: {
+                data: d
+            }
+        });
+    }
 
-          <Text style={styles.paragraph}>This website is supported by the BRCA Exchange of the Global Alliance for Genomics and Health.</Text>
-        </View>
+    isSubscribed(d) {
+        return this.props.subscriptions.hasOwnProperty(d.id);
+    }
 
-        <View style={styles.logo}>
-          <Image style={{width: 133, height: 67}} source={require('../../img/logos/brcaexchange.jpg')} />
-        </View>
-      </ScrollView>
-    );
-  }
+    onSubscribeClicked(d) {
+        if (!this.isSubscribed(d)) {
+            this.props.onSubscribe(d);
+        }
+        else {
+            this.props.onUnsubscribe(d);
+        }
+    }
+
+    onGoSearch() {
+        this.props.navigator.resetTo({
+            title: "Search",
+            screen: "brca.SearchScreen"
+        });
+    }
+
+    render() {
+        return (
+            <ScrollView style={{flex: 1, padding: 20, backgroundColor: 'white'}}>
+                { this.state.hadSubscriptions ?
+                    <Subscriptions
+                        subscriptions={this.props.subscriptions}
+                        onRowClicked={this.onRowClicked.bind(this)}
+                        onSubscribeClicked={this.onSubscribeClicked.bind(this)}
+                    />
+                    :
+                    <View>
+                        <Text style={styles.noSubscriptionsText}>No subscriptions yet!</Text>
+                        <Text style={styles.noSubscriptionsText}>Add a subscription by searching{"\n"}and viewing details for a variant.</Text>
+
+                        <View style={{flex: 1, alignItems: 'center'}}>
+                            <View style={{width: 150, flex: 1}}>
+                                <Icon.Button name="search" onPress={this.onGoSearch}>Go to Search</Icon.Button>
+                            </View>
+                        </View>
+                    </View>
+                }
+
+                {/*<View style={styles.logo}>*/}
+                    {/*<Image style={{width: 133, height: 67}} source={require('../../img/logos/brcaexchange.jpg')} />*/}
+                {/*</View>*/}
+            </ScrollView>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
-  button: {
-    textAlign: 'center',
-    fontSize: 18,
-    marginBottom: 10,
-    marginTop: 10,
-    color: 'blue'
-  },
-  info: {
-    backgroundColor: '#f1f1f1',
-    padding: 28,
-    borderRadius: 8
-  },
-  paragraph: {
-    color: '#555',
-    fontSize: 20
-  },
-  searchboxContainer: {
-    marginTop: 5,
-    marginBottom: 20
-  },
-  searchboxInput: {
-    borderWidth: 1,
-    padding: 6,
-    color: '#555',
-    borderColor: 'pink',
-    borderRadius: 4,
-    fontSize: 18
-  },
-  logo: {
-    marginTop: 30,
-    marginBottom: 120,
-    alignItems: 'center',
-  }
+    button: {
+        textAlign: 'center',
+        fontSize: 18,
+        marginBottom: 10,
+        marginTop: 10,
+        color: 'blue'
+    },
+    info: {
+        backgroundColor: '#f1f1f1',
+        padding: 28,
+        borderRadius: 8
+    },
+    paragraph: {
+        color: '#555',
+        fontSize: 20
+    },
+    searchboxContainer: {
+        marginTop: 5,
+        marginBottom: 20
+    },
+    searchboxInput: {
+        borderWidth: 1,
+        padding: 6,
+        color: '#555',
+        borderColor: 'pink',
+        borderRadius: 4,
+        fontSize: 18
+    },
+    logo: {
+        marginTop: 30,
+        marginBottom: 120,
+        alignItems: 'center',
+    },
+    noSubscriptionsText: {
+        fontStyle: 'italic',
+        textAlign: 'center',
+        marginBottom: 20
+    }
 });
+
+/* define the component-to-store connectors */
+
+const mapStateToProps = (state) => {
+    return {
+        // subscription info
+        subscriptions: state.brca.subscriptions
+    }
+};
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onSubscribe: (item) => {
+            dispatch(subscribe(item))
+        },
+        onUnsubscribe: (item) => {
+            dispatch(unsubscribe(item))
+        }
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(SubscriptionsScreen);

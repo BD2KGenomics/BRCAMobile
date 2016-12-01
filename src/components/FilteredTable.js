@@ -1,167 +1,141 @@
 import React, {Component} from 'react';
 import {
-  Text, TextInput, View, ListView, ScrollView, Image, TouchableOpacity,
-  StyleSheet, Alert, Platform
+    Text, TextInput, View, ListView, ScrollView, Image, TouchableOpacity,
+    StyleSheet, Alert, Platform
 } from 'react-native';
-import {Navigation} from 'react-native-navigation';
+import { connect } from "react-redux";
+import { Navigation } from 'react-native-navigation';
 import debounce from 'lodash/debounce';
+
+import { query_variants, fetch_next_page } from '../redux/actions';
 
 import SearchBar from './SearchBar';
 import ResultsTable from './ResultsTable';
 
-export default class FilteredTable extends Component {
-  constructor(props) {
-    super(props);
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id});
+class FilteredTable extends Component {
+    constructor(props) {
+        super(props);
+        this.ds = new ListView.DataSource({
+            // FIXME: this is hugely inefficient. actually check if we've had a subscription change
+            rowHasChanged: (r1, r2) => true
+        });
 
-    this.state = {
-      searchText: this.props.initialText,
-      itemDataSrc: this.ds.cloneWithRows([]),
-      isLoading: false,
-      pageSize: 100, // we'll grab records in increments of this
-      pageNum: 0,
-      resultsCount: 0,
-      synonyms: 0
-    };
-  }
-
-  //
-  // core event and lifecycle handlers
-  //
-
-  componentDidMount() {
-    if (this.state.searchText && this.state.searchText !== '') {
-      this.onSubmit();
+        this.state = {
+            searchText: this.props.initialText,
+            dataSource: this.ds.cloneWithRows(props.variants)
+        };
     }
-  }
 
-  onChangeText(text) {
-    this.setState({
-      searchText: text
-    });
-  }
-
-  onSubmit() {
-    // we want to dismiss the previous query entirely
-    this.setState({
-      isLoading: true,
-      itemDataSrc: this.ds.cloneWithRows([]),
-      pageNum: 0,
-      synonyms: '?',
-      resultsCount: '?'
-    });
-
-    // fire off a fetch and bind the result
-    this.getItemsForQuery(this.state.searchText, this.state.pageSize, this.state.pageNum, 'init')
-      .then((responseJson) => {
-        // later we'll concatenate to this collection as we scroll
-        // this is the initial assignment
-        this._data = responseJson.data;
+    componentWillReceiveProps(newProps) {
+        console.log("Collection is rebinding!");
 
         this.setState({
-          isLoading: false,
-          currentQuery: this.state.searchText,
-          resultsCount: responseJson.count,
-          synonyms: responseJson.synonyms,
-          pageNum: this.state.pageNum + 1, // we've moved ahead one page
-          itemDataSrc: this.ds.cloneWithRows(this._data)
-        });
-      });
-  }
-
-  onRowClicked(d) {
-    this.props.navigator.push({
-      title: "Details",
-      screen: "brca.DetailScreen",
-      passProps: {
-        data: d
-      }
-    });
-  }
-
-  onEndReached () {
-    // check if there's anything left to request
-    if (this.state.pageNum * this.state.pageSize < this.state.resultsCount) {
-      // there is, so load it up!
-      this.setState({
-        isLoading: true
-      });
-
-      this.getItemsForQuery(this.state.currentQuery, this.state.pageSize, this.state.pageNum, 'poll')
-        .then((responseJson) => {
-          // we append this new data to the existing collection for rebinding
-          this._data = this._data.concat(responseJson.data);
-
-          this.setState({
-            isLoading: false,
-            pageNum: this.state.pageNum + 1, // we've moved ahead one page
-            itemDataSrc: this.ds.cloneWithRows(this._data)
-          });
+            dataSource: this.state.dataSource.cloneWithRows(newProps.variants)
         });
     }
-  }
 
-  render() {
-    return (
-      <View style={{flex: 1}}>
-        <SearchBar
-          style={{flex: 0}}
-          text={this.state.searchText}
-          autoFocus={true}
-          onChangeText={this.onChangeText.bind(this)}
-          onSubmit={this.onSubmit.bind(this)} />
+    //
+    // core event and lifecycle handlers
+    //
 
-        <View style={{flex: 1}}>
-          <ResultsTable
-            pageNum={this.state.pageNum}
-            pageSize={this.state.pageSize}
-            resultsCount={this.state.resultsCount}
-            synonyms={this.state.synonyms}
-            dataSource={this.state.itemDataSrc}
-            isLoading={this.state.isLoading}
-            onRowClicked={this.onRowClicked.bind(this)}
-            onEndReached={this.onEndReached.bind(this)} />
-        </View>
-      </View>
-    )
-  }
+    componentDidMount() {
+        if (this.state.searchText && this.state.searchText !== '') {
+            this.onSubmit();
+        }
+    }
 
-  //
-  // utility methods for fetching
-  //
+    onChangeText(text) {
+        this.setState({
+            searchText: text
+        });
+    }
 
-  encodeParams(params) {
-    var esc = encodeURIComponent;
-    return Object.keys(params)
-        .map(k => esc(k) + '=' + esc(params[k]))
-        .join('&');
-  }
+    onSubmit() {
+        this.props.onQueryVariants(this.state.searchText);
+    }
 
-  getItemsForQuery(query, page_size, page_num, tag) {
-    page_size = (page_size === null)?10:page_size;
-    page_num = (page_num === null)?0:page_num
-    tag = (tag === null)?'n/a':tag;
+    onRowClicked(d) {
+        this.props.navigator.push({
+            title: "Details",
+            screen: "brca.DetailScreen",
+            passProps: {
+                data: d
+            }
+        });
+    }
 
-    var args = {
-      format: 'json',
-      search_term: query,
-      page_size: page_size,
-      page_num: page_num
-    };
+    onEndReached() {
+        console.log("Attempting to pull more results: ", this.props.query);
 
-    var queryString = 'http://brcaexchange.org/backend/data/?' + this.encodeParams(args);
-    console.log("Request [" + tag + "]: ", queryString);
+        if (this.props.query !== null && !this.props.isLoading) {
+            this.props.onFetchNextPage();
+        }
+    }
 
-    return fetch(queryString)
-      .then((response) => {
-        return response.json();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
+    render() {
+        return (
+            <View style={{flex: 1}}>
+                <SearchBar
+                    style={{flex: 0}}
+                    text={this.state.searchText}
+                    autoFocus={true}
+                    onChangeText={this.onChangeText.bind(this)}
+                    onSubmit={this.onSubmit.bind(this)} />
+
+                <View style={{flex: 1}}>
+                    <ResultsTable
+                        pageSize={this.props.pageSize}
+                        subscriptions={this.props.subscriptions}
+                        resultsCount={this.props.resultsCount}
+                        synonyms={this.props.synonyms}
+                        dataSource={this.state.dataSource}
+                        isLoading={this.props.isLoading}
+                        onRowClicked={this.onRowClicked.bind(this)}
+                        onEndReached={this.onEndReached.bind(this)} />
+                </View>
+            </View>
+        )
+    }
 }
 
+FilteredTable.defaultProps = {
+  initialText: ''
+};
+
 const styles = StyleSheet.create({
-  // moved to child classes
+    // moved to child classes
 });
+
+/* define the component-to-store connectors */
+
+const mapStateToProps = (state) => {
+    return {
+        // subscription info
+        subscriptions: state.brca.subscriptions,
+        // query info
+        isLoading: state.brca.isFetching,
+        query: state.brca.query,
+        variants: state.brca.variants,
+        synonyms: state.brca.synonyms,
+        resultsCount: state.brca.totalResults,
+        pageIndex: state.brca.pageIndex,
+        pageSize: state.brca.pageSize
+    }
+};
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onQueryVariants: (query) => {
+            dispatch(query_variants(query))
+        },
+        onFetchNextPage: (id) => {
+            dispatch(fetch_next_page())
+        }
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(FilteredTable);
