@@ -17,6 +17,10 @@
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
 
+// suggested by react-native upgrader when moving from 0.37 to 0.41
+// #import <React/RCTBundleURLProvider.h>
+// #import <React/RCTRootView.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions

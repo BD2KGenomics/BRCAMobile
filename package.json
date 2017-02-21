@@ -9,8 +9,8 @@
   "dependencies": {
     "babel-plugin-transform-remove-console": "^6.8.0",
     "lodash": "^4.16.6",
-    "react": "15.3.2",
-    "react-native": "^0.37.0",
+    "react": "^15.4.2",
+    "react-native": "^0.41.2",
     "react-native-navigation": "/Users/Faisal/Checkouts/originals/react-native-navigation",
     "react-native-simple-toast": "0.0.5",
     "react-native-vector-icons": "^3.0.0",
