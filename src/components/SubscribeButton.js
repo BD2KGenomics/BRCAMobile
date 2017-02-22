@@ -27,11 +27,11 @@ export default class SubscribeButton extends Component {
 
     static buttonProps = {
         subscribed: {
-            backgroundColor: '#e7b34e',
+            backgroundColor: '#63c477',
             name: 'clear' // clear oder bookmark-border
         },
         unsubscribed: {
-            backgroundColor: '#63c477',
+            backgroundColor: '#e7b34e',
             name: 'check' // check oder bookmark
         },
         abbreviated: {
