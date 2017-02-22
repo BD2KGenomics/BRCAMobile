@@ -14,12 +14,13 @@
 // **********************************************
 #import "RCCManager.h"
 
-#import "RCTBundleURLProvider.h"
-#import "RCTRootView.h"
+// previous includes that i assume are now invalid?
+// #import "RCTBundleURLProvider.h"
+// #import "RCTRootView.h"
 
 // suggested by react-native upgrader when moving from 0.37 to 0.41
-// #import <React/RCTBundleURLProvider.h>
-// #import <React/RCTRootView.h>
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTRootView.h>
 
 @implementation AppDelegate
 
