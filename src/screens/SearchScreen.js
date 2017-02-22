@@ -18,7 +18,7 @@ export default class AboutScreen extends LinkableMenuScreen {
   static navigatorButtons = {
     leftButtons: [{
       icon: require('../../img/navicon_menu.png'),
-      id: 'menu'
+      id: 'sideMenu'
     }]
   };
 

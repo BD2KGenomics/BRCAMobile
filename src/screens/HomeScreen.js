@@ -20,7 +20,7 @@ export default class HomeScreen extends LinkableMenuScreen {
   static navigatorButtons = {
     leftButtons: [{
       icon: require('../../img/navicon_menu.png'),
-      id: 'menu'
+      id: 'sideMenu'
     }]
   };
 
@@ -34,7 +34,7 @@ export default class HomeScreen extends LinkableMenuScreen {
     // FIXME: should we jump to the variants page like the site does?
     if (this.state.searchText !== '') {
       // leap to the search page if we have a query
-      var query = this.state.searchText.slice(0);
+      let query = this.state.searchText.slice(0);
 
       // FIXME: navigating to a different page clutters the search history; maybe having it on the same page is better
       this.props.navigator.resetTo({
@@ -44,7 +44,7 @@ export default class HomeScreen extends LinkableMenuScreen {
         passProps: {
           initialFilterText: query
         }
-      })
+      });
 
       // clear the search box before we go
       this.setState({ searchText: '' });
