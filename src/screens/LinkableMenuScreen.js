@@ -8,7 +8,7 @@ export default class LinkableMenuScreen extends Component {
   }
 
   onNavigatorEvent(event) {
-    if (event.id === 'menu') {
+    if (event.id === 'menu' || event.id === 'sideMenu') {
       // centrally handle menu visibility button for the child screens
       this.props.navigator.toggleDrawer({
         side: 'left',
@@ -30,7 +30,7 @@ export default class LinkableMenuScreen extends Component {
         this.props.navigator.resetTo({
           title: params.title,
           screen: params.screen
-        })
+        });
 
         // }
         /*
