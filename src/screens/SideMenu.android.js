@@ -47,8 +47,8 @@ export default class SideMenu extends BaseSideMenu {
           </Icon.Button>
 
           <Icon.Button name="bookmark" {...navbuttonProps}
-              onPress={ this.navigateTo.bind(this, 'Subscriptions', 'brca.SubscriptionsScreen', false) }>
-            <Text style={styles.button}>Subscriptions</Text>
+              onPress={ this.navigateTo.bind(this, 'Following', 'brca.SubscriptionsScreen', false) }>
+            <Text style={styles.button}>Following</Text>
           </Icon.Button>
 
           <Icon.Button name="info" {...navbuttonProps}

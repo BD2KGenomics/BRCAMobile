@@ -50,10 +50,10 @@ export default class SubscribeButton extends Component {
 
     getCaption() {
         if (this.props.abbreviated) {
-            return (this.props.subscribed)?"unsubscribe":"subscribe";
+            return (this.props.subscribed)?"unfollow":"follow";
         }
         else {
-            return (this.props.subscribed)?"unsubscribe from variant":"subscribe to variant";
+            return (this.props.subscribed)?"unfollow variant":"follow variant";
         }
     }
 
