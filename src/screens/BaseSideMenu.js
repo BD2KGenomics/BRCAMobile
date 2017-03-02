@@ -14,8 +14,8 @@ export default class BaseSideMenu extends Component {
       doReset: reset
     };
 
-    console.log("Title: ", title, "Screen: ", screen, "Reset: ", reset);
-    console.log(JSON.stringify(t));
+    // console.log("Title: ", title, "Screen: ", screen, "Reset: ", reset);
+    // console.log(JSON.stringify(t));
 
     this.props.navigator.handleDeepLink({
       link: 'main/' + JSON.stringify(t)
