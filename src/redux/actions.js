@@ -20,12 +20,12 @@ export function receive_page(idx, items, totalResults, synonyms) {
     return { type: RECEIVE_PAGE, received_at: new Date(), items, totalResults, synonyms }
 }
 
-export function subscribe(item) {
-    return { type: SUBSCRIBE, item }
+export function subscribe(item, origin) {
+    return { type: SUBSCRIBE, item, origin }
 }
 
-export function unsubscribe(item) {
-    return { type: UNSUBSCRIBE, item }
+export function unsubscribe(item, origin) {
+    return { type: UNSUBSCRIBE, item, origin }
 }
 
 export function query_variants(query) {

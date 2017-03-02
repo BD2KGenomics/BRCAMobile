@@ -16,7 +16,7 @@ import {
     Animated
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-const AnimatedIcon = Animated.createAnimatedComponent(Icon);
+const AnimatedButton = Animated.createAnimatedComponent(Icon.Button);
 
 export default class SubscribeButton extends Component {
     constructor(props) {
@@ -28,16 +28,19 @@ export default class SubscribeButton extends Component {
     static buttonProps = {
         subscribed: {
             backgroundColor: '#63c477',
-            name: 'clear' // clear oder bookmark-border
+            iconStyle: {marginRight: 3},
+            name: 'bookmark', // clear oder bookmark-border
         },
         unsubscribed: {
-            backgroundColor: '#e7b34e',
-            name: 'check' // check oder bookmark
+            backgroundColor: '#818181',
+            iconStyle: {marginRight: 3},
+            name: 'bookmark-border', // check oder bookmark
         },
         abbreviated: {
             fontSize: 12,
+            // width: 125,
             iconStyle: {marginRight: 3},
-            padding: 3,
+            padding: 4,
             paddingRight: 6
         }
     };
@@ -50,10 +53,10 @@ export default class SubscribeButton extends Component {
 
     getCaption() {
         if (this.props.abbreviated) {
-            return (this.props.subscribed)?"unfollow":"follow";
+            return (this.props.subscribed)?"following":"not following";
         }
         else {
-            return (this.props.subscribed)?"unfollow variant":"follow variant";
+            return (this.props.subscribed)?"following variant":"not following variant";
         }
     }
 

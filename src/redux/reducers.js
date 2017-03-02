@@ -6,6 +6,7 @@ import omit from 'lodash/omit';
 
 const initialState = {
     subscriptions: {},
+    subsLastUpdatedBy: null,
     variants: [],
     isFetching: false,
     query: null,
@@ -41,12 +42,14 @@ function subscriberReducer(state=initialState, action) {
 
         case SUBSCRIBE:
             return Object.assign({}, state, {
-                subscriptions: Object.assign({}, state.subscriptions, { [action.item.id]: action.item })
+                subscriptions: Object.assign({}, state.subscriptions, { [action.item.id]: action.item }),
+                subsLastUpdatedBy: action.origin
             });
 
         case UNSUBSCRIBE:
             return Object.assign({}, state, {
-                subscriptions: omit(state.subscriptions, action.item.id)
+                subscriptions: omit(state.subscriptions, action.item.id),
+                subsLastUpdatedBy: action.origin
             });
 
         default:

@@ -4,7 +4,7 @@ import {
     StyleSheet, Alert, Platform
 } from 'react-native';
 
-import SubscribeButton from './SubscribeButton';
+import SubscribeButton from './AnimatedSubscribeButton';
 
 export default class Subscriptions extends Component {
     constructor(props) {
@@ -21,6 +21,8 @@ export default class Subscriptions extends Component {
             originalSet: Object.assign({}, currentSubs),
             dataSource: this.ds.cloneWithRows(currentSubs)
         };
+
+        console.log('subscriptions: ')
     }
 
     componentWillReceiveProps(newProps) {
@@ -50,7 +52,7 @@ export default class Subscriptions extends Component {
             <View style={styles.header}>
                 {/*<Text style={[styles.headerCell, {flex: 0.4}]}>Gene</Text>*/}
                 <Text style={styles.headerCell}>HGVS cDNA</Text>
-                <Text style={[styles.headerCell, { textAlign: 'right' }]}>Action</Text>
+                <Text style={[styles.headerCell, { textAlign: 'right' }]}>Status</Text>
             </View>
         )
     }
@@ -67,6 +69,8 @@ export default class Subscriptions extends Component {
                     <View style={[styles.rowCellSubscribe]}>
                         <SubscribeButton
                             subscribed={subscribed}
+                            activeScreen="subscriptions"
+                            subsLastUpdatedBy={this.props.subsLastUpdatedBy}
                             abbreviated={true}
                             onSubscriptionChanged={this.subscribeClicked.bind(this, d)}
                             />

@@ -20,7 +20,7 @@ import Toast from 'react-native-simple-toast';
 
 import { subscribe, unsubscribe } from '../redux/actions';
 
-import SubscribeButton from './SubscribeButton';
+import SubscribeButton from './AnimatedSubscribeButton';
 
 import {columns} from '../metadata/fields';
 
@@ -79,6 +79,8 @@ class DetailDisplay extends Component {
                 <View style={styles.subscribeToggleContainer}>
                     <SubscribeButton
                         subscribed={this.isSubscribed()}
+                        activeScreen="details"
+                        subsLastUpdatedBy={this.props.subsLastUpdatedBy}
                         onSubscriptionChanged={this.toggleSubscription.bind(this)}
                     />
                 </View>
@@ -137,7 +139,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
     return {
         // subscription info
-        subscriptions: state.brca.subscriptions
+        subscriptions: state.brca.subscriptions,
+        subsLastUpdatedBy: state.brca.subsLastUpdatedBy
     }
 };
 
@@ -145,10 +148,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onSubscribe: (item_id) => {
-            dispatch(subscribe(item_id))
+            dispatch(subscribe(item_id, 'details'))
         },
         onUnsubscribe: (item_id) => {
-            dispatch(unsubscribe(item_id))
+            dispatch(unsubscribe(item_id, 'details'))
         }
     }
 };

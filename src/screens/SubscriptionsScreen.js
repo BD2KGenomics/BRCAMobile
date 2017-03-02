@@ -69,13 +69,14 @@ class SubscriptionsScreen extends LinkableMenuScreen {
                 { this.state.hadSubscriptions ?
                     <Subscriptions
                         subscriptions={this.props.subscriptions}
+                        subsLastUpdatedBy={this.props.subsLastUpdatedBy}
                         onRowClicked={this.onRowClicked.bind(this)}
                         onSubscribeClicked={this.onSubscribeClicked.bind(this)}
                     />
                     :
                     <View>
-                        <Text style={styles.noSubscriptionsText}>No subscriptions yet!</Text>
-                        <Text style={styles.noSubscriptionsText}>Add a subscription by searching{"\n"}and viewing details for a variant.</Text>
+                        <Text style={styles.noSubscriptionsText}>No followed variants yet!</Text>
+                        <Text style={styles.noSubscriptionsText}>Find a variant to follow by searching{"\n"}and viewing details for a variant.</Text>
 
                         <View style={{flex: 1, alignItems: 'center'}}>
                             <View style={{width: 150, flex: 1}}>
@@ -139,7 +140,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
     return {
         // subscription info
-        subscriptions: state.brca.subscriptions
+        subscriptions: state.brca.subscriptions,
+        subsLastUpdatedBy: state.brca.subsLastUpdatedBy
     }
 };
 
@@ -147,10 +149,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onSubscribe: (item) => {
-            dispatch(subscribe(item))
+            dispatch(subscribe(item, 'subscriptions'))
         },
         onUnsubscribe: (item) => {
-            dispatch(unsubscribe(item))
+            dispatch(unsubscribe(item, 'subscriptions'))
         }
     }
 };
