@@ -27,8 +27,6 @@ class FilteredTable extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        console.log("Collection is rebinding!");
-
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(newProps.variants)
         });
@@ -65,8 +63,6 @@ class FilteredTable extends Component {
     }
 
     onEndReached() {
-        console.log("Attempting to pull more results: ", this.props.query);
-
         if (this.props.query !== null && !this.props.isLoading) {
             this.props.onFetchNextPage();
         }

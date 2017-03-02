@@ -26,12 +26,9 @@ export default class SubscribeButton extends Component {
     constructor(props) {
         super(props);
 
-        console.log('Created button with props: ', props);
-
         this.state = {
             widthValue: new Animated.Value(this.props.subscribed ? this.getMinWidth() : this.getMaxWidth()),
             innerOpacity: new Animated.Value(1),
-            animInProgress: false,
             pastSubscribed: this.props.subscribed
         };
 
@@ -57,12 +54,6 @@ export default class SubscribeButton extends Component {
         // thus if subscribed is true we're transitioning from nonsubbed to subbed
 
         this.state.widthValue.setValue(this.props.subscribed ? this.getMinWidth() : this.getMaxWidth());
-
-        this.setState({
-            animInProgress: true
-        });
-
-        console.log(`animating!: (current: ${this.props.subscribed})`);
 
         Animated.sequence([
             // first, fade out the caption text
@@ -92,20 +83,13 @@ export default class SubscribeButton extends Component {
                 }
             )
 
-        ]).start((v) => {
-            // console.log("animation done!: ", v);
-            this.setState({
-                animInProgress: false
-            });
-        });
+        ]).start();
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(`receiving props! next: ${nextProps.subscribed} (current: ${this.props.subscribed})`);
-
         // to explain this weirdness, our subscription status changes before this method fires
         // we need to put ourselves in the opposite state so that we can animate changing to the new one
-
+        // (but only do this if we're updating from an event fired on another screen, not this one)
         if (nextProps.subscribed != this.props.subscribed && nextProps.subsLastUpdatedBy != this.props.activeScreen) {
             this.state.widthValue.setValue(nextProps.subscribed ? this.getMinWidth() : this.getMaxWidth());
         }

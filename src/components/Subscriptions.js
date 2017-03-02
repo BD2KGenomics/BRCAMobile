@@ -21,8 +21,6 @@ export default class Subscriptions extends Component {
             originalSet: Object.assign({}, currentSubs),
             dataSource: this.ds.cloneWithRows(currentSubs)
         };
-
-        console.log('subscriptions: ')
     }
 
     componentWillReceiveProps(newProps) {

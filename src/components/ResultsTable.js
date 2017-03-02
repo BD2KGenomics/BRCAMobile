@@ -27,9 +27,11 @@ export default class ResultsTable extends Component {
     }
 
     renderRow(d) {
-        if ( this.props.subscriptions.hasOwnProperty(d.id)) {
+        /*
+        if (this.props.subscriptions.hasOwnProperty(d.id)) {
             console.log(d.id + " subscribed!");
         }
+        */
 
         return (
             <TouchableOpacity onPress={this.rowClicked.bind(this, d)}>

@@ -86,7 +86,7 @@ function queryVariantsForPage(query, page_num, page_size) {
     };
 
     let queryString = 'http://brcaexchange.org/backend/data/?' + encodeParams(args);
-    console.log("Request: ", queryString);
+    // console.log("Request: ", queryString);
 
     // The function called by the thunk middleware can return a value,
     // that is passed on as the return value of the dispatch method.

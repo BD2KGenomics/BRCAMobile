@@ -8,8 +8,6 @@ export default class LinkableMenuScreen extends Component {
     }
 
     onNavigatorEvent(event) {
-        console.log('received navigator event: ', event);
-
         if (event.id === 'menu' || event.id === 'sideMenu') {
             // centrally handle menu visibility button for the child screens
             this.props.navigator.toggleDrawer({
