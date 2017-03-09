@@ -104,7 +104,9 @@ const styles = StyleSheet.create({
 
 /* define the component-to-store connectors */
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state_immutable) => {
+    const state = state_immutable.toJS();
+
     return {
         // subscription info
         subscriptions: state.brca.subscriptions,

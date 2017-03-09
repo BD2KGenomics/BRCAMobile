@@ -1,6 +1,7 @@
 // column titles copied from https://github.com/BD2KGenomics/brca-exchange/blob/master/website/js/VariantTable.js
 
 export const columns = [
+    {title: 'Clinical Significance', prop: 'Pathogenicity_expert'},
     {title: 'Gene', prop: 'Gene_Symbol'},
     {title: 'HGVS Nucleotide', prop: 'HGVS_cDNA', render: nucleotide => nucleotide.split(':')[1]},
     {title: 'Transcript Identifier', prop: 'Reference_Sequence'},
@@ -12,7 +13,6 @@ export const columns = [
     {title: 'BIC Designation', prop: 'BIC_Nomenclature'},
     {title: 'Genomic Nomenclature (GRCh38)', prop: 'Genomic_Coordinate_hg38'},
     {title: 'Genomic Nomenclature (GRCh37)', prop: 'Genomic_Coordinate_hg37'},
-    {title: 'Clinical Significance', prop: 'Pathogenicity_expert'},
     {title: 'IARC Class', prop: 'Clinical_significance_ENIGMA'},
     {title: 'Comment on Clinical Significance', prop: 'Comment_on_clinical_significance_ENIGMA'},
     {title: 'Clinical Significance Citations', prop: 'Clinical_significance_citations_ENIGMA'},

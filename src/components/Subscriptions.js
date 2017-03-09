@@ -133,8 +133,10 @@ const styles = StyleSheet.create({
     },
     rowCell: {
         flex: 1,
-        padding: 8,
-        fontSize: 14
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: 16
     },
     rowCellSubscribe: {
         padding: 4

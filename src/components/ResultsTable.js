@@ -26,22 +26,24 @@ export default class ResultsTable extends Component {
         )
     }
 
-    renderRow(d) {
-        /*
-        if (this.props.subscriptions.hasOwnProperty(d.id)) {
-            console.log(d.id + " subscribed!");
-        }
-        */
+    static patho_indicators = {
+        'Pathogenic': {color: '#e7b34e', name: 'group-work'},
+        'Benign / Little Clinical Significance': {color: '#7ad6ff', name: 'check-circle'},
+        'Not Yet Classified': {color: '#ccc', name: 'fiber-manual-record'},
+        'Not Yet Reviewed': {color: '#ccc', name: 'fiber-manual-record'}
+    };
 
+    renderRow(d) {
         return (
             <TouchableOpacity onPress={this.rowClicked.bind(this, d)}>
               <View style={styles.row}>
                 <Text style={[styles.rowCell, styles.rowTextCell, {flex: 0.3}]}>{d.Gene_Symbol}</Text>
                 <Text style={[styles.rowCell, styles.rowTextCell]}>{d.HGVS_cDNA.split(':')[1]}</Text>
-                <View style={[styles.rowCell, { flex: 0 }]}>{
-                    this.props.subscriptions.hasOwnProperty(d.id) ?
-                        <Icon name="check" size={22} /> : null
-                }</View>
+                <View style={[styles.rowCell, { flex: 0.25, flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'nowrap' }]}>
+                    <Icon {...ResultsTable.patho_indicators[d.Pathogenicity_expert]} size={22} />
+
+                    { this.props.subscriptions.hasOwnProperty(d.id) ? <Icon name="bookmark" color="#555" size={22} /> : <Icon name="bookmark-border" color="#ddd" size={22} /> }
+                </View>
               </View>
             </TouchableOpacity>
         );

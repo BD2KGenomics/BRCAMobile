@@ -1,54 +1,69 @@
 import {
     BEGIN_QUERY, RECEIVE_PAGE, BEGIN_FETCH_NEXT_PAGE,
+    BEGIN_FETCH_DETAILS, RECEIVE_DETAILS,
     SUBSCRIBE, UNSUBSCRIBE
 } from './actions'
 import omit from 'lodash/omit';
+import * as Immutable from "immutable";
 
-const initialState = {
-    subscriptions: {},
+const initialState = Immutable.fromJS({
+    subscriptions: Immutable.Map(),
     subsLastUpdatedBy: null,
-    variants: [],
+    variants: Immutable.List(),
+    details: Immutable.OrderedMap(),
     isFetching: false,
+    isFetchingDetails: false,
     query: null,
     pageIndex: 0,
     pageSize: 10,
     totalResults: -1
-};
+});
 
 function subscriberReducer(state=initialState, action) {
     switch (action.type) {
         case BEGIN_QUERY:
-            return Object.assign({}, state, {
+            return state.merge({
                 query: action.query,
                 pageIndex: 0,
-                variants: [],
+                variants: Immutable.List(),
                 totalResults: -1,
                 isFetching: true
             });
 
         case BEGIN_FETCH_NEXT_PAGE:
-            return Object.assign({}, state, {
+            return state.merge({
                 pageIndex: action.pageIndex,
                 isFetching: true
             });
 
         case RECEIVE_PAGE:
-            return Object.assign({}, state, {
-                variants: state.variants.concat(action.items),
+            return state.merge({
+                variants: state.get('variants').concat(action.items),
                 totalResults: action.totalResults,
                 synonyms: action.synonyms,
                 isFetching: false
             });
 
+        case BEGIN_FETCH_DETAILS:
+            return state.merge({
+                isFetchingDetails: true
+            });
+
+        case RECEIVE_DETAILS:
+            return state.merge({
+                details: state.get('details').set(action.variantID, action.item).takeLast(10),
+                isFetchingDetails: false
+            });
+
         case SUBSCRIBE:
-            return Object.assign({}, state, {
-                subscriptions: Object.assign({}, state.subscriptions, { [action.item.id]: action.item }),
+            return state.merge({
+                subscriptions: state.get('subscriptions').set(action.item.id, action.item),
                 subsLastUpdatedBy: action.origin
             });
 
         case UNSUBSCRIBE:
-            return Object.assign({}, state, {
-                subscriptions: omit(state.subscriptions, action.item.id),
+            return state.merge({
+                subscriptions: state.get('subscriptions').delete(action.item.id),
                 subsLastUpdatedBy: action.origin
             });
 
