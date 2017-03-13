@@ -14,6 +14,7 @@
     "moment-timezone": "^0.5.11",
     "react": "^15.4.2",
     "react-native": "^0.41.2",
+    "react-native-fcm": "^6.1.0",
     "react-native-navigation": "/Users/Faisal/Checkouts/RNN-fixes/react-native-navigation",
     "react-native-simple-toast": "0.0.5",
     "react-native-vector-icons": "^4.0.0",
