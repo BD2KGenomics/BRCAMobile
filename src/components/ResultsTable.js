@@ -1,14 +1,20 @@
 import React, {Component} from 'react';
 import {
     Text, TextInput, View, ListView, ScrollView, Image, TouchableOpacity, ActivityIndicator,
+    Dimensions,
     StyleSheet, Alert, Platform
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import ScrollTopView from 'react-native-scrolltotop';
 
 export default class ResultsTable extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            isNotAtTop: false
+        }
     }
 
     rowClicked(d) {
@@ -29,8 +35,8 @@ export default class ResultsTable extends Component {
     static patho_indicators = {
         'Pathogenic': {color: '#e7b34e', name: 'group-work'},
         'Benign / Little Clinical Significance': {color: '#7ad6ff', name: 'check-circle'},
-        'Not Yet Classified': {color: '#ccc', name: 'fiber-manual-record'},
-        'Not Yet Reviewed': {color: '#ccc', name: 'fiber-manual-record'}
+        'Not Yet Classified': {color: '#eee', name: 'fiber-manual-record'},
+        'Not Yet Reviewed': {color: '#eee', name: 'fiber-manual-record'}
     };
 
     renderRow(d) {
@@ -42,7 +48,7 @@ export default class ResultsTable extends Component {
                 <View style={[styles.rowCell, { flex: 0.25, flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'nowrap' }]}>
                     <Icon {...ResultsTable.patho_indicators[d.Pathogenicity_expert]} size={22} />
 
-                    { this.props.subscriptions.hasOwnProperty(d.id) ? <Icon name="bookmark" color="#555" size={22} /> : <Icon name="bookmark-border" color="#ddd" size={22} /> }
+                    { this.props.subscriptions.hasOwnProperty(d.id) ? <Icon name="bookmark" color="#555" size={22} /> : <Icon name="bookmark-border" color="#eee" size={22} /> }
                 </View>
               </View>
             </TouchableOpacity>
@@ -71,6 +77,7 @@ export default class ResultsTable extends Component {
                 </View>
 
                 <ListView
+                    ref="listview"
                     style={styles.listContainer}
                     enableEmptySections={true}
                     pageSize={this.props.pageSize}
@@ -79,10 +86,23 @@ export default class ResultsTable extends Component {
                     // renderHeader={this.renderHeader.bind(this)}
                     renderRow={this.renderRow.bind(this)}
                     renderFooter={this.renderFooter.bind(this)}
+                    onScroll={this._onScroll.bind(this)}
                 />
+
+                { this.state.isNotAtTop ?
+                    <ScrollTopView root={this}
+                        top={Dimensions.get('window').height - 220}
+                        left={Dimensions.get('window').width - 100} /> : null
+                }
             </View>
 
         );
+    }
+
+    _onScroll(e) {
+        this.setState({
+            isNotAtTop: (e.nativeEvent.contentOffset.y > 100)
+        });
     }
 }
 
