@@ -52,10 +52,10 @@ class DetailDisplay extends Component {
 
         if (!this.isSubscribed()) {
             this.props.onSubscribe(d);
-            Toast.show('Subscribed to ' + identifier, 1);
+            // Toast.show('Subscribed to ' + identifier, 1);
         } else {
             this.props.onUnsubscribe(d);
-            Toast.show('Unsubscribed from ' + identifier, 1);
+            // Toast.show('Unsubscribed from ' + identifier, 1);
         }
     }
 
