@@ -25,6 +25,9 @@ import com.facebook.react.modules.network.OkHttpClientProvider;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import java.util.concurrent.TimeUnit;
 
+// react-native-fcm
+import com.evollu.react.fcm.FIRMessagingPackage;
+
 public class MainApplication extends NavigationApplication implements ReactApplication {
   // stetho
   public void onCreate() {
@@ -50,7 +53,7 @@ public class MainApplication extends NavigationApplication implements ReactAppli
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new FIRMessagingPackage()
+          new FIRMessagingPackage()
       );
     }
   };
@@ -81,6 +84,8 @@ public class MainApplication extends NavigationApplication implements ReactAppli
   public List<ReactPackage> createAdditionalReactPackages() {
       // Add the packages you require here.
       // No need to add RnnPackage and MainReactPackage
-      return null;
+      return Arrays.<ReactPackage>asList(
+        new FIRMessagingPackage()
+      );
   }
 }
