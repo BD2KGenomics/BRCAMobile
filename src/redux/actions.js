@@ -9,6 +9,8 @@ export const BEGIN_FETCH_DETAILS = 'BEGIN_FETCH_DETAILS';
 export const RECEIVE_DETAILS = 'RECEIVE_DETAILS';
 export const SUBSCRIBE = 'SUBSCRIBE';
 export const UNSUBSCRIBE = 'UNSUBSCRIBE';
+export const BEGIN_FETCH_FCM_TOKEN = 'BEGIN_FETCH_FETCH_FCM_TOKEN';
+export const RECEIVE_FCM_TOKEN = 'RECEIVE_FCM_TOKEN';
 
 export function begin_query(query) {
     return { type: BEGIN_QUERY, requested_at: new Date(), query }
@@ -36,6 +38,14 @@ export function subscribe(item, origin) {
 
 export function unsubscribe(item, origin) {
     return { type: UNSUBSCRIBE, item, origin }
+}
+
+export function begin_fetch_fcm_token() {
+    return { type: BEGIN_FETCH_FCM_TOKEN, requested_at: new Date() }
+}
+
+export function receive_fcm_token(token) {
+    return { type: RECEIVE_FCM_TOKEN, received_at: new Date(), token }
 }
 
 export function query_variants(query) {
@@ -83,14 +93,11 @@ export function fetch_details(variantID) {
         // const { details } = getState().get('brca.details');
         const details = getState().get('brca').get('details');
 
-        console.log("Details collection: ", details, ", type: ", typeof details);
-
         // tell the store that we're starting a fetch details operation
         dispatch(begin_fetch_details(variantID));
 
         // if we already have the variant in our store, return it immediately
         if (details.has(variantID)) {
-            console.log("Details in queue!");
             return receive_details(variantID, details.get(variantID));
         }
 
@@ -102,6 +109,31 @@ export function fetch_details(variantID) {
             })
             .catch(error => {
                 console.warn(error);
+                // FIXME: maybe show a toast as well?
+            });
+    }
+}
+
+// stuff for FCM
+import FCM, {
+    FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType
+} from "react-native-fcm";
+
+export function fetch_fcm_token() {
+    return function (dispatch, getState) {
+        // tell the store that we're starting a query
+        dispatch(begin_fetch_fcm_token());
+
+        return FCM.getFCMToken()
+            .then(token => {
+                console.log("TOKEN (getFCMToken)", token);
+
+                // persist the token to the store, i assume?
+                dispatch(receive_fcm_token(token))
+            })
+            .catch(error => {
+                console.warn(error);
+
                 // FIXME: maybe show a toast as well?
             });
     }
@@ -143,7 +175,7 @@ function fetchDetails(variantID) {
     };
 
     let queryString = 'http://brcaexchange.org/backend/data/variant/?' + encodeParams(args);
-    console.log("Details Request: ", queryString);
+    // console.log("Details Request: ", queryString);
 
     // The function called by the thunk middleware can return a value,
     // that is passed on as the return value of the dispatch method.

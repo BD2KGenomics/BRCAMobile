@@ -1,7 +1,8 @@
 import {
     BEGIN_QUERY, RECEIVE_PAGE, BEGIN_FETCH_NEXT_PAGE,
     BEGIN_FETCH_DETAILS, RECEIVE_DETAILS,
-    SUBSCRIBE, UNSUBSCRIBE
+    SUBSCRIBE, UNSUBSCRIBE,
+    BEGIN_FETCH_FCM_TOKEN, RECEIVE_FCM_TOKEN
 } from './actions'
 import omit from 'lodash/omit';
 import * as Immutable from "immutable";
@@ -13,9 +14,10 @@ const initialState = Immutable.fromJS({
     details: Immutable.OrderedMap(),
     isFetching: false,
     isFetchingDetails: false,
+    isFetchingToken: false,
     query: null,
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 100,
     totalResults: -1
 });
 
@@ -65,6 +67,18 @@ function subscriberReducer(state=initialState, action) {
             return state.merge({
                 subscriptions: state.get('subscriptions').delete(action.item.id),
                 subsLastUpdatedBy: action.origin
+            });
+
+        case BEGIN_FETCH_FCM_TOKEN:
+            return state.merge({
+                isFetchingToken: true,
+                token: ''
+            });
+
+        case RECEIVE_FCM_TOKEN:
+            return state.merge({
+                isFetchingToken: false,
+                token: action.token
             });
 
         default:
