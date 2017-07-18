@@ -31,24 +31,21 @@ export default class HomeScreen extends LinkableMenuScreen {
   }
 
   onSubmit() {
-    // FIXME: should we jump to the variants page like the site does?
-    if (this.state.searchText !== '') {
-      // leap to the search page if we have a query
-      let query = this.state.searchText.slice(0);
+    // leap to the search page if we have a query
+    let query = this.state.searchText.slice(0);
 
-      // FIXME: navigating to a different page clutters the search history; maybe having it on the same page is better
-      this.props.navigator.resetTo({
-        title: "Search",
-        screen: "brca.SearchScreen",
-        animated: false,
-        passProps: {
-          initialFilterText: query
-        }
-      });
+    // FIXME: navigating to a different page clutters the search history; maybe having it on the same page is better
+    this.props.navigator.resetTo({
+      title: "Search",
+      screen: "brca.SearchScreen",
+      animated: false,
+      passProps: {
+        initialFilterText: query
+      }
+    });
 
-      // clear the search box before we go
-      this.setState({ searchText: '' });
-    }
+    // clear the search box before we go
+    this.setState({ searchText: '' });
   }
 
   render() {
