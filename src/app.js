@@ -1,5 +1,5 @@
 import {
-    Platform
+    Platform, DeviceEventEmitter
 } from 'react-native';
 import {Navigation} from 'react-native-navigation';
 import { createStore, applyMiddleware } from 'redux';
@@ -8,6 +8,7 @@ import thunk from 'redux-thunk'
 import { persistStore, autoRehydrate } from 'redux-persist-immutable'
 import { AsyncStorage } from 'react-native'
 import reducers from './redux/reducers'
+import * as Immutable from "immutable";
 
 let reducer = combineReducers({ brca: reducers.brca });
 let store = createStore(reducer, applyMiddleware(thunk), autoRehydrate());
@@ -28,11 +29,22 @@ import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
 
 export default class App {
     constructor() {
+        console.log("Creating app object");
+
         this.startApp();
         this.registerWithFCM();
+
+        this.subscriptions = Immutable.Seq.Keyed();
+
+        store.subscribe(() => {
+            this.subscriptions = store.getState().getIn(['brca','subscriptions']).keySeq();
+            console.log("subscriptions: ", JSON.stringify(this.subscriptions));
+        });
     }
 
     startApp() {
+        console.log("Starting app");
+
         Navigation.startSingleScreenApp({
             screen: {
                 screen: 'brca.HomeScreen',
@@ -52,62 +64,67 @@ export default class App {
         // replace with dispatch to fetch token from actions
         store.dispatch(fetch_fcm_token());
 
-        FCM.getInitialNotification().then(notif => {
-            console.log("INITIAL NOTIFICATION", notif);
-
-            // this event is actually when we're connected to FCM, so we can now send subscription requests, etc.
-
-            // finally, subscribe to get variant notices
-            // we subscribe to everything and filter out what we don't care about
-            // FIXME: verify if we actually need to
-            const sub_result = FCM.subscribeToTopic('/topics/variant_updates');
-            console.log("subscription result: ", sub_result);
-        });
+        // ensure that we don't have any existing listeners hanging around
+        DeviceEventEmitter.removeAllListeners(FCMEvent.Notification);
+        DeviceEventEmitter.removeAllListeners(FCMEvent.RefreshToken);
 
         // set up some handlers for incoming data and control messages
         this.notificationListner = FCM.on(FCMEvent.Notification, this.handleNotification.bind(this));
         this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, this.handleTokenRefresh.bind(this));
+
+        FCM.getInitialNotification()
+            .then(notif => {
+                console.log("INITIAL NOTIFICATION", notif);
+
+                // this event is actually when we're connected to FCM, so we can now send subscription requests, etc.
+
+                // finally, subscribe to get variant notices
+                // we subscribe to everything and filter out what we don't care about
+                // FIXME: verify if we actually need to
+                const sub_result = FCM.subscribeToTopic('/topics/variant_updates');
+                console.log("subscription result: ", sub_result);
+
+                // getInitialNotification() actually gives us the notification that launched us
+                if (notif) {
+                    this.handleNotification(notif);
+                }
+            })
+            .catch(error => {
+                console.warn("error: ", error);
+            });
     }
 
     handleNotification(notif) {
-        console.log("Notification", notif);
+        console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
+        console.log(notif);
 
-        if (notif.local_notification) {
+        // for some reason, this gets called on android, too
+
+        if (notif.opened_from_tray && notif.hasOwnProperty('variant_id')) {
+            const target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
+
+            console.log("Tray opened, launching ", target);
+            Navigation.handleDeepLink({
+                link: target
+            });
+
+            return;
+        }
+        else if (notif.local_notification) {
+            // notif.local_notification being true indicates that we raised this event in
+            // response to receiving a non-local notification, so we abort
             return;
         }
 
-        if(notif.opened_from_tray) {
-            return;
+        // TODO: filter notifications to only the one's we've subscribed to
+        if (notif.hasOwnProperty('variant_id') && this.subscriptions.includes(parseInt(notif.variant_id))) {
+            this.showLocalNotification(notif);
+        }
+        else {
+            console.log("Ignoring ", notif, " because we're not subscribed");
         }
 
-        if (Platform.OS ==='ios') {
-            //optional
-
-            // iOS requires developers to call completionHandler to end notification process. If you do not call it your background
-            // remote notifications could be throttled, to read more about it see the above documentation link.
-
-            // This library handles it for you automatically with default behavior (for remote notification, finish with NoData;
-            // for WillPresent, finish depend on "show_in_foreground"). However if you want to return different result, follow the
-            // following code to override
-            // notif._notificationType is available for iOS platfrom
-            switch (notif._notificationType) {
-                case NotificationType.Remote:
-                    notif.finish(RemoteNotificationResult.NewData);
-                    //other types available: RemoteNotificationResult.NewData, RemoteNotificationResult.ResultFailed
-                    break;
-
-                case NotificationType.NotificationResponse:
-                    notif.finish();
-                    break;
-
-                case NotificationType.WillPresent:
-                    notif.finish(WillPresentNotificationResult.All);
-                    //other types available: WillPresentNotificationResult.None
-                    break;
-            }
-        }
-
-        this.showLocalNotification(notif);
+        notif.finish();
     }
 
     handleTokenRefresh(token) {
@@ -116,9 +133,12 @@ export default class App {
     }
 
     showLocalNotification(notif) {
+        console.log("Showing: ", notif);
+
         FCM.presentLocalNotification({
             title: notif.title,
             body: notif.body,
+            variant_id: notif.variant_id,
             priority: "high",
             click_action: notif.click_action,
             show_in_foreground: true,
