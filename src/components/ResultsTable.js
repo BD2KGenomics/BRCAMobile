@@ -84,13 +84,19 @@ export default class ResultsTable extends Component {
             (this.props.subscriptions.hasOwnProperty(d.id) ? "Following" : "Not Following")
         ];
 
+        const pathoIconProps = (
+            ResultsTable.patho_indicators.hasOwnProperty(d.Pathogenicity_expert)
+                ? ResultsTable.patho_indicators[d.Pathogenicity_expert]
+                : ResultsTable.patho_indicators["Not Yet Classified"]
+        );
+
         return (
             <TouchableOpacity onPress={this.rowClicked.bind(this, d)}>
               <View style={styles.row}>
                 <Text style={[styles.rowCell, styles.rowTextCell, {flex: 0.3}]}>{d.Gene_Symbol}</Text>
                 <Text style={[styles.rowCell, styles.rowTextCell]} numberOfLines={1} ellipsizeMode="tail">{d.HGVS_cDNA.split(':')[1]}</Text>
                 <View style={[styles.rowCell, { flex: 0.25, flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'nowrap' }]}>
-                    <Icon {...ResultsTable.patho_indicators[d.Pathogenicity_expert]} size={22} />
+                    <Icon {...pathoIconProps} size={22} />
                     <Icon {...followIconProps} size={22} />
                 </View>
               </View>
