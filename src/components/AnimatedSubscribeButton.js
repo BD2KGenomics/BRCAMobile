@@ -61,7 +61,8 @@ export default class SubscribeButton extends Component {
                 this.state.innerOpacity,
                 {
                     toValue: 0,
-                    duration: 300
+                    duration: 300,
+                    // useNativeDriver: true
                 }
             ),
 
@@ -70,7 +71,8 @@ export default class SubscribeButton extends Component {
                 this.state.widthValue,
                 {
                     toValue: this.props.subscribed ? this.getMaxWidth() : this.getMinWidth(),
-                    duration: 200
+                    duration: 200,
+                    // useNativeDriver: true
                 }
             ),
 
@@ -79,7 +81,8 @@ export default class SubscribeButton extends Component {
                 this.state.innerOpacity,
                 {
                     toValue: 1,
-                    duration: 300
+                    duration: 300,
+                    // useNativeDriver: true
                 }
             )
 
@@ -90,7 +93,7 @@ export default class SubscribeButton extends Component {
         // to explain this weirdness, our subscription status changes before this method fires
         // we need to put ourselves in the opposite state so that we can animate changing to the new one
         // (but only do this if we're updating from an event fired on another screen, not this one)
-        if (nextProps.subscribed != this.props.subscribed && nextProps.subsLastUpdatedBy != this.props.activeScreen) {
+        if (nextProps.subscribed !== this.props.subscribed && nextProps.subsLastUpdatedBy !== this.props.activeScreen) {
             this.state.widthValue.setValue(nextProps.subscribed ? this.getMinWidth() : this.getMaxWidth());
         }
     }
