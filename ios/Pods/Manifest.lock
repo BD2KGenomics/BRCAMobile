@@ -23,9 +23,11 @@ PODS:
   - GoogleToolboxForMac/NSData+zlib (2.1.1):
     - GoogleToolboxForMac/Defines (= 2.1.1)
   - Protobuf (3.2.0)
+  - SimulatorRemoteNotifications (0.0.3)
 
 DEPENDENCIES:
   - Firebase/Messaging
+  - SimulatorRemoteNotifications (~> 0.0.3)
 
 SPEC CHECKSUMS:
   Firebase: 85a581fb04e44f63ae9f4fbc8d6dabf4a4c18653
@@ -35,7 +37,8 @@ SPEC CHECKSUMS:
   FirebaseMessaging: df8267f378580a24174ce7861233aa11d5c90109
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   Protobuf: 745f59e122e5de98d4d7ef291e264a0eef80f58e
+  SimulatorRemoteNotifications: 1610643e0582b2af67bc254b071ace4077e8ef86
 
-PODFILE CHECKSUM: fb1e3e375881974584391b36325baf1852c3d87a
+PODFILE CHECKSUM: 1a1bee95e55a995d6d78ff8d14e6fc7609558780
 
 COCOAPODS: 1.2.0

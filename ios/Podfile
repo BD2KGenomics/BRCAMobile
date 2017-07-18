@@ -8,6 +8,9 @@ target 'BRCAMobile' do
   # Pods for BRCAMobile
   pod 'Firebase/Messaging'
 
+  # for testing push notifications in the simulator
+  pod 'SimulatorRemoteNotifications', '~> 0.0.3'
+
   target 'BRCAMobileTests' do
     inherit! :search_paths
     # Pods for testing

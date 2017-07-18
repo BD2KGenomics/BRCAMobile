@@ -25,6 +25,10 @@
 // FAISAL: for react-native-fcm
 #import "RNFIRMessaging.h"
 
+// FAISAL: for testing notifications in the simulator
+// FIXME: remove this for release
+#import "UIApplication+SimulatorRemoteNotifications.h"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -59,6 +63,11 @@
   [FIRApp configure];
   [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
   
+  // FAISAL: yet more mystery code for faking push notifications
+  #if DEBUG
+      [application listenForRemoteNotifications];
+  #endif
+  
   return YES;
 }
 
@@ -78,6 +87,18 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
+  
+//  NSLog(@"Remote notification = %@", userInfo);
+//  
+//  if ( application.applicationState == UIApplicationStateActive ) {
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Remote notification received"
+//                                                    message:[NSString stringWithFormat:@"application:didReceiveRemoteNotification:\n%@", [userInfo description]]
+//                                                   delegate:self
+//                                          cancelButtonTitle:@"Got it!"
+//                                          otherButtonTitles:nil];
+//    [alert show];
+//  }
+  
   [RNFIRMessaging didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 }
 

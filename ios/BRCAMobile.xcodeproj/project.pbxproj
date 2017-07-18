@@ -280,6 +280,7 @@
 		29BE1810250D406393946AC2 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		3038C5C8A5F743A8933B911C /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		368E14E2358D4C91AEEE93B0 /* libRNFIRMessaging.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFIRMessaging.a; sourceTree = "<group>"; };
+		3A1F328E1EE03EBF000BED9C /* BRCAMobile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = BRCAMobile.entitlements; path = BRCAMobile/BRCAMobile.entitlements; sourceTree = "<group>"; };
 		3A327DE91DD32ADC003D5FE8 /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
 		3A327DEA1DD32ADC003D5FE8 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
 		3A327DEB1DD32ADC003D5FE8 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
@@ -428,6 +429,7 @@
 		13B07FAE1A68108700A75B9A /* BRCAMobile */ = {
 			isa = PBXGroup;
 			children = (
+				3A1F328E1EE03EBF000BED9C /* BRCAMobile.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -672,6 +674,14 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = D9NZ5VN995;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -1190,10 +1200,12 @@
 			baseConfigurationReference = AA29472641B9A5B1A346EF1F /* Pods-BRCAMobile.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BRCAMobile/BRCAMobile.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_ACTIVITY_MODE = "";
 				"DEBUG_ACTIVITY_MODE[sdk=iphonesimulator*]" = disable;
+				DEVELOPMENT_TEAM = D9NZ5VN995;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -1221,8 +1233,10 @@
 			baseConfigurationReference = DF36AC3557984D666DC17044 /* Pods-BRCAMobile.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BRCAMobile/BRCAMobile.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_ACTIVITY_MODE = "";
+				DEVELOPMENT_TEAM = D9NZ5VN995;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
