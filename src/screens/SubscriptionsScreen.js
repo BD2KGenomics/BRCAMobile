@@ -4,11 +4,7 @@ import {
     Alert, Platform
 } from 'react-native';
 import { connect } from "react-redux";
-import { Navigation } from 'react-native-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import debounce from 'lodash/debounce';
-import Toast from 'react-native-simple-toast';
-
 import { subscribe, unsubscribe } from '../redux/actions';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
@@ -20,7 +16,8 @@ class SubscriptionsScreen extends LinkableMenuScreen {
 
         // store whether we originally had subscriptions on visiting this page
         this.state = {
-            hadSubscriptions: this.props.subscriptions && Object.keys(this.props.subscriptions).length > 0
+            hadSubscriptions: this.props.subscriptions && Object.keys(this.props.subscriptions).length > 0,
+            token: ''
         };
 
         this.onGoSearch = this.onGoSearch.bind(this);
@@ -89,6 +86,8 @@ class SubscriptionsScreen extends LinkableMenuScreen {
                 {/*<View style={styles.logo}>*/}
                     {/*<Image style={{width: 133, height: 67}} source={require('../../img/logos/brcaexchange.jpg')} />*/}
                 {/*</View>*/}
+
+                {/*<Text>Token: {this.props.token}</Text>*/}
             </ScrollView>
         );
     }
@@ -142,6 +141,7 @@ const mapStateToProps = (state_immutable) => {
 
     return {
         // subscription info
+        token: state.brca.token,
         subscriptions: state.brca.subscriptions,
         subsLastUpdatedBy: state.brca.subsLastUpdatedBy
     }
