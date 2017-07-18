@@ -90,7 +90,7 @@ export default class App {
                 }
             })
             .catch(error => {
-                console.warn("error: ", error);
+                console.warn("error: ", error.message);
             });
     }
 
@@ -124,7 +124,9 @@ export default class App {
             console.log("Ignoring ", notif, " because we're not subscribed");
         }
 
-        notif.finish();
+        if (notif.hasOwnProperty("finish") && typeof notif.finish === "function") {
+            notif.finish();
+        }
     }
 
     handleTokenRefresh(token) {
@@ -140,7 +142,7 @@ export default class App {
             body: notif.body,
             variant_id: notif.variant_id,
             priority: "high",
-            click_action: notif.click_action,
+            click_action: notif.click_action || "fcm.ACTION.HELLO",
             show_in_foreground: true,
             local: true
         });
