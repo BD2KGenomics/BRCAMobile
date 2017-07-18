@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {
   Text, TextInput, View, ListView, ScrollView, Image, TouchableOpacity, StyleSheet,
@@ -13,6 +14,11 @@ export default class SearchBar extends Component {
     // refer to https://github.com/facebook/react-native/issues/9306
     this.handleSubmit = debounce(this.handleSubmit, 100);
   }
+
+  static propTypes = {
+      onChangeText: PropTypes.function,
+      onSubmit: PropTypes.function
+  };
 
   handleChangeText(text) {
     if (this.props.onChangeText) {
@@ -43,13 +49,6 @@ export default class SearchBar extends Component {
     )
   }
 }
-
-/*
-SearchBar.propTypes = {
-  onChangeText: React.PropTypes.function,
-  onSubmit: React.PropTypes.function
-};
-*/
 
 const styles = StyleSheet.create({
   searchboxContainer: {

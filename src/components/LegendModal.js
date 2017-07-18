@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 /**
  * Created by Faisal on 7/15/17.
  */
@@ -16,8 +17,8 @@ export default class LegendModal extends Component {
     }
 
     static propTypes = {
-        showLegend: React.PropTypes.bool.isRequired,
-        onDismissLegend: React.PropTypes.func.isRequired
+        showLegend: PropTypes.bool.isRequired,
+        onDismissLegend: PropTypes.func.isRequired
     };
 
     render() {

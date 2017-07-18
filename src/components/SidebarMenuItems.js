@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
 import {
@@ -11,9 +12,9 @@ export default class SidebarMenuItems extends Component {
     }
 
     static propTypes = {
-        navbuttonProps: React.PropTypes.object.isRequired,
-        buttonStyle: React.PropTypes.number.isRequired,
-        onNavigateRequest: React.PropTypes.func.isRequired
+        navbuttonProps: PropTypes.object.isRequired,
+        buttonStyle: PropTypes.number.isRequired,
+        onNavigateRequest: PropTypes.func.isRequired
     };
 
     render() {
