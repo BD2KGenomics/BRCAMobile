@@ -65,7 +65,7 @@ export default class HomeScreen extends LinkableMenuScreen {
 
           <Text style={{fontSize: 5}}>&nbsp;</Text>
 
-          <Text style={styles.paragraph}>This website is supported by the BRCA Exchange of the Global Alliance for Genomics and Health.</Text>
+          <Text style={styles.paragraph}>This project is supported by the BRCA Exchange of the Global Alliance for Genomics and Health.</Text>
         </View>
 
         <View style={styles.logo}>
