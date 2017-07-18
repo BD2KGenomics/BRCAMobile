@@ -1,6 +1,4 @@
-/*
- * action types and creators
- */
+/* action types and creators */
 
 export const BEGIN_QUERY = 'BEGIN_QUERY';
 export const BEGIN_FETCH_NEXT_PAGE = 'BEGIN_FETCH_NEXT_PAGE';
@@ -72,7 +70,7 @@ export function fetch_next_page() {
     return function(dispatch, getState) {
         const { query, pageIndex, pageSize } = getState().toJS().brca;
 
-        if (query == null) {
+        if (query === null) {
             console.warn("Fetch next page called with null query, aborting");
             return null;
         }
@@ -118,6 +116,8 @@ export function fetch_details(variantID) {
 import FCM, {
     FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType
 } from "react-native-fcm";
+import 'whatwg-fetch';
+import {checkStatus} from '../toolbox/misc';
 
 export function fetch_fcm_token() {
     return function (dispatch, getState) {
@@ -141,14 +141,14 @@ export function fetch_fcm_token() {
 
 // helper functions
 
-function encodeParams(params) {
+export function encodeParams(params) {
     const esc = encodeURIComponent;
     return Object.keys(params)
         .map(k => esc(k) + '=' + esc(params[k]))
         .join('&');
 }
 
-function queryVariantsForPage(query, page_num, page_size) {
+export function queryVariantsForPage(query, page_num, page_size) {
     let args = {
         format: 'json',
         search_term: query,
@@ -156,20 +156,41 @@ function queryVariantsForPage(query, page_num, page_size) {
         page_num: page_num
     };
 
-    let queryString = 'http://brcaexchange.org/backend/data/?' + encodeParams(args);
+    /*
+     // apparently we need to include all this:
+     include=Variant_in_ENIGMA
+     include=Variant_in_ClinVar
+     include=Variant_in_1000_Genomes
+     include=Variant_in_ExAC
+     include=Variant_in_LOVD
+     include=Variant_in_BIC
+     include=Variant_in_ESP
+     include=Variant_in_exLOVD
+     */
+
+    // extra params
+    const includes = [
+        'Variant_in_ENIGMA',
+        'Variant_in_ClinVar',
+        'Variant_in_1000_Genomes',
+        'Variant_in_ExAC',
+        'Variant_in_LOVD',
+        'Variant_in_BIC',
+        'Variant_in_ESP',
+        'Variant_in_exLOVD'
+    ];
+    const include_params = "&" + includes.map(x => "include=" + x).join("&");
+
+    let queryString = 'http://brcaexchange.org/backend/data/?' + encodeParams(args) + include_params;
     console.log("Query Request: ", queryString);
 
-    // The function called by the thunk middleware can return a value,
-    // that is passed on as the return value of the dispatch method.
-
-    // In this case, we return a promise to wait for.
-    // This is not required by thunk middleware, but it is convenient for us.
-
     return fetch(queryString)
+        .then(checkStatus)
+        .catch((error) => console.warn("fetch error:", error))
         .then(response => response.json());
 }
 
-function fetchDetails(variantID) {
+export function fetchDetails(variantID) {
     let args = {
         variant_id: variantID
     };
@@ -177,12 +198,8 @@ function fetchDetails(variantID) {
     let queryString = 'http://brcaexchange.org/backend/data/variant/?' + encodeParams(args);
     // console.log("Details Request: ", queryString);
 
-    // The function called by the thunk middleware can return a value,
-    // that is passed on as the return value of the dispatch method.
-
-    // In this case, we return a promise to wait for.
-    // This is not required by thunk middleware, but it is convenient for us.
-
     return fetch(queryString)
+        .then(checkStatus)
+        .catch((error) => console.warn("fetch error:", error))
         .then(response => response.json());
 }

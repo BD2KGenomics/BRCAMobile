@@ -17,9 +17,12 @@ const initialState = Immutable.fromJS({
     isFetchingToken: false,
     query: null,
     pageIndex: 0,
-    pageSize: 100,
+    pageSize: 30,
     totalResults: -1
 });
+
+// FIXME: we *really* need to centralize variant data into a single variant_id => data collection
+// different pages will have different retention needs, e.g. subscriptions should always retain its variants' data
 
 function subscriberReducer(state=initialState, action) {
     switch (action.type) {
