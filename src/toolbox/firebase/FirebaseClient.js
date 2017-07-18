@@ -6,6 +6,9 @@ import FirebaseConstants from "./FirebaseConstants";
 
 const API_URL = "https://fcm.googleapis.com/fcm/send";
 
+// FIXME: none of this stuff is used; axe it?
+// FIXME: longer-term, we should move to react-native-notifications, which also integates with FCM
+
 class FirebaseClient {
 
     constructor() {
@@ -73,9 +76,9 @@ class FirebaseClient {
             "Authorization": "key=" + FirebaseConstants.KEY
         });
 
-        fetch(API_URL, { method: "POST", headers, body })
+        return fetch(API_URL, { method: "POST", headers, body })
             .then(response => console.log("Send " + type + " response", response))
-            .catch(error => console.log("Error sending " + type, error));
+            .catch(error => console.warn("Error sending " + type, error));
     }
 
 }
