@@ -16,8 +16,8 @@ export default class SearchBar extends Component {
   }
 
   static propTypes = {
-      onChangeText: PropTypes.function,
-      onSubmit: PropTypes.function
+      onChangeText: PropTypes.func,
+      onSubmit: PropTypes.func
   };
 
   handleChangeText(text) {
