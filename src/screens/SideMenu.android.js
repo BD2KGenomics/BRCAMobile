@@ -38,17 +38,6 @@ export default class SideMenu extends BaseSideMenu {
               </View>
 
               <View style={{flex: 1}}>
-                  {/*
-                      screens
-                          .filter(x => x.hasOwnProperty('sidebar') && x.sidebar !== null)
-                          .map((screen, idx) =>
-                              <Icon.Button key={idx} name={screen.sidebar.icon} {...navbuttonProps}
-                                  onPress={ this.navigateTo.bind(this, screen.sidebar.title, screen.name, screen.sidebar.resetStack) }>
-                                <Text style={styles.button}>{screen.sidebar.title}</Text>
-                              </Icon.Button>
-                          )
-                  */}
-
                   <SidebarMenuItems
                       onNavigateRequest={this.navigateTo}
                       buttonStyle={styles.button}
