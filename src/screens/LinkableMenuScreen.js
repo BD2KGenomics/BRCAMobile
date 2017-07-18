@@ -15,16 +15,13 @@ export default class LinkableMenuScreen extends Component {
                 animated: true
             });
         }
-        else if (event.type == 'DeepLink') {
+        else if (event.type === 'DeepLink') {
             // recall that deeplink events are broadcast to every screen
             //  we want to handle this event only if it's about us (the main screen)
             const parts = event.link.split('/');
 
-            if (parts[0] == 'main') {
+            if (parts[0] === 'main') {
                 const params = JSON.parse(parts[1]);
-
-                // handle the link somehow, usually run a this.props.navigator command
-                // if (params.doReset === true) {
 
                 // console.log("Deep reset to " + params.title + " from ", this.props.navigator.screenInstanceID);
 
@@ -33,18 +30,17 @@ export default class LinkableMenuScreen extends Component {
                     title: params.title,
                     screen: params.screen
                 });
+            }
+            else if (parts[0] === 'updated') {
+                const params = JSON.parse(parts[1]);
 
-                // }
-                /*
-                 else {
-                 console.log("Deep push to " + params.title + " from ", this.props.navigator.screenInstanceID);
-
-                 this.props.navigator.push({
-                 title: params.title,
-                 screen: params.screen
-                 })
-                 }
-                 */
+                this.props.navigator.push({
+                    title: 'Details',
+                    screen: 'brca.DetailScreen',
+                    passProps: {
+                        variant_id: params.variant_id
+                    }
+                })
             }
         }
         else if (this.childNavigatorEvent !== null && typeof this.childNavigatorEvent == 'function') {
