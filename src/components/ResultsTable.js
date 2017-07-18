@@ -2,19 +2,24 @@ import React, {Component} from 'react';
 import {
     Text, TextInput, View, ListView, ScrollView, Image, TouchableOpacity, ActivityIndicator,
     Dimensions,
-    StyleSheet, Alert, Platform
+    StyleSheet, Alert, Platform, Modal, Button, TouchableWithoutFeedback
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ScrollTopView from 'react-native-scrolltotop';
+
+import LegendModal from "./LegendModal";
 
 export default class ResultsTable extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            isNotAtTop: false
-        }
+            isNotAtTop: false,
+            showLegend: false
+        };
+
+        this.dismissLegend = this.dismissLegend.bind(this);
     }
 
     rowClicked(d) {
@@ -32,23 +37,61 @@ export default class ResultsTable extends Component {
         )
     }
 
+    // 'lens' is slightly larger
     static patho_indicators = {
-        'Pathogenic': {color: '#e7b34e', name: 'group-work'},
-        'Benign / Little Clinical Significance': {color: '#7ad6ff', name: 'check-circle'},
-        'Not Yet Classified': {color: '#eee', name: 'fiber-manual-record'},
-        'Not Yet Reviewed': {color: '#eee', name: 'fiber-manual-record'}
+        'Likely Pathogenic': {
+            color: '#e7b34e', name: 'radio-button-checked'
+        },
+        'Pathogenic': {
+            color: '#e7b34e', name: 'fiber-manual-record'
+        },
+        'Likely Benign': {
+            color: '#7ab1e8', name: 'radio-button-checked'
+        },
+        'Benign / Little Clinical Significance': {
+            color: '#7ab1e8', name: 'fiber-manual-record'
+        },
+        'Not Yet Classified': {
+            color: '#eee', name: 'radio-button-checked'
+        },
+        'Not Yet Reviewed': {
+            color: '#eee', name: 'fiber-manual-record'
+        },
+    };
+
+    static follow_indicators = {
+        'Following': {
+            name: "bookmark", color: "#555"
+        },
+        'Not Following': {
+            name: "bookmark-border", color: "#eee"
+        }
+    };
+
+    static legendProps = {
+        size: 15,
+        color: "white",
+        padding: 5,
+        borderRadius: 15,
+        backgroundColor: "#777",
+        underlayColor: "white",
+        iconStyle: { marginRight: 5 }
     };
 
     renderRow(d) {
+        // get style for the following/not following icon column
+        const followIconProps = ResultsTable.follow_indicators[
+            (this.props.subscriptions.hasOwnProperty(d.id) ? "Following" : "Not Following")
+        ];
+
         return (
             <TouchableOpacity onPress={this.rowClicked.bind(this, d)}>
               <View style={styles.row}>
                 <Text style={[styles.rowCell, styles.rowTextCell, {flex: 0.3}]}>{d.Gene_Symbol}</Text>
-                <Text style={[styles.rowCell, styles.rowTextCell]}>{d.HGVS_cDNA.split(':')[1]}</Text>
+                <Text style={[styles.rowCell, styles.rowTextCell]} numberOfLines={1} ellipsizeMode="tail">{d.HGVS_cDNA.split(':')[1]}</Text>
                 <View style={[styles.rowCell, { flex: 0.25, flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'nowrap' }]}>
                     <Icon {...ResultsTable.patho_indicators[d.Pathogenicity_expert]} size={22} />
-
-                    { this.props.subscriptions.hasOwnProperty(d.id) ? <Icon name="bookmark" color="#555" size={22} /> : <Icon name="bookmark-border" color="#eee" size={22} /> }
+                    <Icon {...followIconProps} size={22} />
                 </View>
               </View>
             </TouchableOpacity>
@@ -63,37 +106,67 @@ export default class ResultsTable extends Component {
 
     render() {
         return (
-            <View>
-                {this.props.resultsCount > 0 ?
-                    <Text>
-                        loaded {this.props.dataSource.getRowCount()} out of {this.props.resultsCount} matching
-                        variants&nbsp;
-                        { (this.props.synonyms > 0) ? <Text>(synonyms: {this.props.synonyms})</Text> : '' }
-                    </Text> : (this.props.isLoading ? <Text>loading...</Text> : null)
-                }
+            <View style={{flex: 1}}>
+                <View style={{flex: 1, justifyContent: 'flex-start', backgroundColor: 'white'}}>
+                    <View style={{minHeight: 25, flexDirection: 'row', alignItems: 'center', paddingLeft: 5}}>
+                        <View style={{flexGrow: 1}}>
+                        {
+                            this.props.resultsCount > 0 ?
+                                <Text>
+                                    {/* loaded {this.props.dataSource.getRowCount()} out of */}
+                                    {this.props.resultsCount} matching variant{this.props.resultsCount !== 1 && 's'}&nbsp;
+                                    { (this.props.synonyms > 0) ? <Text>(synonyms: {this.props.synonyms})</Text> : '' }
+                                </Text>
+                                :
+                                (this.props.isLoading ? <Text>loading...</Text> : <Text>no results found</Text>)
+                        }
+                        </View>
 
-                <View style={styles.headerContainer}>
-                    {this.renderHeader()}
+                        <View>
+                            {/*
+                             <View style={styles.legend}>
+                             <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+                             <Icon {...ResultsTable.patho_indicators['Pathogenic']} size={22} />
+                             <Text style={{marginLeft: 5, marginRight: 10}}>Pathogenic</Text>
+                             <Icon {...ResultsTable.patho_indicators['Benign / Little Clinical Significance']} size={22} />
+                             <Text style={{marginLeft: 5, marginRight: 10}}>Benign</Text>
+                             </View>
+                             </View>
+                             */}
+
+                            <Icon.Button {...ResultsTable.legendProps} name="help" onPress={() => this.showLegend()}>
+                                <Text style={{fontSize: 13, color: 'white', fontWeight: '600', marginRight: 5}}>legend</Text>
+                            </Icon.Button>
+                        </View>
+                    </View>
+
+                    <View style={styles.headerContainer}>
+                        {this.renderHeader()}
+                    </View>
+
+                    <View style={{flexGrow: 1, height: 410}}>
+                        <ListView
+                            ref="listview"
+                            style={styles.listContainer}
+                            enableEmptySections={true}
+                            pageSize={this.props.pageSize}
+                            dataSource={this.props.dataSource}
+                            onEndReached={this.props.onEndReached}
+                            // renderHeader={this.renderHeader.bind(this)}
+                            renderRow={this.renderRow.bind(this)}
+                            renderFooter={this.renderFooter.bind(this)}
+                            onScroll={this._onScroll.bind(this)}
+                        />
+                    </View>
                 </View>
-
-                <ListView
-                    ref="listview"
-                    style={styles.listContainer}
-                    enableEmptySections={true}
-                    pageSize={this.props.pageSize}
-                    dataSource={this.props.dataSource}
-                    onEndReached={this.props.onEndReached}
-                    // renderHeader={this.renderHeader.bind(this)}
-                    renderRow={this.renderRow.bind(this)}
-                    renderFooter={this.renderFooter.bind(this)}
-                    onScroll={this._onScroll.bind(this)}
-                />
 
                 { this.state.isNotAtTop ?
                     <ScrollTopView root={this}
                         top={Dimensions.get('window').height - 220}
                         left={Dimensions.get('window').width - 100} /> : null
                 }
+
+                <LegendModal showLegend={this.state.showLegend} onDismissLegend={this.dismissLegend} />
             </View>
 
         );
@@ -104,11 +177,24 @@ export default class ResultsTable extends Component {
             isNotAtTop: (e.nativeEvent.contentOffset.y > 100)
         });
     }
+
+    showLegend() {
+        this.setState({
+            showLegend: true
+        });
+    }
+
+    dismissLegend() {
+        this.setState({
+            showLegend: false
+        });
+    }
 }
 
 const styles = StyleSheet.create({
     listContainer: {
-        marginTop: 0
+        marginTop: 0,
+        // backgroundColor: 'lightgreen'
     },
     headerContainer: {
         height: 38
@@ -134,6 +220,7 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     row: {
+        minHeight: 30,
         flex: 1,
         flexDirection: 'row',
         borderBottomWidth: 1,
@@ -150,5 +237,11 @@ const styles = StyleSheet.create({
         flex: 0,
         padding: 8,
         fontSize: 16
-    }
+    },
+
+    // legend: {
+    //     minHeight: 40,
+    //     borderTopWidth: 1,
+    //     borderTopColor: '#aaa'
+    // }
 });
