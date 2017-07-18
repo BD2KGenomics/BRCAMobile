@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import BaseSideMenu from './BaseSideMenu';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import SidebarMenuItems from "../components/SidebarMenuItems";
 
 export default class SideMenu extends BaseSideMenu {
     constructor(props) {
@@ -32,25 +32,22 @@ export default class SideMenu extends BaseSideMenu {
                 </View>
 
                 <View style={{flex: 1}}>
-                    <Icon.Button name="home" {...navbuttonProps}
-                        onPress={ this.navigateTo.bind(this, 'Home', 'brca.HomeScreen', true) }>
-                        <Text style={styles.button}>Home</Text>
-                    </Icon.Button>
+                    {/*
+                        screens
+                            .filter(x => x.hasOwnProperty('sidebar') && x.sidebar !== null)
+                            .map((screen, idx) =>
+                                <Icon.Button key={idx} name={screen.sidebar.icon} {...navbuttonProps}
+                                    onPress={ this.navigateTo.bind(this, screen.sidebar.title, screen.name, screen.sidebar.resetStack) }>
+                                    <Text style={styles.button}>{screen.sidebar.title}</Text>
+                                </Icon.Button>
+                            )
+                    */}
 
-                    <Icon.Button name="search" {...navbuttonProps}
-                        onPress={ this.navigateTo.bind(this, 'Search', 'brca.SearchScreen', false) }>
-                        <Text style={styles.button}>Search</Text>
-                    </Icon.Button>
-
-                    <Icon.Button name="bookmark" {...navbuttonProps}
-                        onPress={ this.navigateTo.bind(this, 'Following', 'brca.SubscriptionsScreen', false) }>
-                        <Text style={styles.button}>Following</Text>
-                    </Icon.Button>
-
-                    <Icon.Button name="info" {...navbuttonProps}
-                        onPress={ this.navigateTo.bind(this, 'About', 'brca.AboutScreen', false) }>
-                        <Text style={styles.button}>About</Text>
-                    </Icon.Button>
+                    <SidebarMenuItems
+                        onNavigateRequest={this.navigateTo}
+                        buttonStyle={styles.button}
+                        navbuttonProps={navbuttonProps}
+                    />
                 </View>
 
                 <Text style={styles.version}>brca-exchange mobile v0.1</Text>
