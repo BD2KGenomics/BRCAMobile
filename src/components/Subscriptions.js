@@ -49,7 +49,7 @@ export default class Subscriptions extends Component {
         return (
             <View style={styles.header}>
                 {/*<Text style={[styles.headerCell, {flex: 0.4}]}>Gene</Text>*/}
-                <Text style={styles.headerCell}>HGVS cDNA</Text>
+                <Text style={styles.headerCell}>HGVS Nucleotide</Text>
                 <Text style={[styles.headerCell, { textAlign: 'right' }]}>Status</Text>
             </View>
         )
@@ -63,8 +63,8 @@ export default class Subscriptions extends Component {
             <TouchableOpacity onPress={this.rowClicked.bind(this, d)}>
                 <View style={styles.row}>
                     {/*<Text style={[styles.rowCell, (subscribed)?styles.subscribed:null, {flex: 0.4}]}>{d.Gene_Symbol}</Text>*/}
-                    <Text style={[styles.rowCell, (subscribed)?styles.subscribed:null]}>{d.HGVS_cDNA.split(':')[1]}</Text>
-                    <View style={[styles.rowCellSubscribe]}>
+                    <Text style={styles.rowCell} ellipsizeMode="tail" numberOfLines={1}>{d.HGVS_cDNA.split(':')[1]}</Text>
+                    <View style={styles.rowCellSubscribe}>
                         <SubscribeButton
                             subscribed={subscribed}
                             activeScreen="subscriptions"
