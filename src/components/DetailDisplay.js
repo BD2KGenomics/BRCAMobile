@@ -9,10 +9,12 @@ import {
     Image,
     TouchableOpacity,
     TouchableHighlight,
+    TouchableWithoutFeedback,
     ActivityIndicator,
     StyleSheet,
     Alert,
-    Platform
+    Platform,
+    Clipboard
 } from 'react-native';
 import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -28,6 +30,8 @@ import {columns} from '../metadata/fields';
 class DetailDisplay extends Component {
     constructor(props) {
         super(props);
+
+        this.copyCelValue = this.copyCelValue.bind(this);
     }
 
     componentDidMount() {
@@ -36,12 +40,21 @@ class DetailDisplay extends Component {
         // this will eventually populate this.props.details.get(this.props.data.id) with a valid value
     }
 
+    copyCelValue(v) {
+        Toast.show(`copied '${v}'`, 1);
+        Clipboard.setString(v);
+    }
+
     static renderRow(d, sectionID, rowID) {
+        const v = (d.value && d.value.trim() !== '') ? d.value : '-';
+
         return (
-            <View style={[styles.row, (rowID % 2 == 1?styles.oddRow:null)]}>
-                <Text style={styles.rowLabel}>{d.title}</Text>
-                <Text style={styles.rowValue}>{d.value}</Text>
-            </View>
+            <TouchableWithoutFeedback onLongPress={() => this.copyCelValue(v)}>
+                <View style={[styles.row, (rowID % 2 === 1?styles.oddRow:null)]}>
+                    <Text style={styles.rowLabel}>{d.title}</Text>
+                    <Text style={styles.rowValue}>{v}</Text>
+                </View>
+            </TouchableWithoutFeedback>
         );
     }
 
@@ -90,8 +103,8 @@ class DetailDisplay extends Component {
             return this.props.details[variantID].versions.map((x, idx) => {
                 return (
                     <View key={"versions-" + idx} style={versionStyles.row}>
-                        <Text style={[versionStyles.rowCell, versionStyles.rowTextCell, {flex: 0.25}]}>{reformatDate(x.Data_Release.date)}</Text>
-                        <Text style={[versionStyles.rowCell, versionStyles.rowTextCell, {flex: 0.75}]}>{x.Pathogenicity_expert}</Text>
+                        <Text style={[versionStyles.rowCell, versionStyles.rowTextCell, {flex: 0.3}]}>{reformatDate(x.Data_Release.date)}</Text>
+                        <Text style={[versionStyles.rowCell, versionStyles.rowTextCell, {flex: 0.7}]}>{x.Pathogenicity_expert}</Text>
                     </View>
                 );
             });
@@ -107,19 +120,21 @@ class DetailDisplay extends Component {
 
         return (
             <ScrollView style={{flex: 1}}>
-                <Text style={styles.title}>Variant {d.HGVS_cDNA.split(':')[1]}</Text>
+                <View style={{padding: 20, paddingBottom: 0}}>
+                    <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">Variant{'\n'}{d.HGVS_cDNA.split(':')[1]}</Text>
 
-                <View style={styles.subscribeToggleContainer}>
-                    <SubscribeButton
-                        subscribed={this.isSubscribed()}
-                        activeScreen="details"
-                        subsLastUpdatedBy={this.props.subsLastUpdatedBy}
-                        onSubscriptionChanged={this.toggleSubscription.bind(this)}
-                    />
+                    <View style={styles.subscribeToggleContainer}>
+                        <SubscribeButton
+                            subscribed={this.isSubscribed()}
+                            activeScreen="details"
+                            subsLastUpdatedBy={this.props.subsLastUpdatedBy}
+                            onSubscriptionChanged={this.toggleSubscription.bind(this)}
+                        />
+                    </View>
                 </View>
 
                 {/*<View style={styles.sectionHeader}>*/}
-                    {/*<Text key={2} style={{ fontSize: 22, fontWeight: '600' }}>Variant Details</Text>*/}
+                    {/*<Text style={styles.sectionHeaderText}>Details</Text>*/}
                 {/*</View>*/}
 
                 <ListView style={styles.listContainer}
@@ -129,15 +144,17 @@ class DetailDisplay extends Component {
 
                 <View>
                     <View style={styles.sectionHeader}>
-                        <Text style={{ fontSize: 22, fontWeight: '600' }}>Version History</Text>
+                        <Text style={styles.sectionHeaderText}>Version History</Text>
                     </View>
 
-                    <View style={versionStyles.header}>
-                        <Text style={[versionStyles.headerCell, {flex: 0.25}]}>Date</Text>
-                        <Text style={[versionStyles.headerCell, {flex: 0.75}]}>Clinical Significance</Text>
-                    </View>
+                    <View style={{padding: 10, paddingBottom: 20}}>
+                        <View style={versionStyles.header}>
+                            <Text style={[versionStyles.headerCell, {flex: 0.3}]}>Date</Text>
+                            <Text style={[versionStyles.headerCell, {flex: 0.7}]}>Clinical Significance</Text>
+                        </View>
 
-                    {this.versions()}
+                        {this.versions()}
+                    </View>
                 </View>
             </ScrollView>
         );
@@ -149,13 +166,18 @@ const styles = StyleSheet.create({
 
     },
     listContainer: {
-        marginTop: 0,
+        marginTop: 10,
         marginBottom: 20,
-        borderWidth: 1,
-        borderColor: '#aaa'
+        // borderWidth: 1,
+        // borderColor: '#aaa'
+
+        paddingTop: 5,
+        borderTopWidth: 1,
+        borderTopColor: '#ccc'
     },
     title: {
         alignSelf: 'center',
+        textAlign: 'center',
         fontSize: 32,
         fontWeight: '500',
         marginBottom: 20
@@ -167,12 +189,14 @@ const styles = StyleSheet.create({
     row: {
         flex: 1,
         padding: 5,
+        paddingLeft: 15,
+        paddingRight: 5,
         flexDirection: 'column',
         borderBottomWidth: 1,
-        borderBottomColor: '#aaa'
+        borderBottomColor: '#ccc'
     },
     oddRow: {
-        backgroundColor: '#eee'
+        // backgroundColor: '#eee'
     },
     rowLabel: {
         fontSize: 16,
@@ -184,9 +208,14 @@ const styles = StyleSheet.create({
     },
 
     sectionHeader: {
-        // alignItems: 'center',
+        // paddingLeft: 20,
+        alignItems: 'center',
         marginBottom: 0, paddingBottom: 10,
         // borderBottomWidth: 5, borderBottomColor: 'black'
+    },
+    sectionHeaderText: {
+        fontSize: 22,
+        fontWeight: '600'
     }
 });
 
@@ -247,7 +276,7 @@ function reformatDate(date) { //handles single dates or an array of dates
         date = date.split(',');
     }
     return date.map(function(d) {
-        return moment.utc(new Date(d)).format("DD.MM.YYYY");
+        return moment.utc(new Date(d)).format("MMM D, YYYY");
     }).join();
 }
 
