@@ -3,6 +3,8 @@ import React, {Component} from 'react';
 export default class BaseSideMenu extends Component {
   constructor(props) {
     super(props);
+
+    this.navigateTo = this.navigateTo.bind(this);
   }
 
   navigateTo(title, screen, reset) {
