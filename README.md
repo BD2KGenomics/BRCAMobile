@@ -1,4 +1,4 @@
-# brca-mobile
+# brca-exchange app
 
 A mobile-optimized version of the brcaexchange.org website, with additional capabilities for keeping individuals more
 involved with the site. Features include:
