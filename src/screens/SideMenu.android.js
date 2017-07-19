@@ -31,7 +31,7 @@ export default class SideMenu extends BaseSideMenu {
             <View style={styles.container}>
               <View style={styles.titlebutton}>
                 <TouchableOpacity onPress={ this._toggleDrawer.bind(this) }>
-                  <Icon name="menu" size={22} color="#fff" />
+                  <Icon name="menu" size={26} color="#fff" />
                     {/* <Image style={{width: 22, height: 22}} source={require('../../img/navicon_menu_invert.png')} /> */}
                 </TouchableOpacity>
                 <Text style={styles.title}>BRCA Exchange</Text>
@@ -54,8 +54,8 @@ export default class SideMenu extends BaseSideMenu {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 18,
-        paddingLeft: 17,
+        paddingTop: 15,
+        paddingLeft: 15,
         opacity: 0.8,
         backgroundColor: '#333',
         alignItems: 'flex-start',
