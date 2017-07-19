@@ -23,15 +23,13 @@ export default class DetailScreen extends Component {
     }
 
     componentDidMount() {
-        console.log("Navigated to details screen");
-
         // here we should check if data is null and if we have a variant_id
         // if that's the case, then we perform a lookup and feed in the result
         if (this.state.data === null && this.props.variant_id !== null) {
-            console.log("Fetching data because we weren't fed it; variant_id: ", this.props.variant_id);
+            // console.log("Fetching data because we weren't fed it; variant_id: ", this.props.variant_id);
 
             fetchDetails(this.props.variant_id).then((d) => {
-                // console.log("Fetched data: ", d);
+                // we receive every revision sorted in reverse chronological order, so d.data[0] is the newest
 
                 this.setState({
                     data: d.data[0]
