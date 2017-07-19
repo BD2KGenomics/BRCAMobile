@@ -24,7 +24,7 @@ export const screens = [
         name: 'brca.SearchScreen',
         component: SearchScreen,
         sidebar: {
-            title: 'Search',
+            title: 'Search Variants',
             icon: 'search',
             resetStack: false
         },
@@ -34,7 +34,7 @@ export const screens = [
         name: 'brca.SubscriptionsScreen',
         component: SubscriptionsScreen,
         sidebar: {
-            title: 'Following',
+            title: 'Followed Variants',
             icon: 'bookmark',
             resetStack: false
         },
