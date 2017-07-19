@@ -9,7 +9,8 @@ import {
     StyleSheet
 } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ResultsTable from './ResultsTable';
+
+import {follow_indicators, patho_indicators} from "../metadata/icons";
 
 export default class LegendModal extends Component {
     constructor(props) {
@@ -27,7 +28,6 @@ export default class LegendModal extends Component {
             onRequestClose={() => this.props.onDismissLegend()}
             animationType="fade">
 
-            {/*backgroundColor: 'rgba(0,0,0,0.25)'*/}
             <TouchableOpacity activeOpacity={1} focusedOpacity={1} style={{backgroundColor: 'rgba(0,0,0,0.25)', flexGrow: 1}} onPress={() => this.props.onDismissLegend()}>
                 <View style={styles.legendModal}>
                     <View style={styles.legendModalHeader}>
@@ -39,8 +39,8 @@ export default class LegendModal extends Component {
                         <Text style={styles.subheader}>Pathogenicity:</Text>
 
                         {
-                            Object.keys(ResultsTable.patho_indicators).map((name, idx) => {
-                                const obj_style = ResultsTable.patho_indicators[name];
+                            Object.keys(patho_indicators).map((name, idx) => {
+                                const obj_style = patho_indicators[name];
 
                                 return (
                                     <View key={idx} style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15}}>
@@ -54,8 +54,8 @@ export default class LegendModal extends Component {
                         <Text style={styles.subheader}>Follow Status:</Text>
 
                         {
-                            Object.keys(ResultsTable.follow_indicators).map((name, idx) => {
-                                const obj_style = ResultsTable.follow_indicators[name];
+                            Object.keys(follow_indicators).map((name, idx) => {
+                                const obj_style = follow_indicators[name];
 
                                 return (
                                     <View key={idx} style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15}}>

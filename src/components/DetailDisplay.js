@@ -26,6 +26,7 @@ import { subscribe, unsubscribe, fetch_details } from '../redux/actions';
 import SubscribeButton from './AnimatedSubscribeButton';
 
 import {columns} from '../metadata/fields';
+import {patho_indicators} from "../metadata/icons";
 
 class DetailDisplay extends Component {
     constructor(props) {

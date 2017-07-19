@@ -8,6 +8,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ScrollTopView from 'react-native-scrolltotop';
 
+import {follow_indicators, patho_indicators} from "../metadata/icons";
 import LegendModal from "./LegendModal";
 
 export default class ResultsTable extends Component {
@@ -37,37 +38,6 @@ export default class ResultsTable extends Component {
         )
     }
 
-    // 'lens' is slightly larger
-    static patho_indicators = {
-        'Likely Pathogenic': {
-            color: '#e7b34e', name: 'radio-button-checked'
-        },
-        'Pathogenic': {
-            color: '#e7b34e', name: 'fiber-manual-record'
-        },
-        'Likely Benign': {
-            color: '#7ab1e8', name: 'radio-button-checked'
-        },
-        'Benign / Little Clinical Significance': {
-            color: '#7ab1e8', name: 'fiber-manual-record'
-        },
-        'Not Yet Classified': {
-            color: '#eee', name: 'radio-button-checked'
-        },
-        'Not Yet Reviewed': {
-            color: '#eee', name: 'fiber-manual-record'
-        },
-    };
-
-    static follow_indicators = {
-        'Following': {
-            name: "bookmark", color: "#555"
-        },
-        'Not Following': {
-            name: "bookmark-border", color: "#eee"
-        }
-    };
-
     static legendProps = {
         size: 15,
         color: "white",
@@ -80,14 +50,14 @@ export default class ResultsTable extends Component {
 
     renderRow(d) {
         // get style for the following/not following icon column
-        const followIconProps = ResultsTable.follow_indicators[
-            (this.props.subscriptions.hasOwnProperty(d.id) ? "Following" : "Not Following")
+        const followIconProps = follow_indicators[
+            (this.props.subscriptions.hasOwnProperty(d.id) ? "Following Variant" : "Not Following Variant")
         ];
 
         const pathoIconProps = (
-            ResultsTable.patho_indicators.hasOwnProperty(d.Pathogenicity_expert)
-                ? ResultsTable.patho_indicators[d.Pathogenicity_expert]
-                : ResultsTable.patho_indicators["Not Yet Classified"]
+            patho_indicators.hasOwnProperty(d.Pathogenicity_expert)
+                ? patho_indicators[d.Pathogenicity_expert]
+                : patho_indicators["Not Yet Reviewed"]
         );
 
         return (
@@ -132,9 +102,9 @@ export default class ResultsTable extends Component {
                             {/*
                              <View style={styles.legend}>
                              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-                             <Icon {...ResultsTable.patho_indicators['Pathogenic']} size={22} />
+                             <Icon {...patho_indicators['Pathogenic']} size={22} />
                              <Text style={{marginLeft: 5, marginRight: 10}}>Pathogenic</Text>
-                             <Icon {...ResultsTable.patho_indicators['Benign / Little Clinical Significance']} size={22} />
+                             <Icon {...patho_indicators['Benign / Little Clinical Significance']} size={22} />
                              <Text style={{marginLeft: 5, marginRight: 10}}>Benign</Text>
                              </View>
                              </View>
