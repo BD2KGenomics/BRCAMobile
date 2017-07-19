@@ -17,7 +17,7 @@ const initialState = Immutable.fromJS({
     isFetchingToken: false,
     query: null,
     pageIndex: 0,
-    pageSize: 30,
+    pageSize: 100,
     totalResults: -1
 });
 

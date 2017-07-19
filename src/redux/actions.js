@@ -60,8 +60,7 @@ export function query_variants(query) {
                 dispatch(receive_page(0, json.data, json.count, json.synonyms));
             })
             .catch(error => {
-                console.warn(error);
-                // FIXME: maybe show a toast as well?
+                console.warn(error.message);
             });
     }
 }
@@ -106,7 +105,7 @@ export function fetch_details(variantID) {
                 dispatch(receive_details(variantID, { versions: json.data }));
             })
             .catch(error => {
-                console.warn(error);
+                console.warn(error.message);
                 // FIXME: maybe show a toast as well?
             });
     }
@@ -126,15 +125,13 @@ export function fetch_fcm_token() {
 
         return FCM.getFCMToken()
             .then(token => {
-                console.log("TOKEN (getFCMToken)", token);
+                // console.log("TOKEN (getFCMToken)", token);
 
                 // persist the token to the store, i assume?
                 dispatch(receive_fcm_token(token))
             })
             .catch(error => {
-                console.warn(error);
-
-                // FIXME: maybe show a toast as well?
+                console.warn("error in fetch_fcm_token(): ", error.message);
             });
     }
 }
@@ -156,18 +153,6 @@ export function queryVariantsForPage(query, page_num, page_size) {
         page_num: page_num
     };
 
-    /*
-     // apparently we need to include all this:
-     include=Variant_in_ENIGMA
-     include=Variant_in_ClinVar
-     include=Variant_in_1000_Genomes
-     include=Variant_in_ExAC
-     include=Variant_in_LOVD
-     include=Variant_in_BIC
-     include=Variant_in_ESP
-     include=Variant_in_exLOVD
-     */
-
     // extra params
     const includes = [
         'Variant_in_ENIGMA',
@@ -186,7 +171,7 @@ export function queryVariantsForPage(query, page_num, page_size) {
 
     return fetch(queryString)
         .then(checkStatus)
-        .catch((error) => console.warn("fetch error:", error))
+        .catch((error) => console.warn("fetch error:", error.message))
         .then(response => response.json());
 }
 
@@ -200,6 +185,6 @@ export function fetchDetails(variantID) {
 
     return fetch(queryString)
         .then(checkStatus)
-        .catch((error) => console.warn("fetch error:", error))
+        .catch((error) => console.warn("fetch error:", error.message))
         .then(response => response.json());
 }
