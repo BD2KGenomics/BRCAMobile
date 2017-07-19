@@ -83,6 +83,14 @@ class SubscriptionsScreen extends LinkableMenuScreen {
                     </View>
                 }
 
+                <View style={styles.helpView}>
+                    <Text style={styles.helpTextHeader}>Following a Variant</Text>
+                    <Text style={styles.helpText}>
+                        When you follow a variant, you'll receive a push notification
+                        whenever the clinical significance of that variant changes in the BRCA Exchange database.
+                    </Text>
+                </View>
+
                 {/*<View style={styles.logo}>*/}
                     {/*<Image style={{width: 133, height: 67}} source={require('../../img/logos/brcaexchange.jpg')} />*/}
                 {/*</View>*/}
@@ -126,6 +134,26 @@ const styles = StyleSheet.create({
         marginTop: 30,
         marginBottom: 120,
         alignItems: 'center',
+    },
+    helpTextHeader: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: 5
+    },
+    helpText: {
+        // fontStyle: 'italic',
+        // textAlign: 'center'
+        color: '#555'
+    },
+    helpView: {
+        // marginTop: 20,
+        // borderTopColor: '#eee',
+        // borderTopWidth: 1,
+        // paddingTop: 20,
+        marginTop: 30,
+        backgroundColor: '#eee',
+        borderRadius: 10,
+        padding: 15
     },
     noSubscriptionsText: {
         fontStyle: 'italic',
