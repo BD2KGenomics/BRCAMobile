@@ -25,7 +25,7 @@ class SubscriptionsScreen extends LinkableMenuScreen {
 
     static navigatorButtons = {
         leftButtons: [{
-            icon: require('../../img/navicon_menu.png'),
+            icon: (Platform.OS === 'ios') ? require('../../img/navicon_menu.png') : null,
             id: 'sideMenu'
         }]
     };
