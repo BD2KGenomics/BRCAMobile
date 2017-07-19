@@ -78,7 +78,7 @@ class FirebaseClient {
 
         return fetch(API_URL, { method: "POST", headers, body })
             .then(response => console.log("Send " + type + " response", response))
-            .catch(error => console.warn("Error sending " + type, error));
+            .catch(error => console.warn("Error sending " + type, error.messge));
     }
 
 }
