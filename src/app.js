@@ -29,16 +29,14 @@ import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
 
 export default class App {
     constructor() {
-        console.log("Creating app object");
-
         this.startApp();
         this.registerWithFCM();
 
-        this.subscriptions = Immutable.Seq.Keyed();
+        this.subscriptions = Immutable.Seq();
 
         store.subscribe(() => {
             this.subscriptions = store.getState().getIn(['brca','subscriptions']).keySeq();
-            console.log("subscriptions: ", JSON.stringify(this.subscriptions));
+            // console.log("subscriptions: ", JSON.stringify(this.subscriptions));
         });
     }
 
@@ -72,21 +70,20 @@ export default class App {
         this.notificationListner = FCM.on(FCMEvent.Notification, this.handleNotification.bind(this));
         this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, this.handleTokenRefresh.bind(this));
 
+        // subscribe to get variant notices
+        // we subscribe to everything and filter out what we don't care about
+        // FIXME: verify if we actually need to
+        FCM.subscribeToTopic('/topics/variant_updates');
+
         FCM.getInitialNotification()
             .then(notif => {
-                console.log("INITIAL NOTIFICATION", notif);
-
-                // this event is actually when we're connected to FCM, so we can now send subscription requests, etc.
-
-                // finally, subscribe to get variant notices
-                // we subscribe to everything and filter out what we don't care about
-                // FIXME: verify if we actually need to
-                const sub_result = FCM.subscribeToTopic('/topics/variant_updates');
-                console.log("subscription result: ", sub_result);
-
                 // getInitialNotification() actually gives us the notification that launched us
                 if (notif) {
+                    console.log("initial notification: ", notif);
                     this.handleNotification(notif);
+                }
+                else {
+                    console.log("no initial notification");
                 }
             })
             .catch(error => {
@@ -96,34 +93,49 @@ export default class App {
 
     handleNotification(notif) {
         console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
-        console.log(notif);
 
-        // for some reason, this gets called on android, too
+        // ways we can enter this method:
+        // 1) we receive a wakeup notification from the OS (android)
+        // 2) we receive an actual notification from FCM
+        // 3) we receive a notification, raise a "local" notification (to see the message up top), and receive a repeated notification
+        // 4) we click the notification (either from cold-start or when the app is running)
 
-        if (notif.opened_from_tray && notif.hasOwnProperty('variant_id')) {
-            const target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
+        // if the notification has a variant_id, then it's either one from FCM or from the user pressing a notification
+        if (notif.hasOwnProperty('variant_id')) {
+            console.log("* Detected notification with variant_id field");
 
-            console.log("Tray opened, launching ", target);
-            Navigation.handleDeepLink({
-                link: target
-            });
+            if (notif.opened_from_tray) {
+                // notif.local_notification is true even if we're coming in from clicking it, apparently
+                // so we have to check notif.opened_from_tray first
+                const target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
 
-            return;
-        }
-        else if (notif.local_notification) {
-            // notif.local_notification being true indicates that we raised this event in
-            // response to receiving a non-local notification, so we abort
-            return;
-        }
+                console.log("Opened from tray, launching ", target);
+                Navigation.handleDeepLink({
+                    link: target
+                });
 
-        // TODO: filter notifications to only the one's we've subscribed to
-        if (notif.hasOwnProperty('variant_id') && this.subscriptions.includes(parseInt(notif.variant_id))) {
-            this.showLocalNotification(notif);
+                return;
+            }
+            else if (notif.local_notification) {
+                console.log("* Disregarding self-raised notification");
+
+                // notif.local_notification being true indicates that we raised this event in
+                // response to receiving a non-local notification, so we abort
+                return;
+            }
+            else {
+                // it's probably from FCM, let's raise a notification if we're actually subscribed to this
+                if (this.subscriptions.includes(parseInt(notif.variant_id))) {
+                    console.log("* FCM notification for subscribed variant, raising local notification...");
+                    this.showLocalNotification(notif);
+                }
+            }
         }
         else {
-            console.log("Ignoring ", notif, " because we're not subscribed");
+            console.log("* Notification without variant_id (OS-raised?): ", notif);
         }
 
+        // if we haven't returned by now, we want to dismiss the note
         if (notif.hasOwnProperty("finish") && typeof notif.finish === "function") {
             notif.finish();
         }
@@ -138,13 +150,14 @@ export default class App {
         console.log("Showing: ", notif);
 
         FCM.presentLocalNotification({
+            opened_from_tray: 0,
             title: notif.title,
             body: notif.body,
             variant_id: notif.variant_id,
             priority: "high",
-            click_action: notif.click_action || "fcm.ACTION.HELLO",
+            click_action: (Platform.OS === "android") ? "fcm.ACTION.HELLO" : notif.click_action,
             show_in_foreground: true,
-            local: true
+            // local: true
         });
     }
 }
