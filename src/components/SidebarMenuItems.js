@@ -6,6 +6,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+// import {screens} from '../metadata/screens';
+
 export default class SidebarMenuItems extends Component {
     constructor(props) {
         super(props);
@@ -27,18 +29,32 @@ export default class SidebarMenuItems extends Component {
 
                 <Icon.Button name="search" {...this.props.navbuttonProps}
                     onPress={ () => this.props.onNavigateRequest('Search', 'brca.SearchScreen', false) }>
-                    <Text style={this.props.buttonStyle}>Search</Text>
+                    <Text style={this.props.buttonStyle}>Search Variants</Text>
                 </Icon.Button>
 
                 <Icon.Button name="bookmark" {...this.props.navbuttonProps}
                     onPress={ () => this.props.onNavigateRequest('Following', 'brca.SubscriptionsScreen', false) }>
-                    <Text style={this.props.buttonStyle}>Following</Text>
+                    <Text style={this.props.buttonStyle}>Followed Variants</Text>
                 </Icon.Button>
 
                 <Icon.Button name="info" {...this.props.navbuttonProps}
                     onPress={ () => this.props.onNavigateRequest('About', 'brca.AboutScreen', false) }>
-                    <Text style={this.props.buttonStyle}>About</Text>
+                    <Text style={this.props.buttonStyle}>About This App</Text>
                 </Icon.Button>
+
+                {/*
+                    screens.filter(x => x.hasOwnProperty('sidebar') && x.sidebar != null)
+                        .map((x, idx) => {
+                            const sideOpts = x.sidebar;
+
+                            return (
+                                <Icon.Button key={idx} name={sideOpts.icon} {...this.props.navbuttonProps}
+                                    onPress={ () => this.props.onNavigateRequest(sideOpts.title, screen.name, sideOpts.resetStack) }>
+                                    <Text style={this.props.buttonStyle}>{sideOpts.title}</Text>
+                                </Icon.Button>
+                            );
+                        })
+                */}
 
                 {/*
                 <Icon.Button name="help" {...this.props.navbuttonProps}
