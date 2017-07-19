@@ -53,7 +53,9 @@ class DetailDisplay extends Component {
             <TouchableWithoutFeedback onLongPress={() => this.copyCelValue(v)}>
                 <View style={[styles.row, (rowID % 2 === 1?styles.oddRow:null)]}>
                     <Text style={styles.rowLabel}>{d.title}</Text>
-                    <Text style={styles.rowValue}>{v}</Text>
+                    { (d.field == 'Pathogenicity_expert')
+                        ? renderSignificance(v)
+                        : <Text style={styles.rowValue}>{v}</Text> }
                 </View>
             </TouchableWithoutFeedback>
         );
@@ -82,7 +84,7 @@ class DetailDisplay extends Component {
         const rows = columns.map((x) => {
             const v = d[x.prop];
             // if a render function exists, use it, otherwise just use the raw values
-            return { title: x.title, value: (x.render)?x.render(v):v };
+            return { title: x.title, field: x.prop, value: (x.render)?x.render(v):v };
         });
 
         return ds.cloneWithRows(rows);
@@ -280,6 +282,22 @@ function reformatDate(date) { //handles single dates or an array of dates
         return moment.utc(new Date(d)).format("MMM D, YYYY");
     }).join();
 }
+
+function renderSignificance(status) {
+    const pathoIconProps = (
+        patho_indicators.hasOwnProperty(status)
+            ? patho_indicators[status]
+            : patho_indicators["Not Yet Reviewed"]
+    );
+
+    return (
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Icon {...pathoIconProps} size={22} />
+            <Text style={[styles.rowValue, {flexGrow: 1}]}>{ status }</Text>
+        </View>
+    );
+}
+
 
 /* define the component-to-store connectors */
 
