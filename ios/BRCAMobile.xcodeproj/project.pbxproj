@@ -7,21 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00C302E51ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
-		00C302E71ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
-		00C302E81ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
-		00C302E91ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
-		00C302EA1ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
+		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
+		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
+		00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
+		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
+		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* BRCAMobileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* BRCAMobileTests.m */; };
-		133E29F31AD74F7200F7D852 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
-		139105C61AF99C1200B5F7CC /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
-		139FDEF61B0652A700C62182 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
+		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
+		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
+		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		140ED2AC1D01E1AD002B40FF /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		146834051AC3E58100842450 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		264011237D4DC7B3B95EB22D /* libPods-BRCAMobileTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A06F7BB4363DE5518824C13 /* libPods-BRCAMobileTests.a */; };
 		3A327DF21DD32ADC003D5FE8 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3A327DE91DD32ADC003D5FE8 /* Entypo.ttf */; };
 		3A327DF31DD32ADC003D5FE8 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3A327DEA1DD32ADC003D5FE8 /* EvilIcons.ttf */; };
@@ -32,13 +32,13 @@
 		3A327DF81DD32ADC003D5FE8 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3A327DEF1DD32ADC003D5FE8 /* Octicons.ttf */; };
 		3A327DF91DD32ADC003D5FE8 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3A327DF01DD32ADC003D5FE8 /* SimpleLineIcons.ttf */; };
 		3A327DFA1DD32ADC003D5FE8 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3A327DF11DD32ADC003D5FE8 /* Zocial.ttf */; };
-		3A73A31F1E5C99B3002AFFF8 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A73A31C1E5C98CB002AFFF8 /* libRCTAnimation.a */; };
-		3AB258581DD322D100E33C51 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AB258571DD321C800E33C51 /* libReactNativeNavigation.a */; };
-		3AB8DB381E5DBEE900C19E77 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A73A30C1E5C984C002AFFF8 /* libRNVectorIcons.a */; };
-		3AB8DB541E5DBEF400C19E77 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A73A2E51E5C984C002AFFF8 /* libLRDRCTSimpleToast.a */; };
+		3A73A31F1E5C99B3002AFFF8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A73A31C1E5C98CB002AFFF8 /* libRCTAnimation.a */; };
+		3AB258581DD322D100E33C51 /* libReactNativeNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AB258571DD321C800E33C51 /* libReactNativeNavigation.a */; };
+		3AB8DB381E5DBEE900C19E77 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A73A30C1E5C984C002AFFF8 /* libRNVectorIcons.a */; };
+		3AB8DB541E5DBEF400C19E77 /* libLRDRCTSimpleToast.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A73A2E51E5C984C002AFFF8 /* libLRDRCTSimpleToast.a */; };
 		3AC002B61E783F8400EC87E6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3AC002B51E783F8400EC87E6 /* GoogleService-Info.plist */; };
 		7CDDBA5039D8E32D536F50D0 /* libPods-BRCAMobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 90FBD5EE344389485F95CD1F /* libPods-BRCAMobile.a */; };
-		832341BD1AAA6AB300B99B32 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		DD1D43E85C3E4C84A62CAC8E /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DABD4CB8EC8F4D558750611D /* MaterialCommunityIcons.ttf */; };
 		FC42A8F9CEED4214B1A8E7DF /* libRNFIRMessaging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 368E14E2358D4C91AEEE93B0 /* libRNFIRMessaging.a */; };
 /* End PBXBuildFile section */
@@ -240,6 +240,34 @@
 			remoteGlobalIDString = D8AFADBD1BEE6F3F00A4592D;
 			remoteInfo = ReactNativeNavigation;
 		};
+		3AE25CA11F1F62FF00B8752A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 139D7ECE1E25DB7D00323FB7;
+			remoteInfo = "third-party";
+		};
+		3AE25CA31F1F62FF00B8752A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D383D3C1EBD27B6005632C8;
+			remoteInfo = "third-party-tvOS";
+		};
+		3AE25CA51F1F62FF00B8752A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 139D7E881E25C6D100323FB7;
+			remoteInfo = "double-conversion";
+		};
+		3AE25CA71F1F62FF00B8752A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D383D621EBD27B9005632C8;
+			remoteInfo = "double-conversion-tvOS";
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -269,7 +297,7 @@
 		0F7C410A23A543339E686816 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* BRCAMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BRCAMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* BRCA Exchange.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BRCA Exchange.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = BRCAMobile/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = BRCAMobile/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -318,7 +346,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				140ED2AC1D01E1AD002B40FF /* ReferenceProxy in Frameworks */,
+				140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */,
 				264011237D4DC7B3B95EB22D /* libPods-BRCAMobileTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -327,20 +355,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3AB258581DD322D100E33C51 /* ReferenceProxy in Frameworks */,
-				146834051AC3E58100842450 /* ReferenceProxy in Frameworks */,
-				00C302E51ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */,
-				00C302E71ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */,
-				00C302E81ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */,
-				133E29F31AD74F7200F7D852 /* ReferenceProxy in Frameworks */,
-				00C302E91ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */,
-				139105C61AF99C1200B5F7CC /* ReferenceProxy in Frameworks */,
-				832341BD1AAA6AB300B99B32 /* ReferenceProxy in Frameworks */,
-				00C302EA1ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */,
-				139FDEF61B0652A700C62182 /* ReferenceProxy in Frameworks */,
-				3A73A31F1E5C99B3002AFFF8 /* ReferenceProxy in Frameworks */,
-				3AB8DB541E5DBEF400C19E77 /* ReferenceProxy in Frameworks */,
-				3AB8DB381E5DBEE900C19E77 /* ReferenceProxy in Frameworks */,
+				3AB258581DD322D100E33C51 /* libReactNativeNavigation.a in Frameworks */,
+				146834051AC3E58100842450 /* libReact.a in Frameworks */,
+				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
+				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
+				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
+				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
+				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
+				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
+				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
+				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
+				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				3A73A31F1E5C99B3002AFFF8 /* libRCTAnimation.a in Frameworks */,
+				3AB8DB541E5DBEF400C19E77 /* libLRDRCTSimpleToast.a in Frameworks */,
+				3AB8DB381E5DBEE900C19E77 /* libRNVectorIcons.a in Frameworks */,
 				FC42A8F9CEED4214B1A8E7DF /* libRNFIRMessaging.a in Frameworks */,
 				7CDDBA5039D8E32D536F50D0 /* libPods-BRCAMobile.a in Frameworks */,
 			);
@@ -453,6 +481,10 @@
 				3A73A3041E5C984C002AFFF8 /* libcxxreact.a */,
 				3A73A3061E5C984C002AFFF8 /* libjschelpers.a */,
 				3A73A3081E5C984C002AFFF8 /* libjschelpers.a */,
+				3AE25CA21F1F62FF00B8752A /* libthird-party.a */,
+				3AE25CA41F1F62FF00B8752A /* libthird-party.a */,
+				3AE25CA61F1F62FF00B8752A /* libdouble-conversion.a */,
+				3AE25CA81F1F62FF00B8752A /* libdouble-conversion.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -503,7 +535,7 @@
 			isa = PBXGroup;
 			children = (
 				3A73A31C1E5C98CB002AFFF8 /* libRCTAnimation.a */,
-				3A73A31E1E5C98CB002AFFF8 /* libRCTAnimation-tvOS.a */,
+				3A73A31E1E5C98CB002AFFF8 /* libRCTAnimation.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -583,7 +615,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* BRCAMobile.app */,
+				13B07F961A680F5B00A75B9A /* BRCA Exchange.app */,
 				00E356EE1AD99517003FC87E /* BRCAMobileTests.xctest */,
 			);
 			name = Products;
@@ -641,9 +673,9 @@
 			productReference = 00E356EE1AD99517003FC87E /* BRCAMobileTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* BRCAMobile */ = {
+		13B07F861A680F5B00A75B9A /* BRCA Exchange */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BRCAMobile" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BRCA Exchange" */;
 			buildPhases = (
 				05BA6BDD1909B2BA89E5D72F /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
@@ -657,9 +689,9 @@
 			);
 			dependencies = (
 			);
-			name = BRCAMobile;
+			name = "BRCA Exchange";
 			productName = "Hello World";
-			productReference = 13B07F961A680F5B00A75B9A /* BRCAMobile.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* BRCA Exchange.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -760,7 +792,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* BRCAMobile */,
+				13B07F861A680F5B00A75B9A /* BRCA Exchange */,
 				00E356ED1AD99517003FC87E /* BRCAMobileTests */,
 			);
 		};
@@ -886,10 +918,10 @@
 			remoteRef = 3A73A31B1E5C98CB002AFFF8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3A73A31E1E5C98CB002AFFF8 /* libRCTAnimation-tvOS.a */ = {
+		3A73A31E1E5C98CB002AFFF8 /* libRCTAnimation.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libRCTAnimation-tvOS.a";
+			path = libRCTAnimation.a;
 			remoteRef = 3A73A31D1E5C98CB002AFFF8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -954,6 +986,34 @@
 			fileType = archive.ar;
 			path = libReactNativeNavigation.a;
 			remoteRef = 3AB258561DD321C800E33C51 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3AE25CA21F1F62FF00B8752A /* libthird-party.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libthird-party.a";
+			remoteRef = 3AE25CA11F1F62FF00B8752A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3AE25CA41F1F62FF00B8752A /* libthird-party.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libthird-party.a";
+			remoteRef = 3AE25CA31F1F62FF00B8752A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3AE25CA61F1F62FF00B8752A /* libdouble-conversion.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libdouble-conversion.a";
+			remoteRef = 3AE25CA51F1F62FF00B8752A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3AE25CA81F1F62FF00B8752A /* libdouble-conversion.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libdouble-conversion.a";
+			remoteRef = 3AE25CA71F1F62FF00B8752A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
@@ -1130,7 +1190,7 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* BRCAMobile */;
+			target = 13B07F861A680F5B00A75B9A /* BRCA Exchange */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1221,7 +1281,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.brcamobile.BRCAMobile;
-				PRODUCT_NAME = BRCAMobile;
+				PRODUCT_NAME = "BRCA Exchange";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1252,7 +1312,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.brcamobile.BRCAMobile;
-				PRODUCT_NAME = BRCAMobile;
+				PRODUCT_NAME = "BRCA Exchange";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -1368,7 +1428,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BRCAMobile" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BRCA Exchange" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
