@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {
     Modal, Text, TouchableOpacity, View, Button,
-    StyleSheet
+    StyleSheet, ScrollView
 } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -36,35 +36,37 @@ export default class LegendModal extends Component {
                     </View>
 
                     <View style={{padding: 20}}>
-                        <Text style={styles.subheader}>Pathogenicity:</Text>
+                        <ScrollView>
+                            <Text style={styles.subheader}>Pathogenicity:</Text>
 
-                        {
-                            Object.keys(patho_indicators).map((name, idx) => {
-                                const obj_style = patho_indicators[name];
+                            {
+                                Object.keys(patho_indicators).map((name, idx) => {
+                                    const obj_style = patho_indicators[name];
 
-                                return (
-                                    <View key={idx} style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15}}>
-                                        <Icon {...obj_style} size={22} />
-                                        <Text style={{marginLeft: 5, marginRight: 10}}>{name}</Text>
-                                    </View>
-                                );
-                            })
-                        }
+                                    return (
+                                        <View key={idx} style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15}}>
+                                            <Icon {...obj_style} size={22} />
+                                            <Text style={{marginLeft: 5, marginRight: 10}}>{ obj_style.title || name }</Text>
+                                        </View>
+                                    );
+                                })
+                            }
 
-                        <Text style={styles.subheader}>Follow Status:</Text>
+                            <Text style={styles.subheader}>Follow Status:</Text>
 
-                        {
-                            Object.keys(follow_indicators).map((name, idx) => {
-                                const obj_style = follow_indicators[name];
+                            {
+                                Object.keys(follow_indicators).map((name, idx) => {
+                                    const obj_style = follow_indicators[name];
 
-                                return (
-                                    <View key={idx} style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15}}>
-                                        <Icon {...obj_style} size={22} />
-                                        <Text style={{marginLeft: 5, marginRight: 10}}>{name}</Text>
-                                    </View>
-                                );
-                            })
-                        }
+                                    return (
+                                        <View key={idx} style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15}}>
+                                            <Icon {...obj_style} size={22} />
+                                            <Text style={{marginLeft: 5, marginRight: 10}}>{name}</Text>
+                                        </View>
+                                    );
+                                })
+                            }
+                        </ScrollView>
 
                         <TouchableOpacity style={styles.closeModalButton} onPress={() => this.props.onDismissLegend()}>
                             <Text style={styles.closeModalButtonText}>close</Text>
@@ -80,7 +82,7 @@ export default class LegendModal extends Component {
 const styles = StyleSheet.create({
     legendModal: {
         backgroundColor: 'white',
-        top: 45,
+        top: 0,
         borderColor: '#a6a6a6',
         borderWidth: 1,
         borderRadius: 3,
