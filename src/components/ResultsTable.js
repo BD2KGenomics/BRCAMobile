@@ -63,7 +63,7 @@ export default class ResultsTable extends Component {
         return (
             <TouchableOpacity onPress={this.rowClicked.bind(this, d)}>
               <View style={styles.row}>
-                <Text style={[styles.rowCell, styles.rowTextCell, {flex: 0.3}]}>{d.Gene_Symbol}</Text>
+                <Text style={[styles.rowCell, styles.rowTextCell, {flex: 0.4}]} numberOfLines={1}>{d.Gene_Symbol}</Text>
                 <Text style={[styles.rowCell, styles.rowTextCell]} numberOfLines={1} ellipsizeMode="tail">{d.HGVS_cDNA.split(':')[1]}</Text>
                 <View style={[styles.rowCell, { flex: 0.25, flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'nowrap' }]}>
                     <Icon {...pathoIconProps} size={22} />
@@ -183,6 +183,7 @@ const styles = StyleSheet.create({
     },
     headerCell: {
         flex: 1,
+        textAlign: 'left',
         padding: 8,
         color: 'black',
         fontWeight: '500',

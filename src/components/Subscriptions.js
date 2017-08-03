@@ -49,7 +49,7 @@ export default class Subscriptions extends Component {
         return (
             <View style={styles.header}>
                 {/*<Text style={[styles.headerCell, {flex: 0.4}]}>Gene</Text>*/}
-                <Text style={styles.headerCell}>HGVS Nucleotide</Text>
+                <Text style={styles.headerCell} numberOfLines={1}>HGVS Nucl.</Text>
                 <Text style={[styles.headerCell, { textAlign: 'right' }]}>Status</Text>
             </View>
         )

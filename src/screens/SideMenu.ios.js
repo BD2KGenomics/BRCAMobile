@@ -19,7 +19,8 @@ export default class SideMenu extends BaseSideMenu {
             size: 30,
             width: 300,
             color: "#eee",
-            padding: 20,
+            padding: 15,
+            paddingLeft: 20,
             borderRadius: 0,
             backgroundColor: "transparent",
             underlayColor: "#555"
