@@ -8,7 +8,7 @@ export const patho_indicators = {
         color: '#e7b34e', name: 'radio-button-checked'
     },
     'Unknown Significance': {
-        color: '#aaa', name: 'radio-button-checked'
+        color: '#aaa', name: 'radio-button-checked', title: 'Uncertain Significance'
     },
     'Likely Benign': {
         color: '#7ab1e8', name: 'radio-button-checked'
