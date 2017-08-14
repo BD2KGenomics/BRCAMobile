@@ -32,8 +32,6 @@ import {patho_indicators} from "../metadata/icons";
 class DetailDisplay extends Component {
     constructor(props) {
         super(props);
-
-        this.copyCelValue = this.copyCelValue.bind(this);
     }
 
     componentDidMount() {
@@ -42,23 +40,16 @@ class DetailDisplay extends Component {
         // this will eventually populate this.props.details.get(this.props.data.id) with a valid value
     }
 
-    copyCelValue(v) {
-        Toast.show(`copied '${v}'`, 1);
-        Clipboard.setString(v);
-    }
-
     static renderRow(d, sectionID, rowID) {
         const v = (d.value && d.value.trim() !== '') ? d.value : '-';
 
         return (
-            <TouchableWithoutFeedback onLongPress={() => this.copyCelValue(v)}>
-                <View style={[styles.row, (rowID % 2 === 1?styles.oddRow:null)]}>
-                    <Text style={styles.rowLabel}>{d.title}</Text>
-                    { (d.field == 'Pathogenicity_expert')
-                        ? renderSignificance(v)
-                        : <Text style={styles.rowValue}>{v}</Text> }
-                </View>
-            </TouchableWithoutFeedback>
+            <View style={[styles.row, (rowID % 2 === 1?styles.oddRow:null)]}>
+                <Text style={styles.rowLabel}>{d.title}</Text>
+                { (d.field == 'Pathogenicity_expert')
+                    ? renderSignificance(v)
+                    : <Text selectable={true} style={styles.rowValue}>{v}</Text> }
+            </View>
         );
     }
 
@@ -296,7 +287,7 @@ function renderSignificance(status) {
     return (
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon {...pathoIconProps} size={22} />
-            <Text style={[styles.rowValue, {flexGrow: 1}]}>{ status }</Text>
+            <Text selectable={true} style={[styles.rowValue, {flexGrow: 1}]}>{ status }</Text>
         </View>
     );
 }
