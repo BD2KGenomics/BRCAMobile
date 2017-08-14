@@ -4,8 +4,9 @@ import {
     View,
     ScrollView,
     TouchableOpacity,
-    StyleSheet, Platform
+    StyleSheet, Platform, Linking
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
 
@@ -37,6 +38,17 @@ The BRCA Exchange website is a product of the BRCA Challenge of the Global Allia
 Variant data displayed in this app are made available using the standards based GA4GH Genomics API.`}
                 </Text>
 
+                <View style={styles.websiteLink}>
+                    <Icon.Button
+                        style={styles.websiteLinkButton}
+                        iconStyle={{marginRight: 5}}
+                        name="link" backgroundColor="#5ac"
+                        onPress={() => Linking.openURL("http://brcaexchange.org")}
+                    >
+                        <Text style={styles.websiteLinkButtonText}>visit brcaexchange.org</Text>
+                    </Icon.Button>
+                </View>
+
                 <View style={styles.logo}>
                     <Image style={{width: 300, paddingBottom: 0 }} resizeMode='contain' source={require('../../img/logos/ga4gh.png')} />
                     <Image style={{width: 300 }} resizeMode='contain' source={require('../../img/logos/ucsc.png')} />
@@ -59,7 +71,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     prose: {
-        lineHeight: 18
+        lineHeight: 18,
     },
     button: {
         textAlign: 'center',
@@ -67,6 +79,19 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginTop:10,
         color: 'blue'
+    },
+    websiteLink: {
+        alignItems: 'center',
+        margin: 20,
+        marginTop: 40
+    },
+    websiteLinkButton: {
+        // width: 200
+    },
+    websiteLinkButtonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold'
     },
     logo: {
         marginTop: 30,
