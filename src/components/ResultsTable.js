@@ -90,7 +90,7 @@ export default class ResultsTable extends Component {
                             this.props.resultsCount > 0 ?
                                 <Text>
                                     {/* loaded {this.props.dataSource.getRowCount()} out of */}
-                                    {this.props.resultsCount} matching variant{this.props.resultsCount !== 1 && 's'}&nbsp;
+                                    {this.props.resultsCount} variant{this.props.resultsCount !== 1 && 's'}&nbsp;
                                     { (this.props.synonyms > 0) ? <Text>(synonyms: {this.props.synonyms})</Text> : '' }
                                 </Text>
                                 :
