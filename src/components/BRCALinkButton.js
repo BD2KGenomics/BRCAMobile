@@ -30,7 +30,7 @@ export default class extends View {
     render() {
         return (
             <TouchableHighlight style={styles.brcalink} onPress={this.handlePress}>
-                <Icon name="link" size={28} color="white" />
+                <Icon name="open-in-browser" size={28} color="white" />
             </TouchableHighlight>
         )
     }
