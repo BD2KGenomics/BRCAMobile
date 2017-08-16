@@ -7,7 +7,7 @@ import {
 import DetailDisplay from '../components/DetailDisplay';
 
 // FIXME: this is a hack; we should be relying on the store rather than querying directly, but alas
-import {fetchDetails} from '../redux/actions';
+import {fetchDetails} from '../redux/browsing/helpers';
 
 export default class DetailScreen extends Component {
     static navigatorStyle = {

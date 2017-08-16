@@ -14,7 +14,7 @@ class SubscriptionsScreen extends LinkableMenuScreen {
     constructor(props) {
         super(props);
 
-        // store whether we originally had subscriptions on visiting this page
+        // store whether we originally had subscribing on visiting this page
         this.state = {
             hadSubscriptions: this.props.subscriptions && Object.keys(this.props.subscriptions).length > 0,
             token: ''
@@ -169,9 +169,9 @@ const mapStateToProps = (state_immutable) => {
 
     return {
         // subscription info
-        token: state.brca.token,
-        subscriptions: state.brca.subscriptions,
-        subsLastUpdatedBy: state.brca.subsLastUpdatedBy
+        token: state.subscribing.token,
+        subscriptions: state.subscribing.subscriptions,
+        subsLastUpdatedBy: state.subscribing.subsLastUpdatedBy
     }
 };
 

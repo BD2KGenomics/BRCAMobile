@@ -7,10 +7,14 @@ import { combineReducers } from 'redux-immutablejs';
 import thunk from 'redux-thunk'
 import { persistStore, autoRehydrate } from 'redux-persist-immutable'
 import { AsyncStorage } from 'react-native'
-import reducers from './redux/reducers'
+import { browsingReducer, subscriptionsReducer, notifylogReducer } from './redux';
 import * as Immutable from "immutable";
 
-let reducer = combineReducers({ brca: reducers.brca });
+let reducer = combineReducers({
+    browsing: browsingReducer,
+    subscribing: subscriptionsReducer,
+    notifylog: notifylogReducer
+});
 let store = createStore(reducer, applyMiddleware(thunk), autoRehydrate());
 
 // redux-persist will save the store to local storage via react-native's AsyncStorage
@@ -26,6 +30,7 @@ import FCM, {
 } from "react-native-fcm";
 
 import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
+import { receive_notification } from "./redux/notifylog/actions";
 
 export default class App {
     constructor() {
@@ -35,8 +40,8 @@ export default class App {
         this.subscriptions = Immutable.Seq();
 
         store.subscribe(() => {
-            this.subscriptions = store.getState().getIn(['brca','subscriptions']).keySeq();
-            // console.log("subscriptions: ", JSON.stringify(this.subscriptions));
+            this.subscriptions = store.getState().getIn(['subscribing','subscriptions']).keySeq();
+            // console.log("subscribing: ", JSON.stringify(this.subscribing));
         });
     }
 
@@ -127,6 +132,10 @@ export default class App {
                 // it's probably from FCM, let's raise a notification if we're actually subscribed to this
                 if (this.subscriptions.includes(parseInt(notif.variant_id))) {
                     console.log("* FCM notification for subscribed variant, raising local notification...");
+
+                    // log the notification
+                    store.dispatch(receive_notification(notif));
+
                     this.showLocalNotification(notif);
                 }
             }

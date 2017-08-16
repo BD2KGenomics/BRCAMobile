@@ -300,9 +300,9 @@ const mapStateToProps = (state_immutable) => {
 
     return {
         // subscription info
-        details: state.brca.details,
-        subscriptions: state.brca.subscriptions,
-        subsLastUpdatedBy: state.brca.subsLastUpdatedBy
+        details: state.browsing.details,
+        subscriptions: state.subscribing.subscriptions,
+        subsLastUpdatedBy: state.subscribing.subsLastUpdatedBy
     }
 };
 

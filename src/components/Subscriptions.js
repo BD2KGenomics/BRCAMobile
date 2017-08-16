@@ -25,7 +25,7 @@ export default class Subscriptions extends Component {
 
     componentWillReceiveProps(newProps) {
         // this is kind of silly, but the list won't refresh unless we feed it data it can't be sure hasn't changed
-        // since we keep the list frozen, but update subscriptions, this is a quick hack to get the buttons to redraw
+        // since we keep the list frozen, but update subscribing, this is a quick hack to get the buttons to redraw
         // FIXME: is there a better way to do this?
 
         this.setState({
@@ -56,7 +56,7 @@ export default class Subscriptions extends Component {
     }
 
     renderRow(d) {
-        // this checks the subscriptions list directly vs. the frozen dataset we're manipulating
+        // this checks the subscribing list directly vs. the frozen dataset we're manipulating
         const subscribed = this.props.subscriptions.hasOwnProperty(d.id);
 
         return (
@@ -93,7 +93,6 @@ export default class Subscriptions extends Component {
                     renderRow={this.renderRow.bind(this)}
                 />
             </View>
-
         );
     }
 }

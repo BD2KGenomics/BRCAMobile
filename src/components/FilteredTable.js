@@ -109,15 +109,15 @@ const mapStateToProps = (state_immutable) => {
 
     return {
         // subscription info
-        subscriptions: state.brca.subscriptions,
+        subscriptions: state.subscribing.subscriptions,
         // query info
-        isLoading: state.brca.isFetching,
-        query: state.brca.query,
-        variants: state.brca.variants,
-        synonyms: state.brca.synonyms,
-        resultsCount: state.brca.totalResults,
-        pageIndex: state.brca.pageIndex,
-        pageSize: state.brca.pageSize
+        isLoading: state.browsing.isFetching,
+        query: state.browsing.query,
+        variants: state.browsing.variants,
+        synonyms: state.browsing.synonyms,
+        resultsCount: state.browsing.totalResults,
+        pageIndex: state.browsing.pageIndex,
+        pageSize: state.browsing.pageSize
     }
 };
 
