@@ -42,7 +42,7 @@ Variant data displayed in this app are made available using the standards based 
                     <Icon.Button
                         style={styles.websiteLinkButton}
                         iconStyle={{marginRight: 5}}
-                        name="link" backgroundColor="#5ac"
+                        name="open-in-browser" backgroundColor="#5ac"
                         onPress={() => Linking.openURL("http://brcaexchange.org")}
                     >
                         <Text style={styles.websiteLinkButtonText}>visit brcaexchange.org</Text>
