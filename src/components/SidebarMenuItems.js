@@ -37,6 +37,11 @@ export default class SidebarMenuItems extends Component {
                     <Text style={this.props.buttonStyle}>Followed Variants</Text>
                 </Icon.Button>
 
+                <Icon.Button name="speaker-notes" {...this.props.navbuttonProps}
+                    onPress={ () => this.props.onNavigateRequest('Notify Log', 'brca.NotifyLogScreen', false) }>
+                    <Text style={this.props.buttonStyle}>Notify Log</Text>
+                </Icon.Button>
+
                 <Icon.Button name="info" {...this.props.navbuttonProps}
                     onPress={ () => this.props.onNavigateRequest('About', 'brca.AboutScreen', false) }>
                     <Text style={this.props.buttonStyle}>About This App</Text>

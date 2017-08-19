@@ -43,6 +43,12 @@ export default class App {
             this.subscriptions = store.getState().getIn(['subscribing','subscriptions']).keySeq();
             // console.log("subscribing: ", JSON.stringify(this.subscribing));
         });
+
+        // for buffering notifications (i.e. to show one 'batched' notification if we receive many)
+        this.bufferNotifications = this.bufferNotifications.bind(this);
+        this.releaseBuffer = this.releaseBuffer.bind(this);
+        this.buffered_notifies = [];
+        this.buffer_handler = -1;
     }
 
     startApp() {
@@ -60,6 +66,11 @@ export default class App {
             }
         });
     }
+
+
+    // ---------------------------------------
+    // --- FCM registration, notification reception
+    // ---------------------------------------
 
     registerWithFCM() {
         FCM.requestPermissions(); // on iOS, prompts for permission to receive push notifications
@@ -80,6 +91,9 @@ export default class App {
         // FIXME: verify if we actually need to
         FCM.subscribeToTopic('/topics/variant_updates');
 
+        // this is strictly a notification channel
+        FCM.subscribeToTopic('/topics/database_updates');
+
         FCM.getInitialNotification()
             .then(notif => {
                 // getInitialNotification() actually gives us the notification that launched us
@@ -97,7 +111,9 @@ export default class App {
     }
 
     handleNotification(notif) {
+        console.group();
         console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
+        console.log("payload: ", notif);
 
         // ways we can enter this method:
         // 1) we receive a wakeup notification from the OS (android)
@@ -106,19 +122,30 @@ export default class App {
         // 4) we click the notification (either from cold-start or when the app is running)
 
         // if the notification has a variant_id, then it's either one from FCM or from the user pressing a notification
-        if (notif.hasOwnProperty('variant_id')) {
+        if (notif.hasOwnProperty('variant_id') || notif.hasOwnProperty('variant_count')) {
             console.log("* Detected notification with variant_id field");
 
             if (notif.opened_from_tray) {
                 // notif.local_notification is true even if we're coming in from clicking it, apparently
                 // so we have to check notif.opened_from_tray first
-                const target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
 
-                console.log("Opened from tray, launching ", target);
-                Navigation.handleDeepLink({
-                    link: target
-                });
+                let link_target = null;
 
+                if (notif.hasOwnProperty('variant_id')) {
+                    link_target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
+                }
+                else if (notif.hasOwnProperty('variant_count') || notif.hasOwnProperty('announcement')) {
+                    link_target = 'notifylog/' + JSON.stringify({ variant_count: notif.variant_count });
+                }
+
+                if (link_target) {
+                    console.log("Opened from tray, launching ", link_target);
+                    Navigation.handleDeepLink({
+                        link: link_target
+                    });
+                }
+
+                console.groupEnd();
                 return;
             }
             else if (notif.local_notification) {
@@ -126,6 +153,7 @@ export default class App {
 
                 // notif.local_notification being true indicates that we raised this event in
                 // response to receiving a non-local notification, so we abort
+                console.groupEnd();
                 return;
             }
             else {
@@ -136,7 +164,11 @@ export default class App {
                     // log the notification
                     store.dispatch(receive_notification(notif));
 
-                    this.showLocalNotification(notif);
+                    // this.showLocalNotification(notif);
+                    this.bufferNotifications(notif);
+                }
+                else {
+                    console.log("(?!) Received notification for unsubscribed variant: ", notif.variant_id)
                 }
             }
         }
@@ -148,6 +180,8 @@ export default class App {
         if (notif.hasOwnProperty("finish") && typeof notif.finish === "function") {
             notif.finish();
         }
+
+        console.groupEnd();
     }
 
     handleTokenRefresh(token) {
@@ -155,11 +189,59 @@ export default class App {
         store.dispatch(receive_fcm_token(token));
     }
 
+
+    // ---------------------------------------
+    // --- notification buffering
+    // ---------------------------------------
+
+    bufferNotifications(notif) {
+        this.buffered_notifies = this.buffered_notifies.concat(notif);
+
+        if (this.buffer_handler >= 0) {
+            clearTimeout(this.buffer_handler);
+        }
+
+        this.buffer_handler = setTimeout(this.releaseBuffer, 3000);
+    }
+
+    releaseBuffer() {
+        console.log("Notifies: ", this.buffered_notifies);
+
+        // TODO: fire off either a single detailed notification, or a batched notify if length > 1
+        if (this.buffered_notifies.length == 1) {
+            this.showLocalNotification(this.buffered_notifies[0]);
+        }
+        else {
+            // TODO: show batched notification
+            FCM.presentLocalNotification({
+                opened_from_tray: 0,
+                icon: "ic_stat_brca_notify",
+                title: `${this.buffered_notifies.length} variants have changed`,
+                body: `The clinical significance of ${this.buffered_notifies.length} variants have changed`,
+                priority: "high",
+                variant_count: this.buffered_notifies.length,
+                click_action: (Platform.OS === "android") ? "fcm.ACTION.HELLO" : this.buffered_notifies[0].click_action,
+                show_in_foreground: true,
+                // local: true
+            });
+        }
+
+        // and clear all this for next time
+        this.buffer_handler = -1;
+        this.buffered_notifies = [];
+    }
+
+
+    // ---------------------------------------
+    // --- actual notification displaying
+    // ---------------------------------------
+
     showLocalNotification(notif) {
         console.log("Showing: ", notif);
 
         FCM.presentLocalNotification({
             opened_from_tray: 0,
+            icon: "ic_stat_brca_notify",
             title: notif.title,
             body: notif.body,
             variant_id: notif.variant_id,

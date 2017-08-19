@@ -25,7 +25,7 @@ export default class LinkableMenuScreen extends Component {
 
                 // console.log("Deep reset to " + params.title + " from ", this.props.navigator.screenInstanceID);
 
-                // we always do a full reset on a deep link
+                // FIXME: we always do a full reset on a deep link, due to some bug in RNN
                 this.props.navigator.resetTo({
                     title: params.title,
                     screen: params.screen
@@ -39,6 +39,17 @@ export default class LinkableMenuScreen extends Component {
                     screen: 'brca.DetailScreen',
                     passProps: {
                         variant_id: params.variant_id
+                    }
+                })
+            }
+            else if (parts[0] === 'notifylog') {
+                const params = JSON.parse(parts[1]);
+
+                this.props.navigator.push({
+                    title: 'Notify Log',
+                    screen: 'brca.NotifyLogScreen',
+                    passProps: {
+                        variant_count: params.variant_count
                     }
                 })
             }

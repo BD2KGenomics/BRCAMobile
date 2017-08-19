@@ -9,6 +9,7 @@ import DetailScreen from '../screens/DetailScreen';
 import SubscriptionsScreen from '../screens/SubscriptionsScreen';
 import SettingsScreen from "../screens/SettingsScreen";
 import SideMenu from '../screens/SideMenu';
+import NotifyLogScreen from "../screens/NotifyLogScreen";
 
 export const screens = [
     {
@@ -45,6 +46,15 @@ export const screens = [
         sidebar: {
             title: 'About',
             icon: 'info',
+            resetStack: false
+        },
+    },
+    {
+        name: 'brca.NotifyLogScreen',
+        component: NotifyLogScreen,
+        sidebar: {
+            title: 'Notify Log',
+            icon: 'speaker-notes',
             resetStack: false
         },
     },
