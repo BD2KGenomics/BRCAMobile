@@ -6,7 +6,8 @@ import SearchScreen from './SearchScreen';
 import AboutScreen from './AboutScreen';
 import DetailScreen from './DetailScreen';
 import SubscriptionsScreen from './SubscriptionsScreen';
-import ViewTestScreen from "./ViewTestScreen";
+import SettingsScreen from "./SettingsScreen";
+import NotifyLogScreen from './NotifyLogScreen';
 import SideMenu from './SideMenu';
 
 import {screens} from '../metadata/screens';
@@ -22,6 +23,6 @@ export function registerScreens(store) {
     // Navigation.registerComponent('brca.AboutScreen', () => AboutScreen, store, Provider);
     // Navigation.registerComponent('brca.SubscriptionsScreen', () => SubscriptionsScreen, store, Provider);
     // Navigation.registerComponent('brca.DetailScreen', () => DetailScreen, store, Provider);
-    // Navigation.registerComponent('brca.ViewTestScreen', () => ViewTestScreen, store, Provider);
+    // Navigation.registerComponent('brca.SettingsScreen', () => SettingsScreen, store, Provider);
     // Navigation.registerComponent('brca.SideMenu', () => SideMenu, store, Provider);
 }

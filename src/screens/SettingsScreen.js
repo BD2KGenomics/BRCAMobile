@@ -9,7 +9,7 @@ import {
 
 import LinkableMenuScreen from './LinkableMenuScreen';
 
-export default class ViewTestScreen extends LinkableMenuScreen {
+export default class SettingsScreen extends LinkableMenuScreen {
     constructor(props) {
         super(props);
     }

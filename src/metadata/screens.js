@@ -7,7 +7,7 @@ import SearchScreen from '../screens/SearchScreen';
 import AboutScreen from '../screens/AboutScreen';
 import DetailScreen from '../screens/DetailScreen';
 import SubscriptionsScreen from '../screens/SubscriptionsScreen';
-import ViewTestScreen from "../screens/ViewTestScreen";
+import SettingsScreen from "../screens/SettingsScreen";
 import SideMenu from '../screens/SideMenu';
 
 export const screens = [
@@ -50,8 +50,8 @@ export const screens = [
     },
 
     {
-        name: 'brca.ViewTestScreen',
-        component: ViewTestScreen,
+        name: 'brca.SettingsScreen',
+        component: SettingsScreen,
         sidebar: null,
     },
     {
