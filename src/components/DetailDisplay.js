@@ -312,11 +312,11 @@ const mapDispatchToProps = (dispatch) => {
         onFetchDetails: (item_id) => {
             dispatch(fetch_details(item_id))
         },
-        onSubscribe: (item_id) => {
-            dispatch(subscribe(item_id, 'details'))
+        onSubscribe: (item) => {
+            dispatch(subscribe(item, 'details'))
         },
-        onUnsubscribe: (item_id) => {
-            dispatch(unsubscribe(item_id, 'details'))
+        onUnsubscribe: (item) => {
+            dispatch(unsubscribe(item, 'details'))
         }
     }
 };
