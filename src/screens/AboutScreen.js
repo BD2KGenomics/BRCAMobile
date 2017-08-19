@@ -6,11 +6,12 @@ import {
     TouchableOpacity,
     StyleSheet, Platform, Linking
 } from 'react-native';
+import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
 
-export default class AboutScreen extends LinkableMenuScreen {
+class AboutScreen extends LinkableMenuScreen {
     constructor(props) {
         super(props);
     }
@@ -53,6 +54,10 @@ Variant data displayed in this app are made available using the standards based 
                     <Image style={{width: 300, paddingBottom: 0 }} resizeMode='contain' source={require('../../img/logos/ga4gh.png')} />
                     <Image style={{width: 300 }} resizeMode='contain' source={require('../../img/logos/ucsc.png')} />
                     <Image style={{width: 300, paddingBottom: 0 }} resizeMode='contain' source={require('../../img/logos/ethz_simple.png')} />
+                </View>
+
+                <View style={{marginBottom: 50}}>
+                    <Text selectable={true} style={styles.tokenText}>FCM Token: {this.props.token}</Text>
                 </View>
             </ScrollView>
         );
@@ -97,5 +102,22 @@ const styles = StyleSheet.create({
         marginTop: 30,
         marginBottom: 40,
         alignItems: 'center',
+    },
+    tokenText: {
+        fontSize: 10,
+        color: '#aaa'
     }
 });
+
+
+const mapStateToProps = (state_immutable) => {
+    const state = state_immutable.toJS();
+
+    return {
+        token: state.subscribing.token
+    }
+};
+
+export default connect(
+    mapStateToProps
+)(AboutScreen);
