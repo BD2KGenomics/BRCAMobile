@@ -35,7 +35,8 @@ class SubscriptionsScreen extends LinkableMenuScreen {
             title: "Details",
             screen: "brca.DetailScreen",
             passProps: {
-                data: d
+                variant_id: d.id,
+                hint: 'subscriptions'
             }
         });
     }

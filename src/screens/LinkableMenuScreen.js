@@ -38,7 +38,8 @@ export default class LinkableMenuScreen extends Component {
                     title: 'Details',
                     screen: 'brca.DetailScreen',
                     passProps: {
-                        variant_id: params.variant_id
+                        variant_id: params.variant_id,
+                        hint: 'fetch'
                     }
                 })
             }

@@ -28,16 +28,75 @@ import BRCALinkButton from "./BRCALinkButton";
 
 import {columns} from '../metadata/fields';
 import {patho_indicators} from "../metadata/icons";
+import {receive_details} from "../redux/browsing/actions";
 
 class DetailDisplay extends Component {
     constructor(props) {
         super(props);
+
+        // FIXME: this would be so much cleaner if we depended solely on this.props.details.get(this.props.variant_id)
+        // we could just check if it's there, and if it's not fire off actions to populate it from wherever
+        // we could also check that we're fetching via this.props.isFetchingDetails
+
+        // TODO: we now receive variant_id and an optional hint from our caller
+        // we may need to fetch
     }
 
     componentDidMount() {
-        this.props.onFetchDetails(this.props.data.id);
+        // FIXME: resolve data source here
+        if (!this.getTheseDetails()) {
+            this.resolveDataSource(this.props.variant_id, this.props.hint);
+        }
+    }
 
-        // this will eventually populate this.props.details.get(this.props.data.id) with a valid value
+    getTheseDetails() {
+        return this.props.details_cache.hasOwnProperty(this.props.variant_id)
+            ? this.props.details_cache[this.props.variant_id]
+            : null;
+    }
+
+    resolveDataSource(variant_id, hint) {
+        /*
+        let source = null;
+        const resolution_types = {
+            subscriptions: () => {
+                return this.props.subscriptions[variant_id];
+            },
+            variants: () => {
+                const source = this.props.variants.filter(x => x.id == variant_id);
+                console.log("variant source: ", source);
+                return (source.length > 0) ? source[0] : null;
+            },
+            fetch: () => {
+                // TODO: implement fetch
+                return null;
+            }
+        };
+        let resolution_order = ['subscriptions', 'variants', 'fetch'];
+
+        // move hint to the front of the list, if present
+        if (hint && resolution_order.includes(hint)) {
+            resolution_order = [hint].concat(resolution_order.filter(x => x != hint))
+        }
+
+        console.log("resolution order: ", resolution_order);
+
+        for (let i = 0; i < resolution_order.length; i++) {
+            // attempt to resolve with each strategy...
+            const type = resolution_order[i];
+            console.log("Resolving with ", type);
+            source = resolution_types[type](variant_id);
+
+            if (source)
+                break; // ...breaking if we do resolve it
+        }
+
+        // populate the details cache and let this component refresh on its own
+        this.props.onReceiveDetails(this.props.variant_id, source);
+        */
+
+        // let's just kick off a fetch
+        this.props.onFetchDetails(this.props.variant_id);
     }
 
     static renderRow(d, sectionID, rowID) {
@@ -55,7 +114,7 @@ class DetailDisplay extends Component {
 
     toggleSubscription() {
         // holdover from relying on props before
-        const d = this.props.data;
+        const d = this.getTheseDetails().versions[0];
         const identifier = d.HGVS_cDNA.split(':')[1];
 
         if (!this.isSubscribed()) {
@@ -83,26 +142,24 @@ class DetailDisplay extends Component {
     }
 
     isSubscribed() {
-        return this.props.subscriptions.hasOwnProperty(this.props.data.id);
+        return this.props.subscriptions.hasOwnProperty(this.props.variant_id);
     }
 
     versions() {
-        if (!this.props.details) {
+        if (!this.getTheseDetails()) {
             return (<Text>(no details cache!)</Text>);
         }
 
         // look up the current variant from the cache of all details views of variants
-        const variantID = this.props.data.id;
+        const theseDetails = this.getTheseDetails();
 
-        if (this.props.details.hasOwnProperty(variantID)) {
-            return this.props.details[variantID].versions.map((x, idx) => {
-                return (
-                    <View key={"versions-" + idx} style={versionStyles.row}>
-                        <Text style={[versionStyles.rowCell, versionStyles.rowTextCell, {flex: 0.3}]}>{reformatDate(x.Data_Release.date)}</Text>
-                        <Text style={[versionStyles.rowCell, versionStyles.rowTextCell, {flex: 0.7}]}>{x.Pathogenicity_expert}</Text>
-                    </View>
-                );
-            });
+        if (theseDetails) {
+            return theseDetails.versions.map((x, idx) =>
+                <View key={"versions-" + idx} style={versionStyles.row}>
+                    <Text style={[versionStyles.rowCell, versionStyles.rowTextCell, {flex: 0.3}]}>{reformatDate(x.Data_Release.date)}</Text>
+                    <Text style={[versionStyles.rowCell, versionStyles.rowTextCell, {flex: 0.7}]}>{x.Pathogenicity_expert}</Text>
+                </View>
+            );
         }
         else {
             // the details do exist, but they're not cached for some reason
@@ -110,8 +167,12 @@ class DetailDisplay extends Component {
         }
     }
 
-    render() {
-        const d = this.props.data;
+    renderData(data) {
+        if (!data) {
+            return <View><Text>(no details?)</Text></View>;
+        }
+
+        const d = data.versions[0];
 
         return (
             <ScrollView style={{flex: 1}}>
@@ -128,14 +189,10 @@ class DetailDisplay extends Component {
                     </View>
                 </View>
 
-                {/*<View style={styles.sectionHeader}>*/}
-                    {/*<Text style={styles.sectionHeaderText}>Details</Text>*/}
-                {/*</View>*/}
-
                 <ListView style={styles.listContainer}
-                          enableEmptySections={true}
-                          dataSource={this.dataToSource(this.props.data)}
-                          renderRow={DetailDisplay.renderRow.bind(this)} />
+                    enableEmptySections={true}
+                    dataSource={this.dataToSource(d)}
+                    renderRow={DetailDisplay.renderRow.bind(this)} />
 
                 <View>
                     <View style={styles.sectionHeader}>
@@ -156,7 +213,31 @@ class DetailDisplay extends Component {
             </ScrollView>
         );
     }
+
+    renderLoader() {
+        return (
+            <ActivityIndicator style={{margin: 10}} size='large' animating={true} />
+        );
+    }
+
+    render() {
+        const theseDetails = this.getTheseDetails();
+        console.log("Details: ", theseDetails);
+
+        // TODO: if we're waiting on data, display a loader
+        if (!theseDetails) {
+            return this.renderLoader();
+        }
+        else {
+            return this.renderData(theseDetails);
+        }
+    }
 }
+
+
+// ------------------------------------------------------------------------------
+// --- styles
+// ------------------------------------------------------------------------------
 
 const styles = StyleSheet.create({
     container: {
@@ -250,7 +331,10 @@ const versionStyles = StyleSheet.create({
     }
 });
 
-// helper methods
+
+// ------------------------------------------------------------------------------
+// --- helper methods
+// ------------------------------------------------------------------------------
 
 function isEmptyField(value) {
     if (Array.isArray(value)) {
@@ -293,14 +377,20 @@ function renderSignificance(status) {
 }
 
 
-/* define the component-to-store connectors */
+// ------------------------------------------------------------------------------
+// --- redux connections
+// ------------------------------------------------------------------------------
 
 const mapStateToProps = (state_immutable) => {
     const state = state_immutable.toJS();
 
+    // FIXME: replace with reselect at some point
+
     return {
         // subscription info
-        details: state.browsing.details,
+        details_cache: state.browsing.details,
+        isFetchingDetails: state.browsing.isFetchingDetails,
+        variants: state.browsing.variants, // FIXME: only include this variant?
         subscriptions: state.subscribing.subscriptions,
         subsLastUpdatedBy: state.subscribing.subsLastUpdatedBy
     }
@@ -311,6 +401,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onFetchDetails: (item_id) => {
             dispatch(fetch_details(item_id))
+        },
+        onReceiveDetails: (item_id, item) => {
+            dispatch(receive_details(item_id, item))
         },
         onSubscribe: (item) => {
             dispatch(subscribe(item, 'details'))

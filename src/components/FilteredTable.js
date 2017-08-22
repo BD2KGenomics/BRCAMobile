@@ -57,7 +57,8 @@ class FilteredTable extends Component {
             title: "Details",
             screen: "brca.DetailScreen",
             passProps: {
-                data: d
+                variant_id: d.id,
+                hint: 'variants'
             }
         });
     }
