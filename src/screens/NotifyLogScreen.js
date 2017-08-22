@@ -85,7 +85,7 @@ class NotifyLogScreen extends LinkableMenuScreen {
     }
 
     createDataSource(notifications, showRead) {
-        const filteredNotifies = notifications.filter(x => x.read == showRead);
+        const filteredNotifies = notifications.filter(x => x.read == showRead).reverse();
         const groupedNotifies = groupBy(filteredNotifies, x => x.version || "(unknown)");
 
         const ds = new ListView.DataSource({
@@ -93,7 +93,9 @@ class NotifyLogScreen extends LinkableMenuScreen {
             sectionHeaderHasChanged: (s1, s2) => s1.version !== s2.version
         });
 
-        return ds.cloneWithRowsAndSections(groupedNotifies, undefined);
+        const sectionIDs = Object.keys(groupedNotifies).reverse();
+
+        return ds.cloneWithRowsAndSections(groupedNotifies, sectionIDs);
     }
 
     renderSectionHeader(h, hID) {
