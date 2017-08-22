@@ -31,6 +31,7 @@ import FCM, {
 
 import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
 import { receive_notification } from "./redux/notifylog/actions";
+import {purge_details} from "./redux/browsing/actions";
 
 export default class App {
     constructor() {
@@ -88,8 +89,7 @@ export default class App {
 
         // subscribe to get variant notices
         // we subscribe to everything and filter out what we don't care about
-        // FIXME: verify if we actually need to
-        FCM.subscribeToTopic('/topics/variant_updates');
+        FCM.subscribeToTopic('/topics/variant_updates_debug');
 
         // this is strictly a notification channel
         FCM.subscribeToTopic('/topics/database_updates');
@@ -111,7 +111,6 @@ export default class App {
     }
 
     handleNotification(notif) {
-        console.group();
         console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
         console.log("payload: ", notif);
 
@@ -145,7 +144,7 @@ export default class App {
                     });
                 }
 
-                console.groupEnd();
+
                 return;
             }
             else if (notif.local_notification) {
@@ -153,7 +152,7 @@ export default class App {
 
                 // notif.local_notification being true indicates that we raised this event in
                 // response to receiving a non-local notification, so we abort
-                console.groupEnd();
+
                 return;
             }
             else {
@@ -163,6 +162,8 @@ export default class App {
 
                     // log the notification
                     store.dispatch(receive_notification(notif));
+                    // purge the details cache of this record, if it exists, forcing a remote refresh
+                    store.dispatch(purge_details(notif.variant_id));
 
                     // this.showLocalNotification(notif);
                     this.bufferNotifications(notif);
@@ -181,7 +182,7 @@ export default class App {
             notif.finish();
         }
 
-        console.groupEnd();
+
     }
 
     handleTokenRefresh(token) {

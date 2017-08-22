@@ -7,6 +7,7 @@ export const BEGIN_FETCH_NEXT_PAGE = 'BEGIN_FETCH_NEXT_PAGE';
 export const RECEIVE_PAGE = 'RECEIVE_PAGE';
 export const BEGIN_FETCH_DETAILS = 'BEGIN_FETCH_DETAILS';
 export const RECEIVE_DETAILS = 'RECEIVE_DETAILS';
+export const PURGE_DETAILS = 'PURGE_DETAILS';
 
 export function begin_query(query) {
     return { type: BEGIN_QUERY, requested_at: new Date(), query }
@@ -26,6 +27,10 @@ export function begin_fetch_details(variantID) {
 
 export function receive_details(variantID, item) {
     return { type: RECEIVE_DETAILS, received_at: new Date(), variantID, item }
+}
+
+export function purge_details(variantID) {
+    return { type: PURGE_DETAILS, received_at: new Date(), variantID }
 }
 
 export function query_variants(query) {

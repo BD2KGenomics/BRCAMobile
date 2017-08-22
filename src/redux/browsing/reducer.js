@@ -1,6 +1,6 @@
 import {
     BEGIN_QUERY, RECEIVE_PAGE, BEGIN_FETCH_NEXT_PAGE,
-    BEGIN_FETCH_DETAILS, RECEIVE_DETAILS
+    BEGIN_FETCH_DETAILS, RECEIVE_DETAILS, PURGE_DETAILS
 } from './actions';
 import * as Immutable from "immutable";
 
@@ -52,6 +52,11 @@ export default function browsingReducer(state=initialState, action) {
             return state.merge({
                 details: state.get('details').set(action.variantID, action.item).takeLast(10),
                 isFetchingDetails: false
+            });
+
+        case PURGE_DETAILS:
+            return state.merge({
+                details: state.get('details').delete(action.variantID)
             });
 
         default:
