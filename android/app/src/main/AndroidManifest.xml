@@ -8,11 +8,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-    <meta-data
-        android:name="com.google.firebase.messaging.default_notification_icon"
-        android:resource="@mipmap/ic_stat_brca_notify"
-    />
-
     <uses-sdk
             android:minSdkVersion="16"
             android:targetSdkVersion="22" />
@@ -23,6 +18,11 @@
             android:label="@string/app_name"
             android:icon="@mipmap/ic_launcher"
             android:theme="@style/AppTheme">
+
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@mipmap/ic_stat_brca_notify"
+        />
 
         <activity
                 android:name=".MainActivity"
