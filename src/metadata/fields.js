@@ -1,4 +1,4 @@
-// column titles copied from https://github.com/BD2KGenomics/brca-exchange/blob/master/website/js/VariantTable.js
+// column titles copied from https://github.com/BRCAChallenge/brca-exchange/blob/master/website/js/VariantTable.js
 
 export const columns = [
     {title: 'Clinical Significance', prop: 'Pathogenicity_expert'},
@@ -21,7 +21,8 @@ export const columns = [
     {title: 'Assertion Method', prop: 'Assertion_method_ENIGMA'},
     {title: 'Assertion Method Citation', prop: 'Assertion_method_citation_ENIGMA'},
     {title: 'Allele Origin', prop: 'Allele_origin_ENIGMA'},
-    {title: 'ClinVar Accession', prop: 'ClinVarAccession_ENIGMA'}
+    {title: 'ClinVar Accession', prop: 'ClinVarAccession_ENIGMA'},
+    {title: 'Database ID', prop: 'id', render: id => id}
 ];
 
 export const researchModeColumns = [
