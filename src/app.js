@@ -121,8 +121,8 @@ export default class App {
         // 4) we click the notification (either from cold-start or when the app is running)
 
         // if the notification has a variant_id, then it's either one from FCM or from the user pressing a notification
-        if (notif.hasOwnProperty('variant_id') || notif.hasOwnProperty('variant_count')) {
-            console.log("* Detected notification with variant_id field");
+        if (notif.hasOwnProperty('variant_id') || notif.hasOwnProperty('announcement')) {
+            console.log("* Detected notification with variant_id and/or announcement field");
 
             if (notif.opened_from_tray) {
                 // notif.local_notification is true even if we're coming in from clicking it, apparently
@@ -133,8 +133,8 @@ export default class App {
                 if (notif.hasOwnProperty('variant_id')) {
                     link_target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
                 }
-                else if (notif.hasOwnProperty('variant_count') || notif.hasOwnProperty('announcement')) {
-                    link_target = 'notifylog/' + JSON.stringify({ variant_count: notif.variant_count });
+                else if (notif.hasOwnProperty('announcement')) {
+                    link_target = 'notifylog/' + JSON.stringify({ version: notif.version });
                 }
 
                 if (link_target) {
@@ -157,7 +157,7 @@ export default class App {
             }
             else {
                 // it's probably from FCM, let's raise a notification if we're actually subscribed to this
-                if (this.subscriptions.includes(parseInt(notif.variant_id))) {
+                if (this.subscriptions.includes(notif.genome_id)) {
                     console.log("* FCM notification for subscribed variant, raising local notification...");
 
                     // log the notification
@@ -181,8 +181,6 @@ export default class App {
         if (notif.hasOwnProperty("finish") && typeof notif.finish === "function") {
             notif.finish();
         }
-
-
     }
 
     handleTokenRefresh(token) {

@@ -53,3 +53,9 @@ export function fetchDetails(variantID) {
         .catch((error) => console.warn("fetch error:", error.message))
         .then(response => response.json());
 }
+
+export async function fetchVariantIDForGenomicCoord(genomicCoord) {
+    return queryVariantsForPage(genomicCoord, 0, 1).then(payload => {
+        return payload.data[0].id;
+    })
+}

@@ -33,19 +33,12 @@ import {receive_details} from "../redux/browsing/actions";
 class DetailDisplay extends Component {
     constructor(props) {
         super(props);
-
-        // FIXME: this would be so much cleaner if we depended solely on this.props.details.get(this.props.variant_id)
-        // we could just check if it's there, and if it's not fire off actions to populate it from wherever
-        // we could also check that we're fetching via this.props.isFetchingDetails
-
-        // TODO: we now receive variant_id and an optional hint from our caller
-        // we may need to fetch
     }
 
     componentDidMount() {
         // FIXME: resolve data source here
         if (!this.getTheseDetails()) {
-            this.resolveDataSource(this.props.variant_id, this.props.hint);
+            this.props.onFetchDetails(this.props.variant_id);
         }
     }
 
@@ -55,52 +48,8 @@ class DetailDisplay extends Component {
             : null;
     }
 
-    resolveDataSource(variant_id, hint) {
-        /*
-        let source = null;
-        const resolution_types = {
-            subscriptions: () => {
-                return this.props.subscriptions[variant_id];
-            },
-            variants: () => {
-                const source = this.props.variants.filter(x => x.id == variant_id);
-                console.log("variant source: ", source);
-                return (source.length > 0) ? source[0] : null;
-            },
-            fetch: () => {
-                // TODO: implement fetch
-                return null;
-            }
-        };
-        let resolution_order = ['subscriptions', 'variants', 'fetch'];
-
-        // move hint to the front of the list, if present
-        if (hint && resolution_order.includes(hint)) {
-            resolution_order = [hint].concat(resolution_order.filter(x => x != hint))
-        }
-
-        console.log("resolution order: ", resolution_order);
-
-        for (let i = 0; i < resolution_order.length; i++) {
-            // attempt to resolve with each strategy...
-            const type = resolution_order[i];
-            console.log("Resolving with ", type);
-            source = resolution_types[type](variant_id);
-
-            if (source)
-                break; // ...breaking if we do resolve it
-        }
-
-        // populate the details cache and let this component refresh on its own
-        this.props.onReceiveDetails(this.props.variant_id, source);
-        */
-
-        // let's just kick off a fetch
-        this.props.onFetchDetails(this.props.variant_id);
-    }
-
     static renderRow(d, sectionID, rowID) {
-        const v = (d.value && d.value.trim() !== '') ? d.value : '-';
+        const v = (d.value && d.value.toString().trim() !== '') ? d.value : '-';
 
         return (
             <View style={[styles.row, (rowID % 2 === 1?styles.oddRow:null)]}>
@@ -117,7 +66,7 @@ class DetailDisplay extends Component {
         const d = this.getTheseDetails().versions[0];
         const identifier = d.HGVS_cDNA.split(':')[1];
 
-        if (!this.isSubscribed()) {
+        if (!this.isSubscribed(d)) {
             this.props.onSubscribe(d);
             // Toast.show('Subscribed to ' + identifier, 1);
         } else {
@@ -141,8 +90,8 @@ class DetailDisplay extends Component {
         return ds.cloneWithRows(rows);
     }
 
-    isSubscribed() {
-        return this.props.subscriptions.hasOwnProperty(this.props.variant_id);
+    isSubscribed(d) {
+        return this.props.subscriptions.hasOwnProperty(d['Genomic_Coordinate_hg38']);
     }
 
     versions() {
@@ -181,7 +130,7 @@ class DetailDisplay extends Component {
 
                     <View style={styles.subscribeToggleContainer}>
                         <SubscribeButton
-                            subscribed={this.isSubscribed()}
+                            subscribed={this.isSubscribed(d)}
                             activeScreen="details"
                             subsLastUpdatedBy={this.props.subsLastUpdatedBy}
                             onSubscriptionChanged={this.toggleSubscription.bind(this)}
@@ -345,7 +294,7 @@ function isEmptyField(value) {
         return true;
     }
 
-    const v = value.trim();
+    const v = (typeof value === 'string') ? value.trim() : value;
     return v === '' || v === '-' || v === 'None';
 }
 
@@ -399,8 +348,8 @@ const mapStateToProps = (state_immutable) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onFetchDetails: (item_id) => {
-            dispatch(fetch_details(item_id))
+        onFetchDetails: (item_id, isGenomeCoord=false) => {
+            dispatch(fetch_details(item_id, isGenomeCoord))
         },
         onReceiveDetails: (item_id, item) => {
             dispatch(receive_details(item_id, item))

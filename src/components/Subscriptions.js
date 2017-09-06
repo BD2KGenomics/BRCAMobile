@@ -57,7 +57,7 @@ export default class Subscriptions extends Component {
 
     renderRow(d) {
         // this checks the subscribing list directly vs. the frozen dataset we're manipulating
-        const subscribed = this.props.subscriptions.hasOwnProperty(d.id);
+        const subscribed = this.props.subscriptions.hasOwnProperty(d['Genomic_Coordinate_hg38']);
 
         return (
             <TouchableOpacity onPress={this.rowClicked.bind(this, d)}>

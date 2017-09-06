@@ -1,13 +1,28 @@
 import React, {Component} from 'react';
+import {Navigation} from 'react-native-navigation';
 
 export default class LinkableMenuScreen extends Component {
     constructor(props) {
         super(props);
+        console.log("LinkableMenuScreen: ", props);
         // if you want to listen on navigator events, set this up
         this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     }
 
-    onNavigatorEvent(event) {
+    async onNavigatorEvent(event) {
+        /*
+        console.log("Navigation event: ", event);
+
+        const isVisible = await this.props.navigator.screenIsCurrentlyVisible();
+        const id = await Navigation.getCurrentlyVisibleScreenId();
+
+        console.log("ID: ", id, ", visible?: ", isVisible);
+
+        if (!isVisible) {
+            return;
+        }
+        */
+
         if (event.id === 'menu' || event.id === 'sideMenu') {
             // centrally handle menu visibility button for the child screens
             this.props.navigator.toggleDrawer({
@@ -20,16 +35,34 @@ export default class LinkableMenuScreen extends Component {
             //  we want to handle this event only if it's about us (the main screen)
             const parts = event.link.split('/');
 
+            // only allow these events to be handled by the root screen
+            Navigation.getCurrentlyVisibleScreenId().then(x => {
+                console.log("Deep link; received by screen: ", x, ", params: ", parts);
+            });
+
+            // FIXME: make sure only the main screen handles these events
+            // perhaps look into lifecycle tracking to see if we're the root
+
             if (parts[0] === 'main') {
                 const params = JSON.parse(parts[1]);
 
-                // console.log("Deep reset to " + params.title + " from ", this.props.navigator.screenInstanceID);
+                console.log("Deep linking from root w/params: ", parts);
 
-                // FIXME: we always do a full reset on a deep link, due to some bug in RNN
-                this.props.navigator.resetTo({
+                // FIXME: we need to find a way to only reset if we have to
+                // this is related to the issue of every screen acting on a deeplink event
+
+                const target = {
                     title: params.title,
                     screen: params.screen
-                });
+                };
+
+                if (true || params.doReset) {
+                    this.props.navigator.resetTo(target);
+                }
+                else {
+                    this.props.navigator.push(target);
+                }
+
             }
             else if (parts[0] === 'updated') {
                 const params = JSON.parse(parts[1]);
@@ -46,7 +79,7 @@ export default class LinkableMenuScreen extends Component {
             else if (parts[0] === 'notifylog') {
                 const params = JSON.parse(parts[1]);
 
-                this.props.navigator.push({
+                this.props.navigator.resetTo({
                     title: 'Notify Log',
                     screen: 'brca.NotifyLogScreen',
                     passProps: {

@@ -42,7 +42,7 @@ class SubscriptionsScreen extends LinkableMenuScreen {
     }
 
     isSubscribed(d) {
-        return this.props.subscriptions.hasOwnProperty(d.id);
+        return this.props.subscriptions.hasOwnProperty(d['Genomic_Coordinate_hg38']);
     }
 
     onSubscribeClicked(d) {

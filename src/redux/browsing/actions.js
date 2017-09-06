@@ -1,6 +1,9 @@
 /* action types and creators */
 
-import {fetchDetails, queryVariantsForPage} from "./helpers";
+import {
+    fetchDetails, fetchVariantIDForGenomicCoord,
+    queryVariantsForPage
+} from "./helpers";
 
 export const BEGIN_QUERY = 'BEGIN_QUERY';
 export const BEGIN_FETCH_NEXT_PAGE = 'BEGIN_FETCH_NEXT_PAGE';
@@ -72,28 +75,49 @@ export function fetch_next_page() {
     }
 }
 
-export function fetch_details(variantID) {
-    return function (dispatch, getState) {
+export function fetch_details(variantID, isGenomeCoord=false) {
+    return async function (dispatch, getState) {
         // const { details } = getState().get('brca.details');
         const details = getState().get('browsing').get('details');
 
-        // tell the store that we're starting a fetch details operation
-        dispatch(begin_fetch_details(variantID));
+        // if it's a genomic coordinate, we have to first map to the most recent variant ID
+        // (it'd be nice if the API could be queried for a genomic coordinate rather than just the variant ID)
+        if (isGenomeCoord) {
+            // tell the store that we're starting a fetch details operation
+            dispatch(begin_fetch_details(variantID));
 
-        // if we already have the variant in our store, return it immediately
-        if (details.has(variantID)) {
-            return receive_details(variantID, details.get(variantID));
-        }
+            const genomeID = variantID.slice();
 
-        // now make the actual query...
-        return fetchDetails(variantID)
-            .then(json => {
-                // ...and persist the results to the store
-                dispatch(receive_details(variantID, { versions: json.data }));
-            })
-            .catch(error => {
-                console.warn(error.message);
-                // FIXME: maybe show a toast as well?
+            return fetchVariantIDForGenomicCoord(genomeID).then(variantID => {
+                console.log("got variant ID ", variantID, " from ", genomeID);
+                return fetchDetails(variantID);
+            }).then(json => {
+                console.log("fetchDetails gave us ", json);
+                dispatch(receive_details(json.data[0].id, { versions: json.data }));
             });
+        }
+        else {
+            // tell the store that we're starting a fetch details operation
+            dispatch(begin_fetch_details(variantID));
+
+            // if we already have the variant in our store, return it immediately
+            if (details.has(variantID)) {
+                return receive_details(variantID, details.get(variantID));
+            }
+
+            // now make the actual query...
+            return fetchDetails(variantID)
+                .then(json => {
+                    console.log("Got details for ", variantID);
+
+                    // ...and persist the results to the store
+                    dispatch(receive_details(variantID, { versions: json.data }));
+                })
+                .catch(error => {
+                    console.warn(error.message);
+                    // FIXME: maybe show a toast as well?
+                });
+
+        }
     }
 }

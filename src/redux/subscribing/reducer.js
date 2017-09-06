@@ -18,13 +18,13 @@ export default function subscriptionsReducer(state=initialState, action) {
     switch (action.type) {
         case SUBSCRIBE:
             return state.merge({
-                subscriptions: state.get('subscriptions').set(action.item.id, action.item),
+                subscriptions: state.get('subscriptions').set(action.item['Genomic_Coordinate_hg38'], action.item),
                 subsLastUpdatedBy: action.origin
             });
 
         case UNSUBSCRIBE:
             return state.merge({
-                subscriptions: state.get('subscriptions').delete(action.item.id),
+                subscriptions: state.get('subscriptions').delete(action.item['Genomic_Coordinate_hg38']),
                 subsLastUpdatedBy: action.origin
             });
 
