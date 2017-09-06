@@ -14,7 +14,7 @@ import ScrollTopView from 'react-native-scrolltotop';
 import LinkableMenuScreen from './LinkableMenuScreen';
 import {mark_notification_read, mark_visible_read, archive_all_notifications} from "../redux/notifylog/actions";
 
-class NotifyLogScreen extends LinkableMenuScreen {
+class SplitNotifyLogScreen extends LinkableMenuScreen {
     constructor(props) {
         super(props);
 
@@ -23,7 +23,8 @@ class NotifyLogScreen extends LinkableMenuScreen {
         console.log("initial notifylog props: ", props.notifications);
 
         this.state = {
-            notifyDS: this.createDataSource(props.notifications),
+            unreadNotifyDS: this.createDataSource(props.notifications, false),
+            readNotifyDS: this.createDataSource(props.notifications, true),
             isNotAtTop: false
         };
 
@@ -31,7 +32,6 @@ class NotifyLogScreen extends LinkableMenuScreen {
         this.renderSectionHeader = this.renderSectionHeader.bind(this);
 
         this.markAllRead = this.markAllRead.bind(this);
-        this.archiveAllNotifications = this.archiveAllNotifications.bind(this);
         this.showRead = this.showUnreadOrRead.bind(this, true);
         this.showUnread = this.showUnreadOrRead.bind(this, false);
     }
@@ -70,7 +70,7 @@ class NotifyLogScreen extends LinkableMenuScreen {
 
     markAllRead() {
         // somehow dispatch updates to all the things we're viewing to be read
-        if (this.state.notifyDS.getRowCount() > 0) {
+        if (this.state.unreadNotifyDS.getRowCount() > 0) {
             this.props.markVisibleRead();
             Toast.show("Notifications cleared");
         }
@@ -79,24 +79,18 @@ class NotifyLogScreen extends LinkableMenuScreen {
         }
     }
 
-    archiveAllNotifications() {
-        this.props.archiveAllNotifications();
-        Toast.show("Notifications archived");
-    }
-
     componentWillReceiveProps(nextProps) {
-        console.log("NotifyLog: ", nextProps);
-
         if (nextProps.notifications != this.props.notifications) {
             this.setState({
-                notifyDS: this.createDataSource(nextProps.notifications)
+                unreadNotifyDS: this.createDataSource(nextProps.notifications, false),
+                readNotifyDS: this.createDataSource(nextProps.notifications, true)
             });
         }
     }
 
     createDataSource(notifications, showRead) {
-        const reversedNotifies = notifications.filter(x => !x.archived).reverse();
-        const groupedNotifies = groupBy(reversedNotifies, x => x.version || "(unknown)");
+        const filteredNotifies = notifications.filter(x => x.read == showRead).reverse();
+        const groupedNotifies = groupBy(filteredNotifies, x => x.version || "(unknown)");
 
         const ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2,
@@ -124,6 +118,7 @@ class NotifyLogScreen extends LinkableMenuScreen {
                         <Text style={styles.rowTitle}>{d.title}</Text>
                         { d.received_at && <Text style={styles.rowDate}>{d.received_at.toLocaleString()}</Text> }
                         <Text style={styles.rowSubtitle}>{d.body}</Text>
+                        {/*<Text>({d.idx})</Text>*/}
                     </View>
 
                     <Icon
@@ -137,15 +132,21 @@ class NotifyLogScreen extends LinkableMenuScreen {
     }
 
     rowClicked(d) {
+        const target = 'updated/' + JSON.stringify({ variant_id: d.variant_id });
+        console.log("Opened from tray, launching ", target);
+
+        console.log("Marking idx ", d.idx, " as read...");
         this.props.markNotificationRead(d.idx);
 
+        /*
         Navigation.handleDeepLink({
-            link: 'updated/' + JSON.stringify({ variant_id: d.variant_id })
+            link: target
         });
+        */
     }
 
     render() {
-        const targetDS = this.state.notifyDS;
+        const targetDS = this.props.showRead ? this.state.readNotifyDS : this.state.unreadNotifyDS;
         const hasUnreviewedNotifies = targetDS.getRowCount() > 0;
 
         return (
@@ -154,22 +155,11 @@ class NotifyLogScreen extends LinkableMenuScreen {
                     {
                         !this.props.showRead
                         ? (
-                            <View style={{flex: 1, flexDirection: 'row'}}>
-                                <View style={{flexGrow: 1}}>
-                                    <Icon.Button name="close"
-                                        backgroundColor={ hasUnreviewedNotifies ? "#007AFF" : "#aaa" }
-                                        onPress={this.markAllRead}>
-                                        <Text style={styles.clearButtonText}>Mark Notifies as Read</Text>
-                                    </Icon.Button>
-                                </View>
-
-                                <View style={{flexGrow: 1, marginLeft: 10}}>
-                                    <Icon.Button name="archive" backgroundColor={ hasUnreviewedNotifies ? "#c5c" : "#aaa" }
-                                        onPress={this.archiveAllNotifications}>
-                                        <Text style={styles.clearButtonText}>Archive</Text>
-                                    </Icon.Button>
-                                </View>
-                            </View>
+                            <Icon.Button name="close"
+                                backgroundColor={ hasUnreviewedNotifies ? "#007AFF" : "#aaa" }
+                                onPress={this.markAllRead}>
+                                <Text style={styles.clearButtonText}>Mark Notifies as Read</Text>
+                            </Icon.Button>
                         )
                         : (
                             <Icon.Button name="arrow-back" backgroundColor="#007AFF" onPress={this.showUnread}>
@@ -198,13 +188,13 @@ class NotifyLogScreen extends LinkableMenuScreen {
                         : null
                 }
 
-                { /* this.props.showRead ? null : (
+                { this.props.showRead ? null : (
                     <View style={styles.row}>
                         <Icon.Button name="more-horiz" backgroundColor="#5a5" onPress={this.showRead}>
                             <Text style={styles.clearButtonText}>See Reviewed Notifications</Text>
                         </Icon.Button>
                     </View>
-                ) */ }
+                ) }
             </ScrollView>
         );
     }
