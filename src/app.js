@@ -42,7 +42,6 @@ export default class App {
 
         store.subscribe(() => {
             this.subscriptions = store.getState().getIn(['subscribing','subscriptions']).keySeq();
-            // console.log("subscribing: ", JSON.stringify(this.subscribing));
         });
 
         // for buffering notifications (i.e. to show one 'batched' notification if we receive many)
@@ -64,7 +63,8 @@ export default class App {
                 left: {
                     screen: 'brca.SideMenu'
                 }
-            }
+            },
+            animationType: 'none'
         });
     }
 
@@ -169,7 +169,8 @@ export default class App {
                     this.bufferNotifications(notif);
                 }
                 else {
-                    console.log("(?!) Received notification for unsubscribed variant: ", notif.variant_id)
+                    console.log("(?!) Received notification for unsubscribed variant: ", notif.genome_id);
+                    console.log("Subscriptions: ", JSON.stringify(this.subscriptions.toJS()));
                 }
             }
         }
@@ -200,7 +201,7 @@ export default class App {
             clearTimeout(this.buffer_handler);
         }
 
-        this.buffer_handler = setTimeout(this.releaseBuffer, 3000);
+        this.buffer_handler = setTimeout(this.releaseBuffer, 2000);
     }
 
     releaseBuffer() {
@@ -219,8 +220,9 @@ export default class App {
                 body: `The clinical significance of ${this.buffered_notifies.length} variants have changed`,
                 priority: "high",
                 variant_count: this.buffered_notifies.length,
+                announcement: true,
                 click_action: (Platform.OS === "android") ? "fcm.ACTION.HELLO" : this.buffered_notifies[0].click_action,
-                show_in_foreground: true,
+                // show_in_foreground: true,
                 // local: true
             });
         }
@@ -246,7 +248,7 @@ export default class App {
             variant_id: notif.variant_id,
             priority: "high",
             click_action: (Platform.OS === "android") ? "fcm.ACTION.HELLO" : notif.click_action,
-            show_in_foreground: true,
+            // show_in_foreground: true,
             // local: true
         });
     }
