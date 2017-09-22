@@ -32,11 +32,11 @@ class AboutScreen extends LinkableMenuScreen {
             <ScrollView style={styles.container}>
                 <Text style={styles.title}>About This App</Text>
                 <Text style={styles.prose}>
-                {`This app provides information on catalogued BRCA1 and BRCA2 genetic variants. Currently, it shows variants that have been curated and classified by an international expert panel, the ENIGMA consortium, to assess their pathogenicity (associated disease risk). In an upcoming version, an optional setting will allow the user to look at unclassified variants. In most cases, these variants are awaiting expert review, and their pathogenicity has not yet been established.
+                {`This app provides information on catalogued BRCA1 and BRCA2 genetic variants, including variant classifications that have been curated by an international expert panel, the ENIGMA consortium, to assess their pathogenicity (associated disease risk).  Variants listed as ‘not yet reviewed’ will be classified by the ENIGMA consortium soon.
 
-The BRCA Exchange website is a product of the BRCA Challenge of the Global Alliance for Genomics and Health. The web site and underlying database were developed by Molly Zhang, Charles Markello, Mary Goldman, Brian Craft, Zack Fischmann, Joe Thomas, David Haussler, Melissa Cline and Benedict Paten at the Computational Genomics Lab at the UC Santa Cruz Genomics Institute, Faisal Alquaddoomi and Gunnar Rätsch at Eidgenössische Technische Hochschule Zürich, and Rachel Liao of the Global Alliance for Genomics and Health with input and feedback from many members of the BRCA Challenge working groups.
+The BRCA Exchange website is a product of the BRCA Challenge of the Global Alliance for Genomics and Health. The website and underlying database were developed by Molly Zhang, Charles Markello, Mary Goldman, Brian Craft, Zack Fischmann, Joe Thomas, David Haussler, Melissa Cline and Benedict Paten at the Computational Genomics Lab at the UC Santa Cruz Genomics Institute, Faisal Alquaddoomi, Marc Zimmerman and Gunnar Rätsch at Eidgenössische Technische Hochschule Zürich, and Rachel Liao at the Broad Institute and the Global Alliance for Genomics and Health, with input and feedback from many members of the BRCA Challenge working groups.
 
-Variant data displayed in this app are made available using the standards based GA4GH Genomics API.`}
+Variant data displayed in this app are made available using the standards-based GA4GH Genomics API.`}
                 </Text>
 
                 <View style={styles.websiteLink}>
@@ -51,12 +51,13 @@ Variant data displayed in this app are made available using the standards based 
                 </View>
 
                 <View style={styles.logo}>
-                    <Image style={{width: 300, paddingBottom: 0 }} resizeMode='contain' source={require('../../img/logos/ga4gh.png')} />
-                    <Image style={{width: 300 }} resizeMode='contain' source={require('../../img/logos/ucsc.png')} />
-                    <Image style={{width: 300, paddingBottom: 0 }} resizeMode='contain' source={require('../../img/logos/ethz_simple.png')} />
+                    <Image style={{width: 300, marginBottom: 30 }} resizeMode='contain' source={require('../../img/logos/enigma_wide.png')} />
+                    <Image style={{width: 320, marginBottom: 10 }} resizeMode='contain' source={require('../../img/logos/ucsc_narrow.png')} />
+                    <Image style={{width: 300, marginBottom: 5 }} resizeMode='contain' source={require('../../img/logos/ethz_simple.png')} />
+                    <Image style={{width: 300, marginBottom: 0 }} resizeMode='contain' source={require('../../img/logos/ga4gh.png')} />
                 </View>
 
-                <View style={{marginBottom: 50}}>
+                <View style={{marginBottom: 50, paddingLeft: 20}}>
                     <Text selectable={true} style={styles.tokenText}>FCM Token: {this.props.token}</Text>
                 </View>
             </ScrollView>
@@ -67,16 +68,19 @@ Variant data displayed in this app are made available using the standards based 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
         backgroundColor: 'white'
     },
     title: {
         fontWeight: 'bold',
         fontSize: 24,
         marginBottom: 20,
+        padding: 20,
+        paddingBottom: 0
     },
     prose: {
         lineHeight: 18,
+        paddingLeft: 20,
+        paddingRight: 20
     },
     button: {
         textAlign: 'center',
@@ -100,12 +104,12 @@ const styles = StyleSheet.create({
     },
     logo: {
         marginTop: 30,
-        marginBottom: 40,
-        alignItems: 'center',
+        marginBottom: 20,
+        alignItems: 'center'
     },
     tokenText: {
         fontSize: 10,
-        color: '#aaa'
+        color: '#eee'
     }
 });
 
