@@ -74,14 +74,24 @@ class NotifyLogScreen extends LinkableMenuScreen {
             this.props.markVisibleRead();
             Toast.show("Notifications cleared");
         }
-        else {
-            Toast.show("No notifications to clear!");
-        }
     }
 
     archiveAllNotifications() {
-        this.props.archiveAllNotifications();
-        Toast.show("Notifications archived");
+        if (this.state.notifyDS.getRowCount() > 0) {
+            Alert.alert(
+                'Archive All Notifications',
+                'Archive all notifications, so they no longer appear in this list?',
+                [
+                    {text: 'Cancel'},
+                    {
+                        text: 'OK', onPress: () => {
+                        this.props.archiveAllNotifications();
+                        Toast.show("Notifications archived");
+                    }
+                    },
+                ]
+            );
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -159,7 +169,7 @@ class NotifyLogScreen extends LinkableMenuScreen {
                                     <Icon.Button name="close"
                                         backgroundColor={ hasUnreviewedNotifies ? "#007AFF" : "#aaa" }
                                         onPress={this.markAllRead}>
-                                        <Text style={styles.clearButtonText}>Mark Notifies as Read</Text>
+                                        <Text style={styles.clearButtonText}>Mark as Read</Text>
                                     </Icon.Button>
                                 </View>
 

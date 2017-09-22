@@ -10,6 +10,14 @@ import { AsyncStorage } from 'react-native'
 import { browsingReducer, subscriptionsReducer, notifylogReducer } from './redux';
 import * as Immutable from "immutable";
 
+import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
+import {observe_notification, receive_notification} from "./redux/notifylog/actions";
+
+// stuff for FCM
+import FCM, {
+    FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType
+} from "react-native-fcm";
+
 let reducer = combineReducers({
     browsing: browsingReducer,
     subscribing: subscriptionsReducer,
@@ -17,38 +25,33 @@ let reducer = combineReducers({
 });
 let store = createStore(reducer, applyMiddleware(thunk), autoRehydrate());
 
+// deals with the fact that the store takes a while to become available, so we need to buffer push notifications
+// until it's up and ready to properly receive them
+let store_loaded = false;
+const notify_buffer = [];
+
 // redux-persist will save the store to local storage via react-native's AsyncStorage
-persistStore(store, {storage: AsyncStorage});
+persistStore(store, {storage: AsyncStorage}, () => {
+    console.log("*** rehydration complete! ***");
+    store_loaded = true;
+
+    // now that we've loaded, dispatch all the pending notifies
+    if (notify_buffer.length > 0) {
+        console.log(`[!!] processing ${notify_buffer.length} queued notification(s)...`);
+        notify_buffer.forEach(notif => {
+            store.dispatch(observe_notification(notif));
+        })
+    }
+});
 
 // screen related book keeping
 import {registerScreens} from './screens';
 registerScreens(store);
 
-// stuff for FCM
-import FCM, {
-    FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType
-} from "react-native-fcm";
-
-import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
-import { receive_notification } from "./redux/notifylog/actions";
-import {purge_details} from "./redux/browsing/actions";
-
 export default class App {
     constructor() {
         this.startApp();
         this.registerWithFCM();
-
-        this.subscriptions = Immutable.Seq();
-
-        store.subscribe(() => {
-            this.subscriptions = store.getState().getIn(['subscribing','subscriptions']).keySeq();
-        });
-
-        // for buffering notifications (i.e. to show one 'batched' notification if we receive many)
-        this.bufferNotifications = this.bufferNotifications.bind(this);
-        this.releaseBuffer = this.releaseBuffer.bind(this);
-        this.buffered_notifies = [];
-        this.buffer_handler = -1;
     }
 
     startApp() {
@@ -89,6 +92,7 @@ export default class App {
 
         // subscribe to get variant notices
         // we subscribe to everything and filter out what we don't care about
+        // FIXME: switch this back to the 'production' topic
         FCM.subscribeToTopic('/topics/variant_updates_debug');
 
         // this is strictly a notification channel
@@ -144,38 +148,35 @@ export default class App {
                     });
                 }
 
-
                 return;
             }
             else if (notif.local_notification) {
                 console.log("* Disregarding self-raised notification");
 
-                // notif.local_notification being true indicates that we raised this event in
-                // response to receiving a non-local notification, so we abort
+                // notif.local_notification being true indicates that we raised this event ourselves
+                // FIXME: verify that local_notification only comes from us
 
                 return;
             }
             else {
-                // it's probably from FCM, let's raise a notification if we're actually subscribed to this
-                if (this.subscriptions.includes(notif.genome_id)) {
-                    console.log("* FCM notification for subscribed variant, raising local notification...");
-
-                    // log the notification
-                    store.dispatch(receive_notification(notif));
-                    // purge the details cache of this record, if it exists, forcing a remote refresh
-                    store.dispatch(purge_details(notif.variant_id));
-
-                    // this.showLocalNotification(notif);
-                    this.bufferNotifications(notif);
+                if (!store_loaded) {
+                    console.log("[?!] Store not yet loaded, deferring handling...");
+                    notify_buffer.push(notif);
                 }
                 else {
-                    console.log("(?!) Received notification for unsubscribed variant: ", notif.genome_id);
-                    console.log("Subscriptions: ", JSON.stringify(this.subscriptions.toJS()));
+                    // simply pass this off to the notifylog reducer
+                    store.dispatch(observe_notification(notif));
                 }
             }
         }
         else {
-            console.log("* Notification without variant_id (OS-raised?): ", notif);
+            console.log("* Notification without variant_id/announcement (OS-raised?): ", notif);
+
+            if (notif.opened_from_tray && notif.from === '/topics/database_updates') {
+                Navigation.handleDeepLink({
+                    link: 'notifylog/' + JSON.stringify({ version: notif.version })
+                });
+            }
         }
 
         // if we haven't returned by now, we want to dismiss the note
@@ -187,69 +188,5 @@ export default class App {
     handleTokenRefresh(token) {
         console.log("TOKEN (refreshUnsubscribe)", token);
         store.dispatch(receive_fcm_token(token));
-    }
-
-
-    // ---------------------------------------
-    // --- notification buffering
-    // ---------------------------------------
-
-    bufferNotifications(notif) {
-        this.buffered_notifies = this.buffered_notifies.concat(notif);
-
-        if (this.buffer_handler >= 0) {
-            clearTimeout(this.buffer_handler);
-        }
-
-        this.buffer_handler = setTimeout(this.releaseBuffer, 2000);
-    }
-
-    releaseBuffer() {
-        console.log("Notifies: ", this.buffered_notifies);
-
-        // TODO: fire off either a single detailed notification, or a batched notify if length > 1
-        if (this.buffered_notifies.length == 1) {
-            this.showLocalNotification(this.buffered_notifies[0]);
-        }
-        else {
-            // TODO: show batched notification
-            FCM.presentLocalNotification({
-                opened_from_tray: 0,
-                icon: "ic_stat_brca_notify",
-                title: `${this.buffered_notifies.length} variants have changed`,
-                body: `The clinical significance of ${this.buffered_notifies.length} variants have changed`,
-                priority: "high",
-                variant_count: this.buffered_notifies.length,
-                announcement: true,
-                click_action: (Platform.OS === "android") ? "fcm.ACTION.HELLO" : this.buffered_notifies[0].click_action,
-                // show_in_foreground: true,
-                // local: true
-            });
-        }
-
-        // and clear all this for next time
-        this.buffer_handler = -1;
-        this.buffered_notifies = [];
-    }
-
-
-    // ---------------------------------------
-    // --- actual notification displaying
-    // ---------------------------------------
-
-    showLocalNotification(notif) {
-        console.log("Showing: ", notif);
-
-        FCM.presentLocalNotification({
-            opened_from_tray: 0,
-            icon: "ic_stat_brca_notify",
-            title: notif.title,
-            body: notif.body,
-            variant_id: notif.variant_id,
-            priority: "high",
-            click_action: (Platform.OS === "android") ? "fcm.ACTION.HELLO" : notif.click_action,
-            // show_in_foreground: true,
-            // local: true
-        });
     }
 }
