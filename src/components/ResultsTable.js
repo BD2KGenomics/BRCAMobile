@@ -54,9 +54,10 @@ export default class ResultsTable extends Component {
             (this.props.subscriptions.hasOwnProperty(d['Genomic_Coordinate_hg38']) ? "Following Variant" : "Not Following Variant")
         ];
 
+        const lc_status = d.Pathogenicity_expert ? d.Pathogenicity_expert.toLowerCase() : "";
         const pathoIconProps = (
-            patho_indicators.hasOwnProperty(d.Pathogenicity_expert)
-                ? patho_indicators[d.Pathogenicity_expert]
+            patho_indicators.hasOwnProperty(lc_status)
+                ? patho_indicators[lc_status]
                 : patho_indicators["Not Yet Reviewed"]
         );
 

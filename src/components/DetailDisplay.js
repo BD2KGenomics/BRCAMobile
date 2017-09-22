@@ -311,16 +311,17 @@ function reformatDate(date) { //handles single dates or an array of dates
 }
 
 function renderSignificance(status) {
+    const lc_status = status.toLowerCase();
     const pathoIconProps = (
-        patho_indicators.hasOwnProperty(status)
-            ? patho_indicators[status]
+        patho_indicators.hasOwnProperty(lc_status)
+            ? patho_indicators[lc_status]
             : patho_indicators["Not Yet Reviewed"]
     );
 
     return (
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon {...pathoIconProps} size={22} />
-            <Text selectable={true} style={[styles.rowValue, {flexGrow: 1}]}>{ status }</Text>
+            <Text selectable={true} style={[styles.rowValue, {flexGrow: 1}]}>{ pathoIconProps.title || status }</Text>
         </View>
     );
 }

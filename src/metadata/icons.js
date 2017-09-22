@@ -1,22 +1,28 @@
 
 // 'lens' is slightly larger
 export const patho_indicators = {
-    'Pathogenic': {
+    'pathogenic': {
+        title: 'Pathogenic',
         color: '#e7b34e', name: 'fiber-manual-record'
     },
-    'Likely Pathogenic': {
+    'likely pathogenic': {
+        title: 'Likely Pathogenic',
         color: '#e7b34e', name: 'radio-button-checked'
     },
-    'Unknown Significance': {
-        color: '#aaa', name: 'radio-button-checked', title: 'Uncertain Significance'
+    'unknown significance': {
+        title: 'Uncertain Significance',
+        color: '#aaa', name: 'radio-button-checked'
     },
-    'Likely Benign': {
+    'likely benign': {
+        title: 'Likely Benign',
         color: '#7ab1e8', name: 'radio-button-checked'
     },
-    'Benign / Little Clinical Significance': {
+    'benign / little clinical significance': {
+        title: 'Benign / Little Clinical Significance',
         color: '#7ab1e8', name: 'fiber-manual-record'
     },
-    'Not Yet Reviewed': {
+    'not yet reviewed': {
+        title: 'Not Yet Reviewed',
         color: '#ddd', name: 'fiber-manual-record'
     },
 };
