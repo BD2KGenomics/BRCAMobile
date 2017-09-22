@@ -22,12 +22,6 @@
                         <constraint firstAttribute="width" constant="240" id="H6p-xb-V8E"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BRCA Exchange" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="kId-c2-rCX">
-                    <rect key="frame" x="102.66666666666669" y="57" width="273.66666666666663" height="43"/>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="brca-exchange mobile v0.1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="8ie-xW-0ye">
                     <rect key="frame" x="138" y="439" width="205.33333333333331" height="21"/>
                     <constraints>
@@ -40,10 +34,8 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="GKb-ae-1Lk" firstAttribute="top" secondItem="kId-c2-rCX" secondAttribute="bottom" constant="20" id="3y7-7A-6WI"/>
                 <constraint firstItem="GKb-ae-1Lk" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="9e7-gu-7jy"/>
                 <constraint firstAttribute="bottom" secondItem="8ie-xW-0ye" secondAttribute="bottom" constant="20" id="F0d-OC-9KP"/>
-                <constraint firstItem="kId-c2-rCX" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="I4u-om-s0F"/>
                 <constraint firstItem="8ie-xW-0ye" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="QeB-Pf-efb"/>
                 <constraint firstItem="GKb-ae-1Lk" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="hld-0P-uKO"/>
             </constraints>
