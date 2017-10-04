@@ -9,7 +9,7 @@ export const patho_indicators = {
         title: 'Likely Pathogenic',
         color: '#e7b34e', name: 'radio-button-checked'
     },
-    'unknown significance': {
+    'uncertain': {
         title: 'Uncertain Significance',
         color: '#aaa', name: 'radio-button-checked'
     },
@@ -40,8 +40,8 @@ export function getIconByPathogenicity(patho) {
 
     let lc_patho = patho.toLowerCase();
 
-    if (lc_patho === 'uncertain') {
-        lc_patho = 'unknown significance';
+    if (lc_patho === 'unknown significance') {
+        lc_patho = 'uncertain';
     }
 
     return patho_indicators.hasOwnProperty(lc_patho)
