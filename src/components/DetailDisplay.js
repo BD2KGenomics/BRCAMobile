@@ -13,6 +13,7 @@ import {
     ActivityIndicator,
     StyleSheet,
     Alert,
+    Linking,
     Platform,
     Clipboard
 } from 'react-native';
@@ -20,7 +21,7 @@ import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
-import Hyperlink from 'react-native-hyperlink'
+import LinkifyIt from 'linkify-it';
 
 import { subscribe, unsubscribe, fetch_details } from '../redux/actions';
 
@@ -34,6 +35,7 @@ import {receive_details} from "../redux/browsing/actions";
 class DetailDisplay extends Component {
     constructor(props) {
         super(props);
+        this.linktester = new LinkifyIt();
     }
 
     componentDidMount() {
@@ -51,17 +53,38 @@ class DetailDisplay extends Component {
 
     static renderRow(d, sectionID, rowID) {
         const v = (d.value && d.value.toString().trim() !== '') ? d.value : '-';
+        const isLink = this.linktester.test(v);
 
-        return (
-            <View style={[styles.row, (rowID % 2 === 1?styles.oddRow:null)]}>
-                <Hyperlink linkDefault={true} linkStyle={styles.clickableLink}>
-                    <Text style={styles.rowLabel}>{d.title}</Text>
-                    { (d.field == 'Pathogenicity_expert')
-                        ? renderSignificance(v)
-                        : <Text selectable={true} style={styles.rowValue}>{v}</Text> }
-                </Hyperlink>
-            </View>
+        const header = <Text style={styles.rowLabel}>{d.title}</Text>;
+        const body = (
+            (d.field == 'Pathogenicity_expert')
+                ? renderSignificance(v)
+                : <Text selectable={!isLink} style={isLink ? [styles.rowValue, styles.clickableLink] : styles.rowValue}>{v}</Text>
         );
+
+        if (isLink) {
+            // it's a link, so render it with touchable opacity
+            return (
+                <TouchableHighlight
+                    onPress={() => Linking.openURL(v)}
+                    onLongPress={() => { Clipboard.setString(v); Toast.show("Link copied to clipboard"); }}
+                    underlayColor="#cef"
+                >
+                    <View style={[styles.row, (rowID % 2 === 1?styles.oddRow:null)]}>
+                        {header}
+                        {body}
+                    </View>
+                </TouchableHighlight>
+            )
+        }
+        else {
+            return (
+                <View style={[styles.row, (rowID % 2 === 1?styles.oddRow:null)]}>
+                    {header}
+                    {body}
+                </View>
+            );
+        }
     }
 
     toggleSubscription() {
