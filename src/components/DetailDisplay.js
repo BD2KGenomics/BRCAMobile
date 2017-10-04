@@ -20,6 +20,7 @@ import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
+import Hyperlink from 'react-native-hyperlink'
 
 import { subscribe, unsubscribe, fetch_details } from '../redux/actions';
 
@@ -53,10 +54,12 @@ class DetailDisplay extends Component {
 
         return (
             <View style={[styles.row, (rowID % 2 === 1?styles.oddRow:null)]}>
-                <Text style={styles.rowLabel}>{d.title}</Text>
-                { (d.field == 'Pathogenicity_expert')
-                    ? renderSignificance(v)
-                    : <Text selectable={true} style={styles.rowValue}>{v}</Text> }
+                <Hyperlink linkDefault={true} linkStyle={styles.clickableLink}>
+                    <Text style={styles.rowLabel}>{d.title}</Text>
+                    { (d.field == 'Pathogenicity_expert')
+                        ? renderSignificance(v)
+                        : <Text selectable={true} style={styles.rowValue}>{v}</Text> }
+                </Hyperlink>
             </View>
         );
     }
@@ -243,6 +246,10 @@ const styles = StyleSheet.create({
     sectionHeaderText: {
         fontSize: 22,
         fontWeight: '600'
+    },
+    clickableLink: {
+        color: '#2980b9',
+        textDecorationLine: 'underline'
     }
 });
 
