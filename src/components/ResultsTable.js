@@ -8,7 +8,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ScrollTopView from 'react-native-scrolltotop';
 
-import {follow_indicators, patho_indicators} from "../metadata/icons";
+import {follow_indicators, getIconByPathogenicity, patho_indicators} from "../metadata/icons";
 import LegendModal from "./LegendModal";
 
 export default class ResultsTable extends Component {
@@ -54,12 +54,7 @@ export default class ResultsTable extends Component {
             (this.props.subscriptions.hasOwnProperty(d['Genomic_Coordinate_hg38']) ? "Following Variant" : "Not Following Variant")
         ];
 
-        const lc_status = d.Pathogenicity_expert ? d.Pathogenicity_expert.toLowerCase() : "";
-        const pathoIconProps = (
-            patho_indicators.hasOwnProperty(lc_status)
-                ? patho_indicators[lc_status]
-                : patho_indicators["Not Yet Reviewed"]
-        );
+        const pathoIconProps = getIconByPathogenicity(d.Pathogenicity_expert);
 
         return (
             <TouchableOpacity onPress={this.rowClicked.bind(this, d)}>

@@ -27,7 +27,7 @@ import SubscribeButton from './AnimatedSubscribeButton';
 import BRCALinkButton from "./BRCALinkButton";
 
 import {columns} from '../metadata/fields';
-import {patho_indicators} from "../metadata/icons";
+import {getIconByPathogenicity, patho_indicators} from "../metadata/icons";
 import {receive_details} from "../redux/browsing/actions";
 
 class DetailDisplay extends Component {
@@ -311,12 +311,7 @@ function reformatDate(date) { //handles single dates or an array of dates
 }
 
 function renderSignificance(status) {
-    const lc_status = status.toLowerCase();
-    const pathoIconProps = (
-        patho_indicators.hasOwnProperty(lc_status)
-            ? patho_indicators[lc_status]
-            : patho_indicators["Not Yet Reviewed"]
-    );
+    const pathoIconProps = getIconByPathogenicity(status);
 
     return (
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
