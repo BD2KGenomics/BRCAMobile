@@ -3,6 +3,7 @@ package com.brcamobile;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -38,6 +39,7 @@ public class MainApplication extends NavigationApplication {
             .addNetworkInterceptor(new StethoInterceptor())
             .build();
         OkHttpClientProvider.replaceOkHttpClient(client);
+        BackgroundTaskPackage.useContext(this);
     }
 
     @Override
@@ -48,7 +50,8 @@ public class MainApplication extends NavigationApplication {
 
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
-            new FIRMessagingPackage()
+            new FIRMessagingPackage(),
+            new BackgroundTaskPackage()
         );
     }
 

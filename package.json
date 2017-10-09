@@ -16,6 +16,8 @@
     "prop-types": "^15.5.10",
     "react": "16.0.0-alpha.12",
     "react-native": "0.47.1",
+    "react-native-background-fetch": "^2.0.8",
+    "react-native-background-task": "^0.2.1",
     "react-native-fcm": "^8.0.0",
     "react-native-navigation": "^1.1.205",
     "react-native-scrolltotop": "0.0.6",
