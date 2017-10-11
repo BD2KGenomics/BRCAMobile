@@ -1,7 +1,7 @@
 import {
     Platform, DeviceEventEmitter
 } from 'react-native';
-import {Navigation} from 'react-native-navigation';
+import { Navigation, NativeEventsReceiver } from 'react-native-navigation';
 import { createStore, applyMiddleware } from 'redux';
 import { combineReducers } from 'redux-immutablejs';
 import thunk from 'redux-thunk'
@@ -9,6 +9,8 @@ import { persistStore, autoRehydrate } from 'redux-persist-immutable'
 import { AsyncStorage } from 'react-native'
 import { browsingReducer, subscriptionsReducer, notifylogReducer } from './redux';
 import * as Immutable from "immutable";
+import BackgroundTask from 'react-native-background-task';
+import {checkForUpdate} from "./background";
 
 import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
 import {observe_notification, receive_notification} from "./redux/notifylog/actions";
@@ -48,8 +50,36 @@ persistStore(store, {storage: AsyncStorage}, () => {
 import {registerScreens} from './screens';
 registerScreens(store);
 
+// create the background task handler, since it needs to close over the store
+async function bgTask() {
+    console.log('Hello from a background task');
+    await checkForUpdate(store, true, true, true);
+    BackgroundTask.finish();
+}
+
+// attach background task
+BackgroundTask.define(bgTask);
+
 export default class App {
     constructor() {
+        // only launch once we receive AppLaunched (on android)
+        if (Platform.OS === 'android') {
+        Promise.resolve(Navigation.isAppLaunched())
+            .then(appLaunched => {
+                if (appLaunched) {
+                    this.initializeApp();
+                } else {
+                    new NativeEventsReceiver().appLaunched(this.initializeApp); // App hasn't been launched yet -> show the UI only when needed.
+                }
+            });
+        }
+        else {
+            this.initializeApp();
+        }
+    }
+
+    initializeApp() {
+        // a preamble to startApp()
         this.startApp();
         this.registerWithFCM();
     }
@@ -68,6 +98,11 @@ export default class App {
                 }
             },
             animationType: 'none'
+        });
+
+        BackgroundTask.cancel();
+        BackgroundTask.schedule({
+            period: 1800
         });
     }
 
@@ -93,10 +128,10 @@ export default class App {
         // subscribe to get variant notices
         // we subscribe to everything and filter out what we don't care about
         // FIXME: switch this back to the 'production' topic
-        FCM.subscribeToTopic('/topics/variant_updates_debug');
+        FCM.subscribeToTopic('/topics/TEST_variant_updates_debug_TEST');
 
         // this is strictly a notification channel
-        FCM.subscribeToTopic('/topics/database_updates');
+        FCM.subscribeToTopic('/topics/TEST_database_updates_TEST');
 
         FCM.getInitialNotification()
             .then(notif => {

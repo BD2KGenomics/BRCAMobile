@@ -71,8 +71,19 @@ class NotifyLogScreen extends LinkableMenuScreen {
     markAllRead() {
         // somehow dispatch updates to all the things we're viewing to be read
         if (this.state.notifyDS.getRowCount() > 0) {
-            this.props.markVisibleRead();
-            Toast.show("Notifications cleared");
+            Alert.alert(
+                'Mark Notifications as Read',
+                'Mark all notifications in this list as read?',
+                [
+                    {text: 'Cancel'},
+                    {
+                        text: 'OK', onPress: () => {
+                            this.props.markVisibleRead();
+                            Toast.show("Notifications marked read");
+                        }
+                    },
+                ]
+            );
         }
     }
 
@@ -85,9 +96,9 @@ class NotifyLogScreen extends LinkableMenuScreen {
                     {text: 'Cancel'},
                     {
                         text: 'OK', onPress: () => {
-                        this.props.archiveAllNotifications();
-                        Toast.show("Notifications archived");
-                    }
+                            this.props.archiveAllNotifications();
+                            Toast.show("Notifications archived");
+                        }
                     },
                 ]
             );

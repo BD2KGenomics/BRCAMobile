@@ -35,22 +35,10 @@ export class BufferNotifyManager {
 
         // TODO: fire off either a single detailed notification, or a batched notify if length > 1
         if (this.buffered_notifies.length == 1) {
-            this.showLocalNotification(this.buffered_notifies[0]);
+            this.showSingleNotification(this.buffered_notifies[0]);
         }
         else {
-            // TODO: show batched notification
-            FCM.presentLocalNotification({
-                opened_from_tray: 0,
-                icon: "ic_stat_brca_notify",
-                title: `${this.buffered_notifies.length} variants have changed`,
-                body: `The clinical significance of ${this.buffered_notifies.length} variants have changed`,
-                priority: "high",
-                variant_count: this.buffered_notifies.length,
-                announcement: true,
-                click_action: (Platform.OS === "android") ? "fcm.ACTION.HELLO" : this.buffered_notifies[0].click_action,
-                show_in_foreground: true,
-                local: true
-            });
+            this.showBatchedNotification(this.buffered_notifies);
         }
 
         // and clear all this for next time
@@ -63,7 +51,23 @@ export class BufferNotifyManager {
     // --- actual notification displaying
     // ---------------------------------------
 
-    showLocalNotification(notif) {
+    showBatchedNotification(buffered_notifies) {
+        // TODO: show batched notification
+        FCM.presentLocalNotification({
+            opened_from_tray: 0,
+            icon: "ic_stat_brca_notify",
+            title: `${buffered_notifies.length} variants have changed`,
+            body: `The clinical significance of ${buffered_notifies.length} variants have changed`,
+            priority: "high",
+            variant_count: buffered_notifies.length,
+            announcement: true,
+            click_action: (Platform.OS === "android") ? "fcm.ACTION.HELLO" : buffered_notifies[0].click_action,
+            show_in_foreground: true,
+            local: true
+        });
+    }
+
+    showSingleNotification(notif) {
         console.log("Showing: ", notif);
 
         FCM.presentLocalNotification({
