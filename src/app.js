@@ -27,24 +27,10 @@ let reducer = combineReducers({
 });
 let store = createStore(reducer, applyMiddleware(thunk), autoRehydrate());
 
-// deals with the fact that the store takes a while to become available, so we need to buffer push notifications
-// until it's up and ready to properly receive them
-let store_loaded = false;
-const notify_buffer = [];
+export {store};
 
 // redux-persist will save the store to local storage via react-native's AsyncStorage
-persistStore(store, {storage: AsyncStorage}, () => {
-    console.log("*** rehydration complete! ***");
-    store_loaded = true;
-
-    // now that we've loaded, dispatch all the pending notifies
-    if (notify_buffer.length > 0) {
-        console.log(`[!!] processing ${notify_buffer.length} queued notification(s)...`);
-        notify_buffer.forEach(notif => {
-            store.dispatch(observe_notification(notif));
-        })
-    }
-});
+persistStore(store, {storage: AsyncStorage});
 
 // screen related book keeping
 import {registerScreens} from './screens';
@@ -153,65 +139,28 @@ export default class App {
         console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
         console.log("payload: ", notif);
 
-        // ways we can enter this method:
-        // 1) we receive a wakeup notification from the OS (android)
-        // 2) we receive an actual notification from FCM
-        // 3) we receive a notification, raise a "local" notification (to see the message up top), and receive a repeated notification
-        // 4) we click the notification (either from cold-start or when the app is running)
+        // logic for dealing with clicking a notification
+        if (notif.opened_from_tray) {
+            // notif.local_notification is true even if we're coming in from clicking it, apparently
+            // so we have to check notif.opened_from_tray first
 
-        // if the notification has a variant_id, then it's either one from FCM or from the user pressing a notification
-        if (notif.hasOwnProperty('variant_id') || notif.hasOwnProperty('announcement')) {
-            console.log("* Detected notification with variant_id and/or announcement field");
+            let link_target = null;
 
-            if (notif.opened_from_tray) {
-                // notif.local_notification is true even if we're coming in from clicking it, apparently
-                // so we have to check notif.opened_from_tray first
-
-                let link_target = null;
-
-                if (notif.hasOwnProperty('variant_id')) {
-                    link_target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
-                }
-                else if (notif.hasOwnProperty('announcement')) {
-                    link_target = 'notifylog/' + JSON.stringify({ version: notif.version });
-                }
-
-                if (link_target) {
-                    console.log("Opened from tray, launching ", link_target);
-                    Navigation.handleDeepLink({
-                        link: link_target
-                    });
-                }
-
-                return;
+            if (notif.hasOwnProperty('variant_id')) {
+                link_target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
             }
-            else if (notif.local_notification) {
-                console.log("* Disregarding self-raised notification");
-
-                // notif.local_notification being true indicates that we raised this event ourselves
-                // FIXME: verify that local_notification only comes from us
-
-                return;
+            else if (notif.hasOwnProperty('announcement')) {
+                link_target = 'notifylog/' + JSON.stringify({ version: notif.version });
             }
-            else {
-                if (!store_loaded) {
-                    console.log("[?!] Store not yet loaded, deferring handling...");
-                    notify_buffer.push(notif);
-                }
-                else {
-                    // simply pass this off to the notifylog reducer
-                    store.dispatch(observe_notification(notif));
-                }
-            }
-        }
-        else {
-            console.log("* Notification without variant_id/announcement (OS-raised?): ", notif);
 
-            if (notif.opened_from_tray && notif.from === '/topics/database_updates') {
+            if (link_target) {
+                console.log("Opened from tray, launching ", link_target);
                 Navigation.handleDeepLink({
-                    link: 'notifylog/' + JSON.stringify({ version: notif.version })
+                    link: link_target
                 });
             }
+
+            return;
         }
 
         // if we haven't returned by now, we want to dismiss the note
