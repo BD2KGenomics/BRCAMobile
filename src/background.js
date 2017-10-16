@@ -4,6 +4,9 @@ import {
 import BackgroundTask from 'react-native-background-task';
 import {observe_notification, set_nextcheck_time, set_updated_to_version} from "./redux/notifylog/actions";
 
+const MOCK_SERVER = true;
+const TARGET_HOST = MOCK_SERVER ? "localhost:8543" : "brcaexchange.org";
+
 /**
  * Creates a URL for fetching summary variant data for the given release_ID
  * @param release_ID the release for which to grab data
@@ -37,7 +40,7 @@ function makeReleaseURL(release_ID) {
     const changes_str = change_types.map(x => `&change_types=${x}`).join('');
     const column_str = column.map(x => `&column=${x}`).join('');
 
-    return `http://brcaexchange.org/backend/data/?format=json&page_size=100000${include_str}${changes_str}${column_str}&release=${release_ID}`;
+    return `http://${TARGET_HOST}/backend/data/?format=json&page_size=100000${include_str}${changes_str}${column_str}&release=${release_ID}`;
 }
 
 /**
@@ -81,7 +84,7 @@ export async function checkForUpdate(store, ignore_backoff, ignore_older_version
 
     // Fetch some data over the network which we want the user to have an up-to-
     // date copy of, even if they have no network when using the app
-    const response = await fetch('http://brcaexchange.org/backend/data/releases');
+    const response = await fetch(`http://${TARGET_HOST}/backend/data/releases`);
     const releases_meta = await response.json();
     const releases = releases_meta['releases'], latest = releases_meta['latest'];
 
