@@ -33,7 +33,7 @@ export class BufferNotifyManager {
     releaseBuffer() {
         console.log("Notifies: ", this.buffered_notifies);
 
-        // TODO: fire off either a single detailed notification, or a batched notify if length > 1
+        // fire off either a single detailed notification, or a batched notify if length > 1
         if (this.buffered_notifies.length == 1) {
             this.showSingleNotification(this.buffered_notifies[0]);
         }
@@ -52,7 +52,7 @@ export class BufferNotifyManager {
     // ---------------------------------------
 
     showBatchedNotification(buffered_notifies) {
-        // TODO: show batched notification
+        // show batched notification
         FCM.presentLocalNotification({
             opened_from_tray: 0,
             icon: "ic_stat_brca_notify",

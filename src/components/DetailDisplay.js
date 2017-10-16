@@ -199,7 +199,7 @@ class DetailDisplay extends Component {
         const theseDetails = this.getTheseDetails();
         console.log("Details: ", theseDetails);
 
-        // TODO: if we're waiting on data, display a loader
+        // if we're waiting on data, display a loader
         if (!theseDetails) {
             return this.renderLoader();
         }

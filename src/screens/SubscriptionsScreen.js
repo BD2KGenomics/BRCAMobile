@@ -86,6 +86,7 @@ class SubscriptionsScreen extends LinkableMenuScreen {
                             onSubscribeClicked={this.onSubscribeClicked.bind(this)}
                         />
 
+                        {/* FIXME: remove before deployment */}
                         <View style={{marginTop: 15}}>
                             <Icon.Button name="refresh" backgroundColor="#5cf" onPress={this.onTestNotifies}>Test Notifications</Icon.Button>
                         </View>

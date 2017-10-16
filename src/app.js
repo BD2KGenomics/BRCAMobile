@@ -27,6 +27,7 @@ let reducer = combineReducers({
 });
 let store = createStore(reducer, applyMiddleware(thunk), autoRehydrate());
 
+// FIXME: remove before deployment
 export {store};
 
 // redux-persist will save the store to local storage via react-native's AsyncStorage

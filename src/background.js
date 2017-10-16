@@ -4,6 +4,7 @@ import {
 import BackgroundTask from 'react-native-background-task';
 import {observe_notification, set_nextcheck_time, set_updated_to_version} from "./redux/notifylog/actions";
 
+// FIXME: remove before deployment
 const MOCK_SERVER = true;
 const TARGET_HOST = MOCK_SERVER ? "localhost:8543" : "brcaexchange.org";
 
