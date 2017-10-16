@@ -18,10 +18,6 @@ class NotifyLogScreen extends LinkableMenuScreen {
     constructor(props) {
         super(props);
 
-        const initialShowRead = false;
-
-        console.log("initial notifylog props: ", props.notifications);
-
         this.state = {
             notifyDS: this.createDataSource(props.notifications),
             isNotAtTop: false
@@ -52,8 +48,6 @@ class NotifyLogScreen extends LinkableMenuScreen {
     };
 
     showUnreadOrRead(showRead) {
-        console.log(this.props.navigator);
-
         if (showRead) {
             this.props.navigator.push({
                 title: "Notify Log (Read)",
@@ -106,8 +100,6 @@ class NotifyLogScreen extends LinkableMenuScreen {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("NotifyLog: ", nextProps);
-
         if (nextProps.notifications != this.props.notifications) {
             this.setState({
                 notifyDS: this.createDataSource(nextProps.notifications)
