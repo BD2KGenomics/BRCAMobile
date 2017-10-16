@@ -5,10 +5,13 @@ import {
 } from 'react-native';
 import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Toast from 'react-native-simple-toast';
 import { subscribe, unsubscribe } from '../redux/actions';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
 import Subscriptions from '../components/Subscriptions';
+import {checkForUpdate} from "../background";
+import {store} from "../app";
 
 class SubscriptionsScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -21,6 +24,7 @@ class SubscriptionsScreen extends LinkableMenuScreen {
         };
 
         this.onGoSearch = this.onGoSearch.bind(this);
+        this.onTestNotifies = this.onTestNotifies.bind(this);
     }
 
     static navigatorButtons = {
@@ -61,16 +65,31 @@ class SubscriptionsScreen extends LinkableMenuScreen {
         });
     }
 
+    onTestNotifies() {
+        Toast.show("Executing notification test...");
+
+        // run the background task
+        checkForUpdate(store, true, true, true).then(result => {
+            console.log(result);
+        })
+    }
+
     render() {
         return (
             <ScrollView style={{flex: 1, padding: 20, backgroundColor: 'white'}}>
                 { this.state.hadSubscriptions ?
-                    <Subscriptions
-                        subscriptions={this.props.subscriptions}
-                        subsLastUpdatedBy={this.props.subsLastUpdatedBy}
-                        onRowClicked={this.onRowClicked.bind(this)}
-                        onSubscribeClicked={this.onSubscribeClicked.bind(this)}
-                    />
+                    <View>
+                        <Subscriptions
+                            subscriptions={this.props.subscriptions}
+                            subsLastUpdatedBy={this.props.subsLastUpdatedBy}
+                            onRowClicked={this.onRowClicked.bind(this)}
+                            onSubscribeClicked={this.onSubscribeClicked.bind(this)}
+                        />
+
+                        <View style={{marginTop: 15}}>
+                            <Icon.Button name="refresh" backgroundColor="#5cf" onPress={this.onTestNotifies}>Test Notifications</Icon.Button>
+                        </View>
+                    </View>
                     :
                     <View>
                         <Text style={styles.noSubscriptionsText}>No followed variants yet!</Text>
