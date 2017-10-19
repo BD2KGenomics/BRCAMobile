@@ -157,6 +157,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-version-number')
     compile project(':react-native-background-task')
     compile project(':react-native-fcm')
     // also for react-native-fcm, apparently decides the firebase SDK version?

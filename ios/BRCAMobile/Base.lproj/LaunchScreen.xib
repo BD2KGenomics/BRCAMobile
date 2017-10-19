@@ -22,21 +22,10 @@
                         <constraint firstAttribute="width" constant="240" id="H6p-xb-V8E"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="brca-exchange mobile v0.1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="8ie-xW-0ye">
-                    <rect key="frame" x="138" y="439" width="205.33333333333331" height="21"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="21" id="R3u-kk-ojX"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                    <nil key="highlightedColor"/>
-                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="GKb-ae-1Lk" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="9e7-gu-7jy"/>
-                <constraint firstAttribute="bottom" secondItem="8ie-xW-0ye" secondAttribute="bottom" constant="20" id="F0d-OC-9KP"/>
-                <constraint firstItem="8ie-xW-0ye" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="QeB-Pf-efb"/>
                 <constraint firstItem="GKb-ae-1Lk" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="hld-0P-uKO"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
