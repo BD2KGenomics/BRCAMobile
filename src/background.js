@@ -54,7 +54,7 @@ function makeReleaseURL(release_ID) {
  * @param ignore_backoff (optional) if true, skips the backoff check (usually 12-24hrs after the last one)
  * @param ignore_older_version (optional) if true, skips checking the previously-grabbed version against the current
  * @param all_subscribed (optional) if true, announces this variant even if we're not subscribed
- * @returns {Promise.<void>}
+ * @returns {Promise.<string>}
  */
 export async function checkForUpdate(store, ignore_backoff, ignore_older_version, all_subscribed) {
     // establish defaults for our optional params
@@ -69,7 +69,9 @@ export async function checkForUpdate(store, ignore_backoff, ignore_older_version
     if ((nextCheck && currently < nextCheck)) {
         if (!ignore_backoff) {
             console.log(`exiting check_for_updates() since nextCheck is still ${1|((nextCheck - currently)/(1000*60))}min in the future`);
-            return;
+
+            const nextCheckDateStr = new Date(nextCheck).toLocaleDateString();
+            return `Next scheduled update is at ${nextCheckDateStr}`;
         }
         else {
             console.log("check_for_updates() would have aborted at time check, but ignore_backoff overrode it");
@@ -85,7 +87,13 @@ export async function checkForUpdate(store, ignore_backoff, ignore_older_version
 
     // Fetch some data over the network which we want the user to have an up-to-
     // date copy of, even if they have no network when using the app
-    const response = await fetch(`http://${TARGET_HOST}/backend/data/releases`);
+    const targetReleasesURL = `http://${TARGET_HOST}/backend/data/releases`;
+    console.log("accessing ", targetReleasesURL, "...");
+    const response = await fetch(targetReleasesURL, {
+        headers: {
+            'Cache-Control': 'no-cache'
+        }
+    });
     const releases_meta = await response.json();
     const releases = releases_meta['releases'], latest = releases_meta['latest'];
 
@@ -103,18 +111,24 @@ export async function checkForUpdate(store, ignore_backoff, ignore_older_version
     if ((lastCheckedVersion && lastCheckedVersion >= latest)) {
         if (!ignore_older_version) {
             console.log(`exiting check_for_updates() since lastCheckedVersion (${lastCheckedVersion}) >= latest (${latest})`);
-            return;
+            return `Already up to date!`;
         }
         else {
             console.log("check_for_updates() would have aborted at version check, but ignore_older_version overrode it");
         }
     }
 
+    // FIXME: do we get every release from the current (potentially empty) release to now? that might be costly
+
     // download added/changed variants for the current release
     const target_url = makeReleaseURL(latest);
     console.log("target: ", target_url);
 
-    const data = await fetch(target_url);
+    const data = await fetch(target_url, {
+        headers: {
+            'Cache-Control': 'no-cache'
+        }
+    });
     const data_decoded = await data.json();
     console.log(data_decoded);
 
@@ -146,4 +160,5 @@ export async function checkForUpdate(store, ignore_backoff, ignore_older_version
     store.dispatch(set_updated_to_version(latest));
 
     console.log('...done!');
+    return "Refreshed!";
 }
