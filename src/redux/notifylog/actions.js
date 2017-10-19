@@ -13,6 +13,7 @@ export const RECEIVE_NOTIFICATION = 'RECEIVE_NOTIFICATION';
 export const MARK_NOTIFICATION_READ = 'MARK_NOTIFICATION_READ';
 export const MARK_VISIBLE_READ = 'MARK_VISIBLE_READ';
 export const ARCHIVE_ALL_NOTIFICATIONS = 'ARCHIVE_ALL_NOTIFICATIONS';
+export const CLEAR_ALL_NOTIFICATIONS = 'CLEAR_ALL_NOTIFICATIONS';
 
 export function set_nextcheck_time(nextCheck) {
     return { type: SET_NEXTCHECK_TIME, received_at: new Date(), nextCheck }
@@ -38,8 +39,12 @@ export function archive_all_notifications() {
     return { type: ARCHIVE_ALL_NOTIFICATIONS }
 }
 
+export function clear_all_notifications() {
+    return { type: CLEAR_ALL_NOTIFICATIONS }
+}
+
 // some ephemeral state for deferred notifies
-const notifybuffer_mgr = new BufferNotifyManager({ duration: 3000 });
+const notifybuffer_mgr = new BufferNotifyManager({ duration: 1000 });
 
 export function announce_notification(notif) {
     return function (dispatch, getState) {

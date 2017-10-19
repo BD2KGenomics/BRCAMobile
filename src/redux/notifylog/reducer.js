@@ -1,14 +1,15 @@
 import {
     MARK_NOTIFICATION_READ,
     MARK_VISIBLE_READ, ARCHIVE_ALL_NOTIFICATIONS,
-    RECEIVE_NOTIFICATION, SET_NEXTCHECK_TIME, SET_UPDATED_TO_VERSION
+    RECEIVE_NOTIFICATION, SET_NEXTCHECK_TIME, SET_UPDATED_TO_VERSION, CLEAR_ALL_NOTIFICATIONS
 } from './actions';
 import * as Immutable from "immutable";
 
 const initialState = Immutable.fromJS({
     notifications: Immutable.List(),
     nextCheck: null, // min time to check for a new release, in milliseconds since the epoch
-    latestVersion: null // database version since last successful fetch
+    latestVersion: null, // database version since last successful fetch
+    updatedAt: null, // the time that we completed the update
 });
 
 export default function notifylogReducer(state=initialState, action) {
@@ -20,7 +21,8 @@ export default function notifylogReducer(state=initialState, action) {
 
         case SET_UPDATED_TO_VERSION:
             return state.merge({
-                latestVersion: action.latestVersion
+                latestVersion: action.latestVersion,
+                updatedAt: new Date()
             });
 
         case RECEIVE_NOTIFICATION:
@@ -60,6 +62,11 @@ export default function notifylogReducer(state=initialState, action) {
                     x.archived = true;
                     return x;
                 }),
+            });
+
+        case CLEAR_ALL_NOTIFICATIONS:
+            return state.merge({
+                notifications: state.get('notifications').clear()
             });
 
         default:
