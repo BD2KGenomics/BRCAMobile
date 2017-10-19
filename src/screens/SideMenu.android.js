@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import VersionNumber from 'react-native-version-number';
 
 import BaseSideMenu from './BaseSideMenu';
 import SidebarMenuItems from "../components/SidebarMenuItems";
@@ -45,7 +46,7 @@ export default class SideMenu extends BaseSideMenu {
                   />
               </View>
 
-              <Text style={styles.version}>brca-exchange mobile v0.1</Text>
+              <Text style={styles.version}>brca-exchange mobile v{VersionNumber.appVersion}</Text>
             </View>
         );
     }
