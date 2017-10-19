@@ -4,20 +4,19 @@ import {
 import { Navigation, NativeEventsReceiver } from 'react-native-navigation';
 import { createStore, applyMiddleware } from 'redux';
 import { combineReducers } from 'redux-immutablejs';
-import thunk from 'redux-thunk'
-import { persistStore, autoRehydrate } from 'redux-persist-immutable'
-import { AsyncStorage } from 'react-native'
+import thunk from 'redux-thunk';
+import { persistStore, autoRehydrate } from 'redux-persist-immutable';
+import { AsyncStorage } from 'react-native';
 import { browsingReducer, subscriptionsReducer, notifylogReducer } from './redux';
 import * as Immutable from "immutable";
 import BackgroundTask from 'react-native-background-task';
 import {checkForUpdate} from "./background";
 
 import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
-import {observe_notification, receive_notification} from "./redux/notifylog/actions";
 
 // stuff for FCM
 import FCM, {
-    FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType
+    FCMEvent
 } from "react-native-fcm";
 
 let reducer = combineReducers({
@@ -31,7 +30,7 @@ let store = createStore(reducer, applyMiddleware(thunk), autoRehydrate());
 export {store};
 
 // redux-persist will save the store to local storage via react-native's AsyncStorage
-persistStore(store, {storage: AsyncStorage});
+persistStore(store, {storage: AsyncStorage });
 
 // screen related book keeping
 import {registerScreens} from './screens';
