@@ -19,24 +19,32 @@ import FCM, {
     FCMEvent
 } from "react-native-fcm";
 
-let reducer = combineReducers({
+
+// ----------------------------------------------------------------------
+// --- redux setup
+// ----------------------------------------------------------------------
+
+const reducer = combineReducers({
     browsing: browsingReducer,
     subscribing: subscriptionsReducer,
     notifylog: notifylogReducer
 });
-let store = createStore(reducer, applyMiddleware(thunk), autoRehydrate());
-
-// FIXME: remove before deployment
-export {store};
-
-// redux-persist will save the store to local storage via react-native's AsyncStorage
+const store = createStore(reducer, applyMiddleware(thunk), autoRehydrate());
 persistStore(store, {storage: AsyncStorage });
 
-// screen related book keeping
+
+// ----------------------------------------------------------------------
+// --- screen related book keeping (for wix's react-native-navigation)
+// ----------------------------------------------------------------------
+
 import {registerScreens} from './screens';
 registerScreens(store);
 
-// create the background task handler, since it needs to close over the store
+
+// ----------------------------------------------------------------------
+// --- background task handler, with access to the store from above
+// ----------------------------------------------------------------------
+
 async function bgTask() {
     console.log('Hello from a background task');
     await checkForUpdate(store, true, true, true);
@@ -45,6 +53,15 @@ async function bgTask() {
 
 // attach background task
 BackgroundTask.define(bgTask);
+
+// this is used in NotifyLog to allow the user to manually launch a refresh task
+// FIXME: consider making firing the background task a reducer action, so we don't need to send the store over?
+export {store};
+
+
+// ----------------------------------------------------------------------
+// --- application entrypoint
+// ----------------------------------------------------------------------
 
 export default class App {
     constructor() {
