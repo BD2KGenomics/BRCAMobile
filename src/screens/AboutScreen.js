@@ -56,12 +56,6 @@ Variant data displayed in this app are made available using the standards-based 
                     <Image style={{width: 300, marginBottom: 5 }} resizeMode='contain' source={require('../../img/logos/ethz_simple.png')} />
                     <Image style={{width: 300, marginBottom: 0 }} resizeMode='contain' source={require('../../img/logos/ga4gh.png')} />
                 </View>
-
-                {/*
-                <View style={{marginBottom: 50, paddingLeft: 20}}>
-                    <Text selectable={true} style={styles.tokenText}>FCM Token: {this.props.token}</Text>
-                </View>
-                */}
             </ScrollView>
         );
     }
@@ -117,11 +111,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = (state_immutable) => {
-    const state = state_immutable.toJS();
-
-    return {
-        token: state.subscribing.token
-    }
+    return {};
 };
 
 export default connect(
