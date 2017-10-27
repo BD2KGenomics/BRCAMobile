@@ -47,7 +47,7 @@ registerScreens(store);
 
 async function bgTask() {
     console.log('Hello from a background task');
-    await checkForUpdate(store, true, true, true);
+    await checkForUpdate(store, {});
     BackgroundTask.finish();
 }
 

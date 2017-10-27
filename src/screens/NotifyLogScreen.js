@@ -110,16 +110,13 @@ class NotifyLogScreen extends LinkableMenuScreen {
     _aggNotifies(notifications) {
         const reversedNotifies = notifications.filter(x => !x.archived).reverse();
         const groupedNotifies = groupBy(reversedNotifies, x => x.version || "(unknown)");
-        const formatted = Object.keys(groupedNotifies).map(k => {
+
+        return Object.keys(groupedNotifies).map(k => {
             return {
                 data: groupedNotifies[k].map(x => ({ key: x.idx, ...x})),
                 version: k
             }
         });
-
-        // console.log("Formatted: ", formatted);
-
-        return formatted;
     }
 
     renderSectionHeader({ section }) {
@@ -177,18 +174,25 @@ class NotifyLogScreen extends LinkableMenuScreen {
         });
 
         // run the background task
-        checkForUpdate(store, true, false, false).then(result => {
-            Toast.show(result);
-        })
-        .catch((err) => {
-            console.log(err);
-            Toast.show(err.message);
-        })
-        .then(() => {
-            this.setState({
-                refreshing: false
-            });
-        })
+        const config = {
+            ignore_backoff: true, // allows us to refresh even if we're not in the refresh interval
+            ignore_older_version: false, // would allow us to refresh even if we previously got the latest version
+            all_subscribed: false // treats every variant as if we're subscribed to it (produces a lot of results...)
+        };
+
+        checkForUpdate(store, config)
+            .then(result => {
+                Toast.show(result);
+            })
+            .catch((err) => {
+                console.log(err);
+                Toast.show(err.message);
+            })
+            .then(() => {
+                this.setState({
+                    refreshing: false
+                });
+            })
     }
 
     render() {
@@ -306,7 +310,7 @@ const mapStateToProps = (state_immutable) => {
 
     return {
         // subscription info
-        notifications: state_notifylog.notifications.filter(x => !x.archived),
+        notifications: state_notifylog.notifications && state_notifylog.notifications.filter(x => !x.archived),
         updatedAt: state_notifylog.updatedAt
     }
 };

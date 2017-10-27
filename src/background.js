@@ -5,8 +5,12 @@ import BackgroundTask from 'react-native-background-task';
 import {observe_notification, set_nextcheck_time, set_updated_to_version} from "./redux/notifylog/actions";
 
 // FIXME: remove before deployment
-const MOCK_SERVER = true;
+const MOCK_SERVER = false;
 const TARGET_HOST = MOCK_SERVER ? "localhost:8543" : "brcaexchange.org";
+
+// controls how frequently the background task will poll
+// next time = POLL_PERIOD + random(0, POLL_PERIOD)
+const POLL_PERIOD = 12*60*60*1000; // half a day in msec
 
 /**
  * Creates a URL for fetching summary variant data for the given release_ID
@@ -56,7 +60,7 @@ function makeReleaseURL(release_ID) {
  * @param all_subscribed (optional) if true, announces this variant even if we're not subscribed
  * @returns {Promise.<string>}
  */
-export async function checkForUpdate(store, ignore_backoff, ignore_older_version, all_subscribed) {
+export async function checkForUpdate(store, { ignore_backoff, ignore_older_version, all_subscribed }) {
     // establish defaults for our optional params
     ignore_backoff = ignore_backoff || false;
     ignore_older_version = ignore_older_version || false;
@@ -97,9 +101,8 @@ export async function checkForUpdate(store, ignore_backoff, ignore_older_version
     const releases_meta = await response.json();
     const releases = releases_meta['releases'], latest = releases_meta['latest'];
 
-    // set nextcheck to now + random(12hr,24hr)
-    const halfday_ms = 12*60*60*1000;
-    const random_offset_ms = halfday_ms + 1|(Math.random()*halfday_ms);
+    // set nextcheck to now + random(POLL_PERIOD, POLL_PERIOD*2)
+    const random_offset_ms = POLL_PERIOD + 1|(Math.random()*POLL_PERIOD);
     store.dispatch(set_nextcheck_time(Date.now() + random_offset_ms));
 
     // Data persisted to AsyncStorage can later be accessed by the foreground app
