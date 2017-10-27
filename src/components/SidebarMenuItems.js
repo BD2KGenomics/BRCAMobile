@@ -47,6 +47,11 @@ export default class SidebarMenuItems extends Component {
                     <Text style={this.props.buttonStyle}>About This App</Text>
                 </Icon.Button>
 
+                <Icon.Button name="help" {...this.props.navbuttonProps}
+                    onPress={ () => this.props.onNavigateRequest('Usage Guide', 'brca.HelpScreen', false) }>
+                    <Text style={this.props.buttonStyle}>User Guide</Text>
+                </Icon.Button>
+
                 {/*
                     screens.filter(x => x.hasOwnProperty('sidebar') && x.sidebar != null)
                         .map((x, idx) => {
