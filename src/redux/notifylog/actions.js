@@ -68,6 +68,14 @@ export function observe_notification(notif, all_subscribed) {
 
         // it's probably from FCM, let's raise a notification if we're actually subscribed to this
         if (all_subscribed || subscriptions.includes(notif.genome_id)) {
+            // verify that we don't already know about this thing
+            // FIXME: this is less efficient than using a version-genomeID Map in notifylog, but reshaping it requires a migration plan
+            const existing_notifies = getState().getIn(['notifylog','notifications']);
+
+            if (existing_notifies.find((v) => sameVersionGenomeID(v, notif)) !== undefined) {
+                return;
+            }
+
             // log the notification
             dispatch(receive_notification(notif));
             // purge the details cache of this record, if it exists, forcing a remote refresh
@@ -77,4 +85,9 @@ export function observe_notification(notif, all_subscribed) {
             dispatch(announce_notification(notif));
         }
     }
+}
+
+// checks if the notification we're going to announce is the same as an existing one
+function sameVersionGenomeID(a,b) {
+    return a.version == b.version && a.genome_id == b.genome_id;
 }
