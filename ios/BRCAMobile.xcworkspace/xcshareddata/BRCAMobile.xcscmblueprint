@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "FED259C48BAD462F8BC036D72C9D5EC474E2D9C3",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "DD67CEACFED83551057A09BD3AE64041EFCFA7E6" : 9223372036854775807,
+    "FED259C48BAD462F8BC036D72C9D5EC474E2D9C3" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "5539FE66-D534-4B42-88CD-600E57D5F397",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "DD67CEACFED83551057A09BD3AE64041EFCFA7E6" : "BRCAMobile\/node_modules\/react-native-version-number\/",
+    "FED259C48BAD462F8BC036D72C9D5EC474E2D9C3" : "BRCAMobile\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "BRCAMobile",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ios\/BRCAMobile.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:APSL\/react-native-version-number.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "DD67CEACFED83551057A09BD3AE64041EFCFA7E6"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:BRCAChallenge\/BRCAMobile.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "FED259C48BAD462F8BC036D72C9D5EC474E2D9C3"
+    }
+  ]
+}
