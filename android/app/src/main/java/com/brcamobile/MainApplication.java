@@ -30,6 +30,7 @@ public class MainApplication extends NavigationApplication {
     // stetho
     public void onCreate() {
         super.onCreate();
+        
         Stetho.initializeWithDefaults(this);
         OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(0, TimeUnit.MILLISECONDS)
@@ -39,6 +40,10 @@ public class MainApplication extends NavigationApplication {
             .addNetworkInterceptor(new StethoInterceptor())
             .build();
         OkHttpClientProvider.replaceOkHttpClient(client);
+
+        // FAISAL: apparently stetho messed up this linking step
+        SoLoader.init(this, /* native exopackage */ false);
+
         BackgroundTaskPackage.useContext(this);
     }
 
