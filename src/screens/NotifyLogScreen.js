@@ -155,7 +155,12 @@ class NotifyLogScreen extends LinkableMenuScreen {
         return (
             <View style={[styles.row, styles.emptyResultsRow]}>
                 <Text style={styles.emptySectionText}>
-                {`no current notifications\nlast updated: ${this.props.updatedAt ? this.props.updatedAt.toLocaleString() : 'never'}\npull down to refresh`}
+                {
+                `no current notifications\n` +
+                `last updated: ${this.props.updatedAt ? this.props.updatedAt.toLocaleString() : 'never'}\n` +
+                `latest release: ${this.props.latestVersion || 'none'}\n` +
+                `pull down to refresh`
+                }
                 </Text>
             </View>
         );
@@ -314,7 +319,8 @@ const mapStateToProps = (state_immutable) => {
     return {
         // subscription info
         notifications: state_notifylog.notifications && state_notifylog.notifications.filter(x => !x.archived),
-        updatedAt: state_notifylog.updatedAt
+        updatedAt: state_notifylog.updatedAt,
+        latestVersion: state_notifylog.latestVersion
     }
 };
 
