@@ -29,7 +29,7 @@ class ScaryDebugNotice extends Component {
         }
 
         const extraStyles = {
-            margin: (Platform.OS === 'ios') ? -2 : 0,
+            // margin: (Platform.OS === 'ios') ? -2 : 0,
             marginBottom: this.props.marginBottom || 0
         };
 
@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
     messageBox: {
         backgroundColor: 'orange',
         padding: 10,
-        borderWidth: 2,
-        borderColor: 'white'
+        borderBottomWidth: 1,
+        borderBottomColor: '#cf9e3e'
     },
     header: {
         fontSize: 14,
