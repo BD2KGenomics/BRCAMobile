@@ -112,7 +112,7 @@ class NotifyLogScreen extends LinkableMenuScreen {
         const reversedNotifies = notifications.filter(x => !x.archived).reverse();
         const groupedNotifies = groupBy(reversedNotifies, x => x.version || "(unknown)");
 
-        return Object.keys(groupedNotifies).map(k => {
+        return Object.keys(groupedNotifies).reverse().map(k => {
             return {
                 data: groupedNotifies[k].map(x => ({ key: x.idx, ...x})),
                 version: k
