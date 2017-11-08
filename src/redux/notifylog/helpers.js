@@ -55,10 +55,10 @@ export class BufferNotifyManager {
         // show batched notification
         FCM.presentLocalNotification({
             opened_from_tray: 0,
+            priority: "high",
             icon: "ic_stat_brca_notify",
             title: `${buffered_notifies.length} variants have changed`,
             body: `The clinical significance of ${buffered_notifies.length} variants have changed`,
-            priority: "high",
             variant_count: buffered_notifies.length,
             announcement: true,
             click_action: (Platform.OS === "android") ? "fcm.ACTION.HELLO" : buffered_notifies[0].click_action,
@@ -72,13 +72,15 @@ export class BufferNotifyManager {
 
         FCM.presentLocalNotification({
             opened_from_tray: 0,
+            priority: "high",
             icon: "ic_stat_brca_notify",
             title: notif.title,
             body: notif.body,
             variant_id: notif.variant_id,
-            priority: "high",
+            variant_count: 1,
+            announcement: true, // makes the notify handler go to the notifylog vs. the details view
             click_action: (Platform.OS === "android") ? "fcm.ACTION.HELLO" : notif.click_action,
-            // show_in_foreground: true,
+            show_in_foreground: true,
             local: true
         });
     }
