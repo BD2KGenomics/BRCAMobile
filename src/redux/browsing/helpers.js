@@ -31,8 +31,18 @@ export function queryVariantsForPage(query, page_num, page_size) {
     ];
     const include_params = "&" + includes.map(x => "include=" + x).join("&");
 
-    let queryString = 'http://brcaexchange.org/backend/data/?' + encodeParams(args) + include_params;
-    console.log("Query Request: ", queryString);
+    // only grab the columns we display on the page
+    const column = [
+        'id',
+        'Gene_Symbol',
+        'Genomic_Coordinate_hg38',
+        'Pathogenicity_expert',
+        'HGVS_cDNA'
+    ];
+    const column_str = column.map(x => `&column=${x}`).join('');
+
+    let queryString = 'http://brcaexchange.org/backend/data/?' + encodeParams(args) + include_params + column_str;
+    console.log("Query Request: " + queryString);
 
     return fetch(queryString)
         .then(checkStatus)
