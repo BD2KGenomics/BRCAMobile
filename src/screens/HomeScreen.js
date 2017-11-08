@@ -3,8 +3,6 @@ import {
     Text, TextInput, View, ScrollView, Image, TouchableOpacity, StyleSheet,
     Alert, Platform
 } from 'react-native';
-import {Navigation} from 'react-native-navigation';
-import debounce from 'lodash/debounce';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
 import SearchBar from '../components/SearchBar';
