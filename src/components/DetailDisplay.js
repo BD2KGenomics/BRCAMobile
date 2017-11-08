@@ -357,17 +357,18 @@ function renderSignificance(status) {
 // ------------------------------------------------------------------------------
 
 const mapStateToProps = (state_immutable) => {
-    const state = state_immutable.toJS();
+    const state_subscribing = state_immutable.get('subscribing').toJS();
+    const state_browsing = state_immutable.get('browsing').toJS();
 
     // FIXME: replace with reselect at some point
 
     return {
         // subscription info
-        details_cache: state.browsing.details,
-        isFetchingDetails: state.browsing.isFetchingDetails,
-        variants: state.browsing.variants, // FIXME: only include this variant?
-        subscriptions: state.subscribing.subscriptions,
-        subsLastUpdatedBy: state.subscribing.subsLastUpdatedBy
+        details_cache: state_browsing.details,
+        isFetchingDetails: state_browsing.isFetchingDetails,
+        variants: state_browsing.variants, // FIXME: only include this variant?
+        subscriptions: state_subscribing.subscriptions,
+        subsLastUpdatedBy: state_subscribing.subsLastUpdatedBy
     }
 };
 

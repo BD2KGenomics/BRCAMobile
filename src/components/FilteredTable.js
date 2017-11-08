@@ -106,19 +106,20 @@ const styles = StyleSheet.create({
 /* define the component-to-store connectors */
 
 const mapStateToProps = (state_immutable) => {
-    const state = state_immutable.toJS();
+    const state_subscribing = state_immutable.get('subscribing').toJS();
+    const state_browsing = state_immutable.get('browsing').toJS();
 
     return {
         // subscription info
-        subscriptions: state.subscribing.subscriptions,
+        subscriptions: state_subscribing.subscriptions,
         // query info
-        isLoading: state.browsing.isFetching,
-        query: state.browsing.query,
-        variants: state.browsing.variants,
-        synonyms: state.browsing.synonyms,
-        resultsCount: state.browsing.totalResults,
-        pageIndex: state.browsing.pageIndex,
-        pageSize: state.browsing.pageSize
+        isLoading: state_browsing.isFetching,
+        query: state_browsing.query,
+        variants: state_browsing.variants,
+        synonyms: state_browsing.synonyms,
+        resultsCount: state_browsing.totalResults,
+        pageIndex: state_browsing.pageIndex,
+        pageSize: state_browsing.pageSize
     }
 };
 

@@ -38,7 +38,7 @@ export function purge_details(variantID) {
 
 export function query_variants(query) {
     return function (dispatch, getState) {
-        const { pageSize } = getState().toJS().browsing;
+        const pageSize = getState().getIn(['browsing','pageSize']);
 
         // tell the store that we're starting a query
         dispatch(begin_query(query));
@@ -57,7 +57,7 @@ export function query_variants(query) {
 
 export function fetch_next_page() {
     return function(dispatch, getState) {
-        const { query, pageIndex, pageSize } = getState().toJS().browsing;
+        const { query, pageIndex, pageSize } = getState().get('browsing').toJS();
 
         if (query === null) {
             console.warn("Fetch next page called with null query, aborting");
