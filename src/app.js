@@ -7,7 +7,7 @@ import { combineReducers } from 'redux-immutablejs';
 import thunk from 'redux-thunk';
 import { persistStore, autoRehydrate } from 'redux-persist-immutable';
 import { AsyncStorage } from 'react-native';
-import { browsingReducer, subscriptionsReducer, notifylogReducer } from './redux';
+import { browsingReducer, debuggingReducer, subscriptionsReducer, notifylogReducer } from './redux';
 import * as Immutable from "immutable";
 import BackgroundTask from 'react-native-background-task';
 import {checkForUpdate} from "./background";
@@ -27,10 +27,11 @@ import FCM, {
 const reducer = combineReducers({
     browsing: browsingReducer,
     subscribing: subscriptionsReducer,
-    notifylog: notifylogReducer
+    notifylog: notifylogReducer,
+    debugging: debuggingReducer
 });
 const store = createStore(reducer, applyMiddleware(thunk), autoRehydrate());
-persistStore(store, {storage: AsyncStorage });
+const persistControl = persistStore(store, {storage: AsyncStorage });
 
 
 // ----------------------------------------------------------------------
@@ -47,7 +48,10 @@ registerScreens(store);
 
 async function bgTask() {
     console.log('Hello from a background task');
-    await checkForUpdate(store, {});
+    await checkForUpdate(store, {
+        ignore_backoff: true,
+        ignore_older_version: true
+    });
     BackgroundTask.finish();
 }
 
@@ -56,7 +60,7 @@ BackgroundTask.define(bgTask);
 
 // this is used in NotifyLog to allow the user to manually launch a refresh task
 // FIXME: consider making firing the background task a reducer action, so we don't need to send the store over?
-export {store};
+export {store, persistControl};
 
 
 // ----------------------------------------------------------------------
@@ -109,7 +113,7 @@ export default class App {
 
         BackgroundTask.cancel();
         BackgroundTask.schedule({
-            period: 1800
+            period: 900
         });
     }
 
@@ -167,11 +171,11 @@ export default class App {
 
             let link_target = null;
 
-            if (notif.hasOwnProperty('variant_id')) {
-                link_target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
-            }
-            else if (notif.hasOwnProperty('announcement')) {
+            if (notif.hasOwnProperty('announcement')) {
                 link_target = 'notifylog/' + JSON.stringify({ version: notif.version });
+            }
+            else if (notif.hasOwnProperty('variant_id')) {
+                link_target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
             }
 
             if (link_target) {

@@ -11,6 +11,7 @@ import SettingsScreen from "../screens/SettingsScreen";
 import SideMenu from '../screens/SideMenu';
 import NotifyLogScreen from "../screens/NotifyLogScreen";
 import HelpScreen from "../screens/HelpScreen";
+import DebugScreen from "../screens/DebugScreen";
 
 export const screens = [
     {
@@ -65,6 +66,15 @@ export const screens = [
         sidebar: {
             title: 'User Guide',
             icon: 'help',
+            resetStack: false
+        },
+    },
+    {
+        name: 'brca.DebugScreen',
+        component: DebugScreen,
+        sidebar: {
+            title: 'Dev Settings',
+            icon: 'bug-report',
             resetStack: false
         },
     },

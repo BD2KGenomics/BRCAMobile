@@ -15,6 +15,8 @@ export const MARK_VISIBLE_READ = 'MARK_VISIBLE_READ';
 export const ARCHIVE_ALL_NOTIFICATIONS = 'ARCHIVE_ALL_NOTIFICATIONS';
 export const CLEAR_ALL_NOTIFICATIONS = 'CLEAR_ALL_NOTIFICATIONS';
 
+export const DEBUG_PURGE_NOTIFYSTATE = 'DEBUG_PURGE_NOTIFYSTATE';
+
 export function set_nextcheck_time(nextCheck) {
     return { type: SET_NEXTCHECK_TIME, received_at: new Date(), nextCheck }
 }
@@ -41,6 +43,10 @@ export function archive_all_notifications() {
 
 export function clear_all_notifications() {
     return { type: CLEAR_ALL_NOTIFICATIONS }
+}
+
+export function debug_purge_notifystate() {
+    return { type: DEBUG_PURGE_NOTIFYSTATE }
 }
 
 // some ephemeral state for deferred notifies

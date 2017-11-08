@@ -4,10 +4,6 @@ import {
 import BackgroundTask from 'react-native-background-task';
 import {observe_notification, set_nextcheck_time, set_updated_to_version} from "./redux/notifylog/actions";
 
-// FIXME: remove before deployment
-const MOCK_SERVER = false;
-const TARGET_HOST = MOCK_SERVER ? "localhost:8543" : "brcaexchange.org";
-
 // controls how frequently the background task will poll
 // next time = POLL_PERIOD + random(0, POLL_PERIOD)
 const POLL_PERIOD = 12*60*60*1000; // half a day in msec
@@ -17,7 +13,7 @@ const POLL_PERIOD = 12*60*60*1000; // half a day in msec
  * @param release_ID the release for which to grab data
  * @returns {string} the URL from which to fetch this releases' data
  */
-function makeReleaseURL(release_ID) {
+function makeReleaseURL(release_ID, target_host) {
     const includes = [
         'Variant_in_ENIGMA',
         'Variant_in_ClinVar',
@@ -45,7 +41,7 @@ function makeReleaseURL(release_ID) {
     const changes_str = change_types.map(x => `&change_types=${x}`).join('');
     const column_str = column.map(x => `&column=${x}`).join('');
 
-    return `http://${TARGET_HOST}/backend/data/?format=json&page_size=100000${include_str}${changes_str}${column_str}&release=${release_ID}`;
+    return `http://${target_host}/backend/data/?format=json&page_size=100000${include_str}${changes_str}${column_str}&release=${release_ID}`;
 }
 
 /**
@@ -66,8 +62,15 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     ignore_older_version = ignore_older_version || false;
     all_subscribed = all_subscribed || false;
 
+    const store_state = store.getState();
+
+    // enable the mock server only if both debugging and the mock refresh server option are enabled
+    const isDebugging = store_state.getIn(['debugging', 'isDebugging']);
+    const isRefreshMocked = store_state.getIn(['debugging', 'isRefreshMocked']);
+    const targetHost = (isDebugging && isRefreshMocked ? "40.78.27.48:8500" : "brcaexchange.org");
+
     // check nextcheck timestamp; if nextcheck && now < nextcheck, abort
-    const nextCheck = store.getState().getIn(['notifylog', 'nextCheck']);
+    const nextCheck = store_state.getIn(['notifylog', 'nextCheck']);
     const currently = Date.now();
 
     if ((nextCheck && currently < nextCheck)) {
@@ -91,7 +94,7 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
 
     // Fetch some data over the network which we want the user to have an up-to-
     // date copy of, even if they have no network when using the app
-    const targetReleasesURL = `http://${TARGET_HOST}/backend/data/releases`;
+    const targetReleasesURL = `http://${targetHost}/backend/data/releases`;
     console.log("accessing ", targetReleasesURL, "...");
     const response = await fetch(targetReleasesURL, {
         headers: {
@@ -124,7 +127,7 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     // FIXME: do we get every release from the current (potentially empty) release to now? that might be costly
 
     // download added/changed variants for the current release
-    const target_url = makeReleaseURL(latest);
+    const target_url = makeReleaseURL(latest, targetHost);
     console.log("target: ", target_url);
 
     const data = await fetch(target_url, {

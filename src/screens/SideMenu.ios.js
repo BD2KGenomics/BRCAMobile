@@ -10,6 +10,7 @@ import {
 
 import BaseSideMenu from './BaseSideMenu';
 import SidebarMenuItems from "../components/SidebarMenuItems";
+import VersionBlurb from "../components/VersionBlurb";
 
 export default class SideMenu extends BaseSideMenu {
     constructor(props) {
@@ -42,7 +43,7 @@ export default class SideMenu extends BaseSideMenu {
                     />
                 </View>
 
-                <Text style={styles.version}>brca-exchange mobile v1.3</Text>
+                <VersionBlurb />
             </View>
         );
     }

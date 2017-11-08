@@ -1,7 +1,7 @@
 import {
     MARK_NOTIFICATION_READ,
     MARK_VISIBLE_READ, ARCHIVE_ALL_NOTIFICATIONS,
-    RECEIVE_NOTIFICATION, SET_NEXTCHECK_TIME, SET_UPDATED_TO_VERSION, CLEAR_ALL_NOTIFICATIONS
+    RECEIVE_NOTIFICATION, SET_NEXTCHECK_TIME, SET_UPDATED_TO_VERSION, CLEAR_ALL_NOTIFICATIONS, DEBUG_PURGE_NOTIFYSTATE
 } from './actions';
 import * as Immutable from "immutable";
 
@@ -68,6 +68,9 @@ export default function notifylogReducer(state=initialState, action) {
             return state.merge({
                 notifications: state.get('notifications').clear()
             });
+
+        case DEBUG_PURGE_NOTIFYSTATE:
+            return initialState;
 
         default:
             return state;

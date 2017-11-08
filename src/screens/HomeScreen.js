@@ -8,6 +8,7 @@ import debounce from 'lodash/debounce';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
 import SearchBar from '../components/SearchBar';
+import ScaryDebugNotice from "../components/ScaryDebugNotice";
 
 export default class HomeScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -50,23 +51,27 @@ export default class HomeScreen extends LinkableMenuScreen {
 
     render() {
         return (
-            <ScrollView style={{flex: 1, padding: 20, backgroundColor: 'white'}}>
-                <SearchBar
-                    text={this.state.searchText}
-                    autoFocus={false}
-                    onChangeText={this.onChangeText.bind(this)}
-                    onSubmit={this.onSubmit.bind(this)} />
+            <ScrollView style={{flex: 1, padding: 0, backgroundColor: 'white'}}>
+                <ScaryDebugNotice />
 
-                <View style={styles.info}>
-                    <Text style={styles.paragraph}>The BRCA Exchange aims to advance our understanding of the genetic basis of breast cancer, ovarian cancer and other diseases by pooling data on BRCA1/2 genetic variants and corresponding clinical data from around the world. Search for BRCA1 or BRCA2 variants above.</Text>
+                <View style={{padding: 20}}>
+                    <SearchBar
+                        text={this.state.searchText}
+                        autoFocus={false}
+                        onChangeText={this.onChangeText.bind(this)}
+                        onSubmit={this.onSubmit.bind(this)} />
 
-                    <Text style={{fontSize: 5}}>&nbsp;</Text>
+                    <View style={styles.info}>
+                        <Text style={styles.paragraph}>The BRCA Exchange aims to advance our understanding of the genetic basis of breast cancer, ovarian cancer and other diseases by pooling data on BRCA1/2 genetic variants and corresponding clinical data from around the world. Search for BRCA1 or BRCA2 variants above.</Text>
 
-                    <Text style={styles.paragraph}>This project is supported by the BRCA Exchange of the Global Alliance for Genomics and Health.</Text>
-                </View>
+                        <Text style={{fontSize: 5}}>&nbsp;</Text>
 
-                <View style={styles.logo}>
-                    <Image style={{width: 133, height: 67}} source={require('../../img/logos/brcaexchange.jpg')} />
+                        <Text style={styles.paragraph}>This project is supported by the BRCA Exchange of the Global Alliance for Genomics and Health.</Text>
+                    </View>
+
+                    <View style={styles.logo}>
+                        <Image style={{width: 133, height: 67}} source={require('../../img/logos/brcaexchange.jpg')} />
+                    </View>
                 </View>
             </ScrollView>
         );

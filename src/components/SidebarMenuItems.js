@@ -5,10 +5,11 @@ import {
     Text, View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {connect} from "react-redux";
 
 // import {screens} from '../metadata/screens';
 
-export default class SidebarMenuItems extends Component {
+class SidebarMenuItems extends Component {
     constructor(props) {
         super(props);
     }
@@ -52,6 +53,14 @@ export default class SidebarMenuItems extends Component {
                     <Text style={this.props.buttonStyle}>User Guide</Text>
                 </Icon.Button>
 
+                {
+                    this.props.isDebugging &&
+                    <Icon.Button name="bug-report" {...this.props.navbuttonProps}
+                        onPress={ () => this.props.onNavigateRequest('Dev Settings', 'brca.DebugScreen', false) }>
+                        <Text style={this.props.buttonStyle}>Dev Settings</Text>
+                    </Icon.Button>
+                }
+
                 {/*
                     screens.filter(x => x.hasOwnProperty('sidebar') && x.sidebar != null)
                         .map((x, idx) => {
@@ -76,3 +85,14 @@ export default class SidebarMenuItems extends Component {
         );
     }
 }
+
+
+const mapStateToProps = (state_immutable) => {
+    return {
+        isDebugging: state_immutable.getIn(['debugging', 'isDebugging'])
+    };
+};
+
+export default connect(
+    mapStateToProps
+)(SidebarMenuItems);

@@ -18,6 +18,7 @@ import {
     mark_notification_read, mark_visible_read, archive_all_notifications,
     clear_all_notifications
 } from "../redux/notifylog/actions";
+import ScaryDebugNotice from "../components/ScaryDebugNotice";
 
 class NotifyLogScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -236,6 +237,8 @@ class NotifyLogScreen extends LinkableMenuScreen {
                         )
                     }
                 </View>
+
+                <ScaryDebugNotice negPadding={2} marginBottom={-2} />
                 
                 <SectionList
                     style={styles.listContainer}

@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import BaseSideMenu from './BaseSideMenu';
 import SidebarMenuItems from "../components/SidebarMenuItems";
+import VersionBlurb from "../components/VersionBlurb";
 
 export default class SideMenu extends BaseSideMenu {
     constructor(props) {
@@ -30,23 +31,23 @@ export default class SideMenu extends BaseSideMenu {
 
         return (
             <View style={styles.container}>
-              <View style={styles.titlebutton}>
-                <TouchableOpacity onPress={ this._toggleDrawer.bind(this) }>
-                  <Icon name="menu" size={26} color="#fff" />
-                    {/* <Image style={{width: 22, height: 22}} source={require('../../img/navicon_menu_invert.png')} /> */}
-                </TouchableOpacity>
-                <Text style={styles.title}>BRCA Exchange</Text>
-              </View>
+                <View style={styles.titlebutton}>
+                    <TouchableOpacity onPress={ this._toggleDrawer.bind(this) }>
+                        <Icon name="menu" size={26} color="#fff" />
+                        {/* <Image style={{width: 22, height: 22}} source={require('../../img/navicon_menu_invert.png')} /> */}
+                    </TouchableOpacity>
+                    <Text style={styles.title}>BRCA Exchange</Text>
+                </View>
 
-              <View style={{flex: 1}}>
-                  <SidebarMenuItems
-                      onNavigateRequest={this.navigateTo}
-                      buttonStyle={styles.button}
-                      navbuttonProps={navbuttonProps}
-                  />
-              </View>
+                <View style={{flex: 1}}>
+                    <SidebarMenuItems
+                        onNavigateRequest={this.navigateTo}
+                        buttonStyle={styles.button}
+                        navbuttonProps={navbuttonProps}
+                    />
+                </View>
 
-              <Text style={styles.version}>brca-exchange mobile v1.3</Text>
+                <VersionBlurb />
             </View>
         );
     }
