@@ -86,7 +86,6 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     }
 
     // FIXME: check for network connectivity before leaping in?
-
     /*
     const connectionInfo = await NetInfo.getConnectionInfo();
     console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);

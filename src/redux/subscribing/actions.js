@@ -1,7 +1,5 @@
 /* action types and creators */
 
-import {fetchDetails, queryVariantsForPage} from "./helpers";
-
 export const SUBSCRIBE = 'SUBSCRIBE';
 export const UNSUBSCRIBE = 'UNSUBSCRIBE';
 export const BEGIN_FETCH_FCM_TOKEN = 'BEGIN_FETCH_FETCH_FCM_TOKEN';
