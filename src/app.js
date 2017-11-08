@@ -65,16 +65,20 @@ export {store};
 
 export default class App {
     constructor() {
+        // ensure even when passed as a reference that we retain the 'this'
+        this.initializeApp = this.initializeApp.bind(this);
+
         // only launch once we receive AppLaunched (on android)
         if (Platform.OS === 'android') {
-        Promise.resolve(Navigation.isAppLaunched())
-            .then(appLaunched => {
-                if (appLaunched) {
-                    this.initializeApp();
-                } else {
-                    new NativeEventsReceiver().appLaunched(this.initializeApp); // App hasn't been launched yet -> show the UI only when needed.
-                }
-            });
+            Promise.resolve(Navigation.isAppLaunched())
+                .then(appLaunched => {
+                    if (appLaunched) {
+                        this.initializeApp();
+                    } else {
+                        new NativeEventsReceiver().appLaunched(this.initializeApp);
+                        // App hasn't been launched yet -> show the UI only when needed.
+                    }
+                });
         }
         else {
             this.initializeApp();
