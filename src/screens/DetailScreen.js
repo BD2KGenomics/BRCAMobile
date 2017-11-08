@@ -4,10 +4,19 @@ import {
 } from 'react-native';
 
 import DetailDisplay from '../components/DetailDisplay';
+import {store} from '../app.js';
 
 export default class DetailScreen extends Component {
     constructor(props) {
         super(props);
+    }
+
+    componentDidMount() {
+        if (store.getState().getIn(['debugging', 'isDebugging'])) {
+            this.props.navigator.setStyle({
+                navBarBackgroundColor: '#ffdead'
+            });
+        }
     }
 
     static navigatorStyle = {

@@ -1,12 +1,22 @@
 import React, {Component} from 'react';
 import {Navigation} from 'react-native-navigation';
+import {store} from '../app.js';
 
 export default class LinkableMenuScreen extends Component {
     constructor(props) {
         super(props);
-        console.log("LinkableMenuScreen: ", props);
+
+        // console.log("LinkableMenuScreen: ", props);
         // if you want to listen on navigator events, set this up
         this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    }
+
+    componentDidMount() {
+        if (store.getState().getIn(['debugging', 'isDebugging'])) {
+            this.props.navigator.setStyle({
+                navBarBackgroundColor: '#ffdead'
+            });
+        }
     }
 
     async onNavigatorEvent(event) {
