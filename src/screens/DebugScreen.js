@@ -13,7 +13,10 @@ import SettingsList from 'react-native-settings-list';
 
 
 import LinkableMenuScreen from './LinkableMenuScreen';
-import {set_debug_msg_hidden, set_debugging, set_refresh_mocked} from "../redux/debugging/actions";
+import {
+    set_debug_msg_hidden, set_debugging, set_orange_header_hidden,
+    set_refresh_mocked
+} from "../redux/debugging/actions";
 
 import {persistControl} from "../app";
 import {debug_purge_notifystate} from "../redux/notifylog/actions";
@@ -171,11 +174,22 @@ class DebugScreen extends LinkableMenuScreen {
                         title='Hide Debug Notice'
                     />
                     <SettingsList.Item
+                        hasNavArrow={false}
+                        switchState={this.props.isOrangeHeaderHidden}
+                        switchOnValueChange={() => this.props.onSetOrangeHeaderHidden(!this.props.isOrangeHeaderHidden)}
+                        hasSwitch={true}
+                        title='Hide Orange Dev Header'
+                    />
+                    <SettingsList.Item
                         hasNavArrow={true}
                         onPress={this.purgeReduxState}
                         title='Purge Redux State'
                     />
                 </SettingsList>
+
+                <View style={{paddingTop: 5, paddingLeft: 10}}>
+                    <Text style={styles.settingsHeader}>Misc. Debug Information</Text>
+                </View>
 
                 <View style={styles.blurbHolder}>
                     <Text style={[styles.prose, {fontWeight:'bold'}]}>
@@ -230,6 +244,7 @@ const mapStateToProps = (state_immutable) => {
         fcm_token: state_immutable.getIn(['subscribing', 'token']),
         isDebugging: state_immutable.getIn(['debugging', 'isDebugging']),
         isDebugMsgHidden: state_immutable.getIn(['debugging', 'isDebugMsgHidden']),
+        isOrangeHeaderHidden: state_immutable.getIn(['debugging', 'isOrangeHeaderHidden']),
         isRefreshMocked: state_immutable.getIn(['debugging', 'isRefreshMocked']),
         nextCheck:  state_immutable.getIn(['notifylog', 'nextCheck']), // min time to check for a new release, in milliseconds since the epoch
         latestVersion:  state_immutable.getIn(['notifylog', 'latestVersion']), // database version since last successful fetch
@@ -244,6 +259,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         onSetDebugMsgHidden: (isDebugMsgHidden) => {
             dispatch(set_debug_msg_hidden(isDebugMsgHidden))
+        },
+        onSetOrangeHeaderHidden: (isOrangeHeaderHidden) => {
+            dispatch(set_orange_header_hidden(isOrangeHeaderHidden))
         },
         onSetRefreshMocked: (isRefreshMocked) => {
             dispatch(set_refresh_mocked(isRefreshMocked))

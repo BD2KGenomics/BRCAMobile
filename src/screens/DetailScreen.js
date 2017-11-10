@@ -12,7 +12,9 @@ export default class DetailScreen extends Component {
     }
 
     componentDidMount() {
-        if (store.getState().getIn(['debugging', 'isDebugging'])) {
+        const state_debugging = store.getState().get('debugging');
+
+        if (state_debugging.get('isDebugging') && !state_debugging.get('isOrangeHeaderHidden')) {
             this.props.navigator.setStyle({
                 navBarBackgroundColor: '#ffdead'
             });
