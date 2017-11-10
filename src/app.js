@@ -49,8 +49,8 @@ registerScreens(store);
 async function bgTask() {
     console.log('Hello from a background task');
     await checkForUpdate(store, {
-        ignore_backoff: true,
-        ignore_older_version: true
+        ignore_backoff: false,
+        ignore_older_version: false
     });
     BackgroundTask.finish();
 }
