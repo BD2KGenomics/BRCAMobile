@@ -2,7 +2,7 @@ import {
     Platform, DeviceEventEmitter
 } from 'react-native';
 import { Navigation, NativeEventsReceiver } from 'react-native-navigation';
-import { createStore, applyMiddleware } from 'redux';
+import {createStore, applyMiddleware, compose} from 'redux';
 import { combineReducers } from 'redux-immutablejs';
 import thunk from 'redux-thunk';
 import { persistStore, autoRehydrate } from 'redux-persist-immutable';
@@ -30,7 +30,7 @@ const reducer = combineReducers({
     notifylog: notifylogReducer,
     debugging: debuggingReducer
 });
-const store = createStore(reducer, applyMiddleware(thunk), autoRehydrate());
+const store = createStore(reducer, undefined, compose(applyMiddleware(thunk), autoRehydrate()));
 const persistControl = persistStore(store, {storage: AsyncStorage });
 
 
@@ -47,12 +47,34 @@ registerScreens(store);
 // ----------------------------------------------------------------------
 
 async function bgTask() {
+    // maybe acquire the store here?
+
     console.log('Hello from a background task');
-    await checkForUpdate(store, {
-        ignore_backoff: false,
-        ignore_older_version: false
+
+    /*
+    const sentinel = await AsyncStorage.getItem('@BRCAExchange:sentinel');
+    console.log("Sentinel retrieved in bgTask(): ", sentinel);
+    */
+
+    // const local_store = createStore(reducer, applyMiddleware(thunk), autoRehydrate());
+    // console.log("store contents: ", JSON.stringify(store.getState().toJSON()));
+
+    // const local_store = createStore(reducer, undefined, compose(applyMiddleware(thunk), autoRehydrate()));
+
+    const persistControl = persistStore(store, {storage: AsyncStorage }, async () => {
+        // we're deferring until the store is actually loaded now
+        await checkForUpdate(store, {
+            ignore_backoff: true,
+            ignore_older_version: false
+        });
+
+        // check if the store's been updated
+        console.log("*** should be done, version is: ", store.getState().getIn(['notifylog', 'latestVersion']));
+
+        persistControl.flush();
+
+        BackgroundTask.finish();
     });
-    BackgroundTask.finish();
 }
 
 // attach background task
@@ -93,6 +115,14 @@ export default class App {
         // a preamble to startApp()
         this.startApp();
         this.registerWithFCM();
+
+        /*
+        // put something into AsyncStorage for the bg task to find
+        const sentinel = `hello! ${1|(Math.random()*100)}`;
+        AsyncStorage.setItem('@BRCAExchange:sentinel', sentinel).then(() => {
+            console.log("Sentinel stored in initializeApp: ", sentinel);
+        });
+        */
     }
 
     startApp() {
@@ -148,11 +178,11 @@ export default class App {
             .then(notif => {
                 // getInitialNotification() actually gives us the notification that launched us
                 if (notif) {
-                    console.log("initial notification: ", notif);
+                    // console.log("initial notification: ", notif);
                     this.handleNotification(notif);
                 }
                 else {
-                    console.log("no initial notification");
+                    // console.log("no initial notification");
                 }
             })
             .catch(error => {
@@ -161,8 +191,8 @@ export default class App {
     }
 
     handleNotification(notif) {
-        console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
-        console.log("payload: ", notif);
+        // console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
+        // console.log("payload: ", notif);
 
         // logic for dealing with clicking a notification
         if (notif.opened_from_tray) {
@@ -179,7 +209,7 @@ export default class App {
             }
 
             if (link_target) {
-                console.log("Opened from tray, launching ", link_target);
+                // console.log("Opened from tray, launching ", link_target);
                 Navigation.handleDeepLink({
                     link: link_target
                 });
