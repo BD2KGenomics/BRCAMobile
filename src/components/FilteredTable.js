@@ -75,7 +75,7 @@ class FilteredTable extends Component {
                 <SearchBar
                     style={{flex: 0}}
                     text={this.state.searchText}
-                    autoFocus={true}
+                    autoFocus={false}
                     onChangeText={this.onChangeText.bind(this)}
                     onSubmit={this.onSubmit.bind(this)} />
 
