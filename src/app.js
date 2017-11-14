@@ -64,7 +64,7 @@ async function bgTask() {
     const persistControl = persistStore(store, {storage: AsyncStorage }, async () => {
         // we're deferring until the store is actually loaded now
         await checkForUpdate(store, {
-            ignore_backoff: true,
+            ignore_backoff: false,
             ignore_older_version: false
         });
 
