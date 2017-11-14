@@ -2,15 +2,21 @@ import {
     NetInfo
 } from 'react-native';
 import BackgroundTask from 'react-native-background-task';
-import {observe_notification, set_nextcheck_time, set_updated_to_version} from "./redux/notifylog/actions";
+import {
+    observe_batched_notifications, observe_notification, set_nextcheck_time,
+    set_updated_to_version
+} from "./redux/notifylog/actions";
+import {announceBatchedNotifies} from "./redux/notifylog/helpers";
 
 // controls how frequently the background task will poll
 // next time = POLL_PERIOD + random(0, POLL_PERIOD)
+const QUICK_POLL_PERIOD = 5*60*1000; // 5 minutes
 const POLL_PERIOD = 12*60*60*1000; // half a day in msec
 
 /**
  * Creates a URL for fetching summary variant data for the given release_ID
  * @param release_ID the release for which to grab data
+ * @param target_host which host to query for the release data
  * @returns {string} the URL from which to fetch this releases' data
  */
 function makeReleaseURL(release_ID, target_host) {
@@ -67,7 +73,23 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     // enable the mock server only if both debugging and the mock refresh server option are enabled
     const isDebugging = store_state.getIn(['debugging', 'isDebugging']);
     const isRefreshMocked = store_state.getIn(['debugging', 'isRefreshMocked']);
+    const isQuickRefreshing = store_state.getIn(['debugging', 'isQuickRefreshing']);
     const targetHost = (isDebugging && isRefreshMocked ? "40.78.27.48:8500" : "brcaexchange.org");
+
+    console.log("\n--- debug settings below: ---");
+    console.log("isDebugging: ", isDebugging);
+    console.log("isRefreshMocked: ", isRefreshMocked);
+    console.log("isQuickRefreshing: ", isQuickRefreshing);
+    console.log("targetHost: ", targetHost);
+    console.log("Params: ", JSON.stringify({ ignore_backoff, ignore_older_version, all_subscribed }));
+    console.log("--- end debug settings ---\n");
+
+
+    // note that each numbered stage is reached only if the previous stages complete
+
+    // ================================================================================================
+    // === 1. check if we're scheduled to run now
+    // ================================================================================================
 
     // check nextcheck timestamp; if nextcheck && now < nextcheck, abort
     const nextCheck = store_state.getIn(['notifylog', 'nextCheck']);
@@ -85,31 +107,34 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
         }
     }
 
-    // FIXME: check for network connectivity before leaping in?
-    /*
-    const connectionInfo = await NetInfo.getConnectionInfo();
-    console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
-    */
+    // check for network connectivity before leaping in? (TODO: review if this is necessary)
+    // const connectionInfo = await NetInfo.getConnectionInfo();
+    // console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
 
-    // Fetch some data over the network which we want the user to have an up-to-
-    // date copy of, even if they have no network when using the app
+
+    // ================================================================================================
+    // === 2. query /backend/data/release to see if there's a new version
+    // ================================================================================================
+
+    // fetch the release metadata to see if there's a new release...
     const targetReleasesURL = `http://${targetHost}/backend/data/releases`;
     console.log("accessing ", targetReleasesURL, "...");
-    const response = await fetch(targetReleasesURL, {
-        headers: {
-            'Cache-Control': 'no-cache'
-        }
-    });
+    const response = await fetch(targetReleasesURL, {headers: {'Cache-Control': 'no-cache'}});
+
+    // ...and parse the result
     const releases_meta = await response.json();
     const releases = releases_meta['releases'], latest = releases_meta['latest'];
 
-    // set nextcheck to now + random(POLL_PERIOD, POLL_PERIOD*2)
-    const random_offset_ms = POLL_PERIOD + 1|(Math.random()*POLL_PERIOD);
-    store.dispatch(set_nextcheck_time(Date.now() + random_offset_ms));
+    // we should set the next time to query the backend regardless of whether there's a new version
+    // (the long delay + random backoff should prevent dogpiling the server)
+    const pollPeriod = (isQuickRefreshing) ? QUICK_POLL_PERIOD : POLL_PERIOD;
+    const random_offset_ms = pollPeriod + 1|(Math.random()*pollPeriod);
+    const nextRunTime = Date.now() + random_offset_ms;
+    store.dispatch(set_nextcheck_time(nextRunTime));
 
-    // Data persisted to AsyncStorage can later be accessed by the foreground app
-    console.log('releases: ', releases, ', latest: ', latest);
+    console.log('latest release: ', latest);
 
+    // finally, let's see if there's a new version
     // check lastRelease; if lastRelease && lastRelease >= latest, abort
     const lastCheckedVersion = store.getState().getIn(['notifylog', 'latestVersion']);
 
@@ -123,47 +148,48 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
         }
     }
 
+
+    // ================================================================================================
+    // === 3. query variant-level detail for the latest release
+    // ================================================================================================
+
     // FIXME: do we get every release from the current (potentially empty) release to now? that might be costly
 
-    // download added/changed variants for the current release
+    // download added/changed variants for the current release...
     const target_url = makeReleaseURL(latest, targetHost);
     console.log("target: ", target_url);
-
-    const data = await fetch(target_url, {
-        headers: {
-            'Cache-Control': 'no-cache'
-        }
-    });
+    const data = await fetch(target_url, {headers: {'Cache-Control': 'no-cache'}});
+    // ...and parse the result
     const data_decoded = await data.json();
-    console.log(data_decoded);
 
     // nab our list of subscriptions so we can skip announcing things that we aren't subscribed to
     const subscriptions = store.getState().getIn(['subscribing','subscriptions']).keySeq();
 
     // announce all variants to notifylog reducer, which will filter to our desired ones
-    data_decoded.data.forEach(x => {
-        // optimization to keep us from notifying if we're not subscribed
-        if (all_subscribed || subscriptions.includes(x['Genomic_Coordinate_hg38'])) {
-            const simple_cDNA = x.HGVS_cDNA.split(':')[1];
+    // the filter is an optimization to keep us from notifying if we're not subscribed
+    store.dispatch(observe_batched_notifications(
+        // maps the incoming data into a notification payload that announce expects
+        data_decoded.data
+            .filter(x => all_subscribed || subscriptions.includes(x['Genomic_Coordinate_hg38']))
+            .map(x => {
+                const simple_cDNA = x.HGVS_cDNA.split(':')[1];
 
-            // FIXME: we should natively be able to deal with variant data, not shoehorn it into the old notif structure
-            const notif = {
-                version: latest,
-                variant_id: x.id,
-                genome_id: x['Genomic_Coordinate_hg38'],
-                pathogenicity: x.Pathogenicity_expert,
-                title: `${simple_cDNA} has changed significance`,
-                body: `The clinical significance of ${simple_cDNA} has changed to '${x['Pathogenicity_expert']}'`,
-                click_action: '' // ???
-            };
-
-            store.dispatch(observe_notification(notif, all_subscribed));
-        }
-    });
+                // FIXME: we should natively be able to deal with variant data, not shoehorn it into the old notif structure
+                return {
+                    version: latest,
+                    variant_id: x.id,
+                    genome_id: x['Genomic_Coordinate_hg38'],
+                    pathogenicity: x['Pathogenicity_expert'],
+                    title: `(v${latest}) ${simple_cDNA} has changed significance`,
+                    body: `The clinical significance of ${simple_cDNA} has changed to '${x['Pathogenicity_expert']}'`,
+                    click_action: '' // ???
+                };
+            })
+    , all_subscribed));
 
     // set the last-checked version so we don't repeatedly redownload and reannounce updates
     store.dispatch(set_updated_to_version(latest));
 
-    console.log('...done!');
+    console.log('...done! next scheduled run: ', `${nextRunTime ? (new Date(nextRunTime)).toLocaleString() : 'never'}`);
     return "Refreshed!";
 }

@@ -14,7 +14,7 @@ import SettingsList from 'react-native-settings-list';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
 import {
-    set_debug_msg_hidden, set_debugging, set_orange_header_hidden,
+    set_debug_msg_hidden, set_debugging, set_orange_header_hidden, set_quick_refresh,
     set_refresh_mocked
 } from "../redux/debugging/actions";
 
@@ -137,6 +137,13 @@ class DebugScreen extends LinkableMenuScreen {
                     />
                     <SettingsList.Item
                         hasNavArrow={false}
+                        switchState={this.props.isQuickRefreshing}
+                        switchOnValueChange={() => { this.props.onSetQuickRefresh(!this.props.isQuickRefreshing); }}
+                        hasSwitch={true}
+                        title='Quicker Refresh Interval'
+                    />
+                    <SettingsList.Item
+                        hasNavArrow={false}
                         title='Target Host'
                         titleInfo={(this.props.isDebugging && this.props.isRefreshMocked) ? "40.78.27.48:8500" : "brcaexchange.org"}
                     />
@@ -246,6 +253,7 @@ const mapStateToProps = (state_immutable) => {
         isDebugMsgHidden: state_immutable.getIn(['debugging', 'isDebugMsgHidden']),
         isOrangeHeaderHidden: state_immutable.getIn(['debugging', 'isOrangeHeaderHidden']),
         isRefreshMocked: state_immutable.getIn(['debugging', 'isRefreshMocked']),
+        isQuickRefreshing: state_immutable.getIn(['debugging', 'isQuickRefreshing']),
         nextCheck:  state_immutable.getIn(['notifylog', 'nextCheck']), // min time to check for a new release, in milliseconds since the epoch
         latestVersion:  state_immutable.getIn(['notifylog', 'latestVersion']), // database version since last successful fetch
         updatedAt:  state_immutable.getIn(['notifylog', 'updatedAt']), // the time that we completed the update
@@ -265,6 +273,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         onSetRefreshMocked: (isRefreshMocked) => {
             dispatch(set_refresh_mocked(isRefreshMocked))
+        },
+        onSetQuickRefresh: (isQuickRefreshing) => {
+            dispatch(set_quick_refresh(isQuickRefreshing))
         },
         onDebugPurgeNotifyState: () => {
             dispatch(debug_purge_notifystate())

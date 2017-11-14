@@ -1,6 +1,6 @@
 import {
     SET_DEBUG_MSG_HIDDEN,
-    SET_DEBUGGING, SET_ORANGE_HEADER_HIDDEN, SET_REFRESH_MOCKED
+    SET_DEBUGGING, SET_ORANGE_HEADER_HIDDEN, SET_QUICK_REFRESH, SET_REFRESH_MOCKED
 } from './actions';
 import * as Immutable from "immutable";
 
@@ -8,7 +8,8 @@ const initialState = Immutable.fromJS({
     isDebugging: false,
     isDebugMsgHidden: false,
     isOrangeHeaderHidden: false,
-    isRefreshMocked: false
+    isRefreshMocked: false,
+    isQuickRefreshing: false
 });
 
 export default function debuggingReducer(state=initialState, action) {
@@ -18,7 +19,7 @@ export default function debuggingReducer(state=initialState, action) {
                 isDebugging: action.isDebugging
             };
 
-            // unconditionally restore the defaults if we're turning it off
+            // restore the defaults if we're turning it off
             if (!action.isDebugging) {
                 return initialState;
             }
@@ -38,6 +39,11 @@ export default function debuggingReducer(state=initialState, action) {
         case SET_REFRESH_MOCKED:
             return state.merge({
                 isRefreshMocked: action.isRefreshMocked
+            });
+
+        case SET_QUICK_REFRESH:
+            return state.merge({
+                isQuickRefreshing: action.isQuickRefreshing
             });
 
         default:

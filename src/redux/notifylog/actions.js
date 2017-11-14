@@ -4,7 +4,7 @@ import {
 import FCM from "react-native-fcm";
 
 import {purge_details} from "../browsing/actions";
-import {BufferNotifyManager} from "./helpers";
+import {announceBatchedNotifies, BufferNotifyManager} from "./helpers";
 
 export const SET_NEXTCHECK_TIME = 'SET_NEXTCHECK_TIME';
 export const SET_UPDATED_TO_VERSION = 'SET_UPDATED_TO_VERSION';
@@ -52,6 +52,11 @@ export function debug_purge_notifystate() {
 // some ephemeral state for deferred notifies
 const notifybuffer_mgr = new BufferNotifyManager({ duration: 1000 });
 
+/**
+ * DEPRECATED
+ * @param notif
+ * @returns {Function}
+ */
 export function announce_notification(notif) {
     return function (dispatch, getState) {
         // this will add the message to a queue, releasing it after some duration
@@ -96,4 +101,52 @@ export function observe_notification(notif, all_subscribed) {
 // checks if the notification we're going to announce is the same as an existing one
 function sameVersionGenomeID(a,b) {
     return a.version == b.version && a.genome_id == b.genome_id;
+}
+
+
+/***
+ * Checks if an FCM push notification is in our subscription list, and if so passes it on
+ * to store via receive_notification. Also does some bookkeeping regarding clearing the details
+ * cache of the newly-updated variant and
+ * @param notifs an array of the notifications received from FCM
+ * @param all_subscribed causes this method to unconditionally announce the variant, even if we're not subscribed
+ * @returns {Function} a thunk that dispatches receive_notification if notif in sub list
+ */
+export function observe_batched_notifications(notifs, all_subscribed) {
+    return function (dispatch, getState) {
+        // if we're subscribed, re-raise a receive_notification message
+        const subscriptions = getState().getIn(['subscribing', 'subscriptions']).keySeq();
+
+        // unconditionally bail if we have nothing to do
+        if (notifs.length <= 0) {
+            return;
+        }
+
+        const residual_notifies = [];
+
+        notifs.forEach(notif => {
+            // it's probably from FCM, let's raise a notification if we're actually subscribed to this
+            if (all_subscribed || subscriptions.includes(notif.genome_id)) {
+                // verify that we don't already know about this thing
+                // FIXME: this is less efficient than using a version-genomeID Map in notifylog, but reshaping it requires a migration plan
+                const existing_notifies = getState().getIn(['notifylog', 'notifications']);
+
+                if (existing_notifies.find((v) => sameVersionGenomeID(v, notif)) !== undefined) {
+                    return;
+                }
+
+                // log the notification
+                dispatch(receive_notification(notif));
+                // purge the details cache of this record, if it exists, forcing a remote refresh
+                dispatch(purge_details(notif.variant_id));
+
+                residual_notifies.push(notif);
+            }
+        });
+
+        if (residual_notifies.length > 0) {
+            // and announce them all at once
+            announceBatchedNotifies(residual_notifies);
+        }
+    }
 }
