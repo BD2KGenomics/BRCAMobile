@@ -17,7 +17,7 @@ import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
 
 // bg task imports
 import BackgroundTask from 'react-native-background-task';
-import {checkForUpdate} from "./background";
+import {checkForUpdate, PersistNotifier} from "./background";
 
 // FCM event listener
 import FCM, {
@@ -74,8 +74,12 @@ async function bgTask() {
 
     // const local_store = createStore(reducer, undefined, compose(applyMiddleware(thunk), autoRehydrate()));
 
-    const pControl = persistStore(store, null, async () => {
+    console.log("rehydrate starting...");
+
+    const persistMonitor = new PersistNotifier(persistControl, async () => {
         // we're deferring until the store is actually loaded now
+        console.log("rehydrate complete!");
+
         try {
             await checkForUpdate(store, {
                 ignore_backoff: false,
@@ -90,7 +94,7 @@ async function bgTask() {
         }
         finally {
             console.log("flushing changes and ending...");
-            pControl.flush();
+            persistControl.flush();
             BackgroundTask.finish();
         }
     });

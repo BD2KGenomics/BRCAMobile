@@ -193,3 +193,50 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     console.log('...done! next scheduled run: ', `${nextRunTime ? (new Date(nextRunTime)).toLocaleString() : 'never'}`);
     return "Refreshed!";
 }
+
+/**
+ * Provides a mechanism for running code once a persistor has hydrated.
+ */
+export class PersistNotifier {
+    /**
+     * Attaches to a persistor and executes onLoadedCallback if/when it becomes hydrated.
+     * @param persistor the persistor to monitor for hydration
+     * @param onLoadedCallback the callback to run if hydration has occurred or when it does occur
+     */
+    constructor(persistor, onLoadedCallback) {
+        this.persistor = persistor;
+        this.onLoadedCallback = onLoadedCallback;
+
+        this.attach = this.attach.bind(this);
+        this.handlePersistorState = this.handlePersistorState.bind(this);
+        this.detach = this.detach.bind(this);
+
+        // run attach (TODO: maybe just have the caller call it?)
+        this.attach();
+    }
+
+    attach() {
+        // subscribe to the persistor's restore event
+        this._unsubscribe = this.persistor.subscribe(this.handlePersistorState);
+        // and invoke it once to check if we're already rehydrated
+        this.handlePersistorState()
+    }
+
+    handlePersistorState() {
+        const { bootstrapped } = this.persistor.getState();
+
+        console.log("bootstrapped?: ", bootstrapped);
+
+        if (bootstrapped) {
+            if (this.onLoadedCallback) {
+                this.onLoadedCallback();
+            }
+
+            this._unsubscribe && this._unsubscribe();
+        }
+    };
+
+    detach() {
+        this._unsubscribe && this._unsubscribe();
+    }
+}
