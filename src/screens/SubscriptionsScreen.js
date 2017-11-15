@@ -168,13 +168,13 @@ const styles = StyleSheet.create({
 
 /* define the component-to-store connectors */
 
-const mapStateToProps = (state_immutable) => {
-    const state_subscribing = state_immutable.get('subscribing').toJS();
+const mapStateToProps = (state) => {
+    const state_subscribing = state.subscribing;
 
     return {
         // subscription info
         token: state_subscribing.token,
-        subscriptions: state_subscribing.subscriptions,
+        subscriptions: state_subscribing.subscriptions && state_subscribing.subscriptions.toJS(),
         subsLastUpdatedBy: state_subscribing.subsLastUpdatedBy
     }
 };

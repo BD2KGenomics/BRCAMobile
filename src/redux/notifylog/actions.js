@@ -75,13 +75,13 @@ export function announce_notification(notif) {
 export function observe_notification(notif, all_subscribed) {
     return function (dispatch, getState) {
         // if we're subscribed, re-raise a receive_notification message
-        const subscriptions = getState().getIn(['subscribing','subscriptions']).keySeq();
+        const subscriptions = getState().subscribing.subscriptions.keySeq();
 
         // it's probably from FCM, let's raise a notification if we're actually subscribed to this
         if (all_subscribed || subscriptions.includes(notif.genome_id)) {
             // verify that we don't already know about this thing
             // FIXME: this is less efficient than using a version-genomeID Map in notifylog, but reshaping it requires a migration plan
-            const existing_notifies = getState().getIn(['notifylog','notifications']);
+            const existing_notifies = getState().notifylog.notifications;
 
             if (existing_notifies.find((v) => sameVersionGenomeID(v, notif)) !== undefined) {
                 return;
@@ -115,7 +115,7 @@ function sameVersionGenomeID(a,b) {
 export function observe_batched_notifications(notifs, all_subscribed) {
     return function (dispatch, getState) {
         // if we're subscribed, re-raise a receive_notification message
-        const subscriptions = getState().getIn(['subscribing', 'subscriptions']).keySeq();
+        const subscriptions = getState().subscribing.subscriptions.keySeq();
 
         // unconditionally bail if we have nothing to do
         if (notifs.length <= 0) {
@@ -129,7 +129,7 @@ export function observe_batched_notifications(notifs, all_subscribed) {
             if (all_subscribed || subscriptions.includes(notif.genome_id)) {
                 // verify that we don't already know about this thing
                 // FIXME: this is less efficient than using a version-genomeID Map in notifylog, but reshaping it requires a migration plan
-                const existing_notifies = getState().getIn(['notifylog', 'notifications']);
+                const existing_notifies = getState().notifylog.notifications;
 
                 if (existing_notifies.find((v) => sameVersionGenomeID(v, notif)) !== undefined) {
                     return;

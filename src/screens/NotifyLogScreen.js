@@ -313,12 +313,12 @@ const styles = StyleSheet.create({
 
 /* define the component-to-store connectors */
 
-const mapStateToProps = (state_immutable) => {
-    const state_notifylog = state_immutable.get('notifylog').toJS();
+const mapStateToProps = (state) => {
+    const state_notifylog = state.notifylog;
 
     return {
         // subscription info
-        notifications: state_notifylog.notifications && state_notifylog.notifications.filter(x => !x.archived),
+        notifications: state_notifylog.notifications && state_notifylog.notifications.filter(x => !x.archived).toJS(),
         updatedAt: state_notifylog.updatedAt,
         latestVersion: state_notifylog.latestVersion
     }

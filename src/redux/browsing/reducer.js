@@ -4,7 +4,7 @@ import {
 } from './actions';
 import * as Immutable from "immutable";
 
-const initialState = Immutable.fromJS({
+const initialState = {
     variants: Immutable.List(),
     details: Immutable.OrderedMap(),
     isFetching: false,
@@ -13,7 +13,7 @@ const initialState = Immutable.fromJS({
     pageIndex: 0,
     pageSize: 100,
     totalResults: -1
-});
+};
 
 // FIXME: we *really* need to centralize variant data into a single variant_id => data collection
 // different pages will have different retention needs, e.g. subscribing should always retain its variants' data
@@ -21,7 +21,7 @@ const initialState = Immutable.fromJS({
 export default function browsingReducer(state=initialState, action) {
     switch (action.type) {
         case BEGIN_QUERY:
-            return state.merge({
+            return Object.assign({}, state, {
                 query: action.query,
                 pageIndex: 0,
                 variants: Immutable.List(),
@@ -30,33 +30,33 @@ export default function browsingReducer(state=initialState, action) {
             });
 
         case BEGIN_FETCH_NEXT_PAGE:
-            return state.merge({
+            return Object.assign({}, state, {
                 pageIndex: action.pageIndex,
                 isFetching: true
             });
 
         case RECEIVE_PAGE:
-            return state.merge({
-                variants: state.get('variants').concat(action.items),
+            return Object.assign({}, state, {
+                variants: state.variants.concat(action.items),
                 totalResults: action.totalResults,
                 synonyms: action.synonyms,
                 isFetching: false
             });
 
         case BEGIN_FETCH_DETAILS:
-            return state.merge({
+            return Object.assign({}, state, {
                 isFetchingDetails: true
             });
 
         case RECEIVE_DETAILS:
-            return state.merge({
-                details: state.get('details').set(action.variantID, action.item).takeLast(10),
+            return Object.assign({}, state, {
+                details: state.details.set(action.variantID, action.item).takeLast(10),
                 isFetchingDetails: false
             });
 
         case PURGE_DETAILS:
-            return state.merge({
-                details: state.get('details').delete(action.variantID)
+            return Object.assign({}, state, {
+                details: state.details.delete(action.variantID)
             });
 
         default:

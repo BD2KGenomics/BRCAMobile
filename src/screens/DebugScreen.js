@@ -246,17 +246,17 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = (state_immutable) => {
+const mapStateToProps = (state) => {
     return {
-        fcm_token: state_immutable.getIn(['subscribing', 'token']),
-        isDebugging: state_immutable.getIn(['debugging', 'isDebugging']),
-        isDebugMsgHidden: state_immutable.getIn(['debugging', 'isDebugMsgHidden']),
-        isOrangeHeaderHidden: state_immutable.getIn(['debugging', 'isOrangeHeaderHidden']),
-        isRefreshMocked: state_immutable.getIn(['debugging', 'isRefreshMocked']),
-        isQuickRefreshing: state_immutable.getIn(['debugging', 'isQuickRefreshing']),
-        nextCheck:  state_immutable.getIn(['notifylog', 'nextCheck']), // min time to check for a new release, in milliseconds since the epoch
-        latestVersion:  state_immutable.getIn(['notifylog', 'latestVersion']), // database version since last successful fetch
-        updatedAt:  state_immutable.getIn(['notifylog', 'updatedAt']), // the time that we completed the update
+        fcm_token: state.subscribing.token,
+        isDebugging: state.debugging.isDebugging,
+        isDebugMsgHidden: state.debugging.isDebugMsgHidden,
+        isOrangeHeaderHidden: state.debugging.isOrangeHeaderHidden,
+        isRefreshMocked: state.debugging.isRefreshMocked,
+        isQuickRefreshing: state.debugging.isQuickRefreshing,
+        nextCheck:  state.notifylog.nextCheck, // min time to check for a new release, in milliseconds since the epoch
+        latestVersion:  state.notifylog.latestVersion, // database version since last successful fetch
+        updatedAt:  state.notifylog.updatedAt, // the time that we completed the update
     };
 };
 

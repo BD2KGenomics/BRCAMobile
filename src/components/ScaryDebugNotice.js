@@ -64,10 +64,10 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = (state_immutable) => {
+const mapStateToProps = (state) => {
     return {
-        isDebugging: state_immutable.getIn(['debugging', 'isDebugging']),
-        isDebugMsgHidden: state_immutable.getIn(['debugging', 'isDebugMsgHidden'])
+        isDebugging: state.debugging.isDebugging,
+        isDebugMsgHidden: state.debugging.isDebugMsgHidden
     };
 };
 

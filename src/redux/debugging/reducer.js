@@ -4,13 +4,13 @@ import {
 } from './actions';
 import * as Immutable from "immutable";
 
-const initialState = Immutable.fromJS({
+const initialState = {
     isDebugging: false,
     isDebugMsgHidden: false,
     isOrangeHeaderHidden: false,
     isRefreshMocked: false,
     isQuickRefreshing: false
-});
+};
 
 export default function debuggingReducer(state=initialState, action) {
     switch (action.type) {
@@ -24,25 +24,25 @@ export default function debuggingReducer(state=initialState, action) {
                 return initialState;
             }
 
-            return state.merge(nextState);
+            return Object.assign({}, state, nextState);
 
         case SET_DEBUG_MSG_HIDDEN:
-            return state.merge({
+            return Object.assign({}, state, {
                 isDebugMsgHidden: action.isDebugMsgHidden
             });
 
         case SET_ORANGE_HEADER_HIDDEN:
-            return state.merge({
+            return Object.assign({}, state, {
                 isOrangeHeaderHidden: action.isOrangeHeaderHidden
             });
 
         case SET_REFRESH_MOCKED:
-            return state.merge({
+            return Object.assign({}, state, {
                 isRefreshMocked: action.isRefreshMocked
             });
 
         case SET_QUICK_REFRESH:
-            return state.merge({
+            return Object.assign({}, state, {
                 isQuickRefreshing: action.isQuickRefreshing
             });
 

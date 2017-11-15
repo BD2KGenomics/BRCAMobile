@@ -1,20 +1,25 @@
 import {
-    Platform, DeviceEventEmitter
+    Platform, DeviceEventEmitter, AsyncStorage
 } from 'react-native';
 import { Navigation, NativeEventsReceiver } from 'react-native-navigation';
+
+// redux libs
 import {createStore, applyMiddleware, compose} from 'redux';
-import { combineReducers } from 'redux-immutablejs';
 import thunk from 'redux-thunk';
-import { persistStore, autoRehydrate } from 'redux-persist-immutable';
-import { AsyncStorage } from 'react-native';
+
+import { persistStore, persistCombineReducers } from 'redux-persist';
+import immutableTransform from 'redux-persist-transform-immutable';
+import storage from 'redux-persist/lib/storage';
+
+// redux reducers and actions
 import { browsingReducer, debuggingReducer, subscriptionsReducer, notifylogReducer } from './redux';
-import * as Immutable from "immutable";
+import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
+
+// bg task imports
 import BackgroundTask from 'react-native-background-task';
 import {checkForUpdate} from "./background";
 
-import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
-
-// stuff for FCM
+// FCM event listener
 import FCM, {
     FCMEvent
 } from "react-native-fcm";
@@ -24,14 +29,22 @@ import FCM, {
 // --- redux setup
 // ----------------------------------------------------------------------
 
-const reducer = combineReducers({
-    browsing: browsingReducer,
-    subscribing: subscriptionsReducer,
-    notifylog: notifylogReducer,
-    debugging: debuggingReducer
-});
-const store = createStore(reducer, undefined, compose(applyMiddleware(thunk), autoRehydrate()));
-const persistControl = persistStore(store, {storage: AsyncStorage });
+const reducer = persistCombineReducers(
+    {
+        key: 'brca-exchg',
+        transforms: [immutableTransform()],
+        storage,
+        debug: true
+    },
+    {
+        browsing: browsingReducer,
+        subscribing: subscriptionsReducer,
+        notifylog: notifylogReducer,
+        debugging: debuggingReducer
+    }
+);
+const store = createStore(reducer, undefined, applyMiddleware(thunk));
+const persistControl = persistStore(store, null);
 
 
 // ----------------------------------------------------------------------
@@ -61,19 +74,25 @@ async function bgTask() {
 
     // const local_store = createStore(reducer, undefined, compose(applyMiddleware(thunk), autoRehydrate()));
 
-    const persistControl = persistStore(store, {storage: AsyncStorage }, async () => {
+    const pControl = persistStore(store, null, async () => {
         // we're deferring until the store is actually loaded now
-        await checkForUpdate(store, {
-            ignore_backoff: false,
-            ignore_older_version: false
-        });
+        try {
+            await checkForUpdate(store, {
+                ignore_backoff: false,
+                ignore_older_version: false
+            });
 
-        // check if the store's been updated
-        console.log("*** should be done, version is: ", store.getState().getIn(['notifylog', 'latestVersion']));
-
-        persistControl.flush();
-
-        BackgroundTask.finish();
+            // check if the store's been updated
+            console.log("*** should be done, version is: ", store.getState().notifylog.latestVersion);
+        }
+        catch(err) {
+            console.warn("Error when processing bg task: ", err);
+        }
+        finally {
+            console.log("flushing changes and ending...");
+            pControl.flush();
+            BackgroundTask.finish();
+        }
     });
 }
 

@@ -38,7 +38,7 @@ export function purge_details(variantID) {
 
 export function query_variants(query) {
     return function (dispatch, getState) {
-        const pageSize = getState().getIn(['browsing','pageSize']);
+        const pageSize = getState().browsing.pageSize;
 
         // tell the store that we're starting a query
         dispatch(begin_query(query));
@@ -57,7 +57,11 @@ export function query_variants(query) {
 
 export function fetch_next_page() {
     return function(dispatch, getState) {
-        const { query, pageIndex, pageSize } = getState().get('browsing').toJS();
+        const state_browsing = getState().browsing;
+
+        const query = state_browsing.query;
+        const pageIndex = state_browsing.pageIndex;
+        const pageSize = state_browsing.pageSize;
 
         if (query === null) {
             console.warn("Fetch next page called with null query, aborting");
@@ -77,8 +81,7 @@ export function fetch_next_page() {
 
 export function fetch_details(variantID, isGenomeCoord=false) {
     return async function (dispatch, getState) {
-        // const { details } = getState().get('brca.details');
-        const details = getState().get('browsing').get('details');
+        const details = getState().browsing.details;
 
         // if it's a genomic coordinate, we have to first map to the most recent variant ID
         // (it'd be nice if the API could be queried for a genomic coordinate rather than just the variant ID)

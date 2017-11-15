@@ -71,9 +71,9 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     const store_state = store.getState();
 
     // enable the mock server only if both debugging and the mock refresh server option are enabled
-    const isDebugging = store_state.getIn(['debugging', 'isDebugging']);
-    const isRefreshMocked = store_state.getIn(['debugging', 'isRefreshMocked']);
-    const isQuickRefreshing = store_state.getIn(['debugging', 'isQuickRefreshing']);
+    const isDebugging = store_state.debugging.isDebugging;
+    const isRefreshMocked = store_state.debugging.isRefreshMocked;
+    const isQuickRefreshing = store_state.debugging.isQuickRefreshing;
     const targetHost = (isDebugging && isRefreshMocked ? "40.78.27.48:8500" : "brcaexchange.org");
 
     console.log("\n--- debug settings below: ---");
@@ -92,7 +92,7 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     // ================================================================================================
 
     // check nextcheck timestamp; if nextcheck && now < nextcheck, abort
-    const nextCheck = store_state.getIn(['notifylog', 'nextCheck']);
+    const nextCheck = store_state.notifylog.nextCheck;
     const currently = Date.now();
 
     if ((nextCheck && currently < nextCheck)) {
@@ -136,7 +136,7 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
 
     // finally, let's see if there's a new version
     // check lastRelease; if lastRelease && lastRelease >= latest, abort
-    const lastCheckedVersion = store.getState().getIn(['notifylog', 'latestVersion']);
+    const lastCheckedVersion = store.getState().notifylog.latestVersion;
 
     if ((lastCheckedVersion && lastCheckedVersion >= latest)) {
         if (!ignore_older_version) {
@@ -163,7 +163,7 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     const data_decoded = await data.json();
 
     // nab our list of subscriptions so we can skip announcing things that we aren't subscribed to
-    const subscriptions = store.getState().getIn(['subscribing','subscriptions']).keySeq();
+    const subscriptions = store.getState().subscribing.subscriptions.keySeq();
 
     // announce all variants to notifylog reducer, which will filter to our desired ones
     // the filter is an optimization to keep us from notifying if we're not subscribed

@@ -12,9 +12,9 @@ export default class LinkableMenuScreen extends Component {
     }
 
     componentDidMount() {
-        const state_debugging = store.getState().get('debugging');
+        const state_debugging = store.getState().debugging;
 
-        if (state_debugging.get('isDebugging') && !state_debugging.get('isOrangeHeaderHidden')) {
+        if (state_debugging.isDebugging && !state_debugging.isOrangeHeaderHidden) {
             this.props.navigator.setStyle({
                 navBarBackgroundColor: '#ffdead'
             });

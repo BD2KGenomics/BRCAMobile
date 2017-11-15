@@ -46,8 +46,8 @@ class DetailDisplay extends Component {
     }
 
     getTheseDetails() {
-        return this.props.details_cache.hasOwnProperty(this.props.variant_id)
-            ? this.props.details_cache[this.props.variant_id]
+        return this.props.details_cache.has(this.props.variant_id)
+            ? this.props.details_cache.get(this.props.variant_id)
             : null;
     }
 
@@ -356,9 +356,9 @@ function renderSignificance(status) {
 // --- redux connections
 // ------------------------------------------------------------------------------
 
-const mapStateToProps = (state_immutable) => {
-    const state_subscribing = state_immutable.get('subscribing').toJS();
-    const state_browsing = state_immutable.get('browsing').toJS();
+const mapStateToProps = (state) => {
+    const state_subscribing = state.subscribing;
+    const state_browsing = state.browsing;
 
     // FIXME: replace with reselect at some point
 
@@ -366,8 +366,8 @@ const mapStateToProps = (state_immutable) => {
         // subscription info
         details_cache: state_browsing.details,
         isFetchingDetails: state_browsing.isFetchingDetails,
-        variants: state_browsing.variants, // FIXME: only include this variant?
-        subscriptions: state_subscribing.subscriptions,
+        variants: state_browsing.variants && state_browsing.variants.toJS(), // FIXME: only include this variant?
+        subscriptions: state_subscribing.subscriptions && state_subscribing.subscriptions.toJS(),
         subsLastUpdatedBy: state_subscribing.subsLastUpdatedBy
     }
 };

@@ -66,9 +66,9 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = (state_immutable) => {
+const mapStateToProps = (state) => {
     return {
-        isDebugging: state_immutable.getIn(['debugging', 'isDebugging'])
+        isDebugging: state.debugging.isDebugging
     };
 };
 

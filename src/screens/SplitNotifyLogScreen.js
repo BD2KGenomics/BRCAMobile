@@ -247,10 +247,10 @@ const styles = StyleSheet.create({
 
 /* define the component-to-store connectors */
 
-const mapStateToProps = (state_immutable) => {
+const mapStateToProps = (state) => {
     return {
         // subscription info
-        notifications: state_immutable.getIn(['notifylog', 'notifications'])
+        notifications: state.notifylog.notifications
     }
 };
 
