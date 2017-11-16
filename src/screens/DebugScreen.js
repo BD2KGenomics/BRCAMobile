@@ -44,15 +44,17 @@ class DebugScreen extends LinkableMenuScreen {
 
     purgeReduxState() {
         const confirmed = () => {
-            persistControl.purge();
+            // persistControl.flush();
 
-            this.props.navigator.resetTo({
-                title: "Home",
-                screen: "brca.HomeScreen",
-                animated: true
+            persistControl.purge().then(() => {
+                this.props.navigator.resetTo({
+                    title: "Home",
+                    screen: "brca.HomeScreen",
+                    animated: true
+                });
+
+                Toast.show("Store purged");
             });
-
-            Toast.show("Store purged");
         };
 
         Alert.alert(
