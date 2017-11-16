@@ -20,6 +20,13 @@ export default class ResultsTable extends Component {
             showLegend: false
         };
 
+        // bind local methods (consider changing to es7 members)
+        this.rowClicked = this.rowClicked.bind(this);
+        this.renderHeader = this.renderHeader.bind(this);
+        this.renderRow = this.renderRow.bind(this);
+        this.renderFooter = this.renderFooter.bind(this);
+        this._onScroll = this._onScroll.bind(this);
+        this.showLegend = this.showLegend.bind(this);
         this.dismissLegend = this.dismissLegend.bind(this);
     }
 
@@ -124,10 +131,10 @@ export default class ResultsTable extends Component {
                             pageSize={this.props.pageSize}
                             dataSource={this.props.dataSource}
                             onEndReached={this.props.onEndReached}
-                            // renderHeader={this.renderHeader.bind(this)}
-                            renderRow={this.renderRow.bind(this)}
-                            renderFooter={this.renderFooter.bind(this)}
-                            onScroll={this._onScroll.bind(this)}
+                            // renderHeader={this.renderHeader}
+                            renderRow={this.renderRow}
+                            renderFooter={this.renderFooter}
+                            onScroll={this._onScroll}
                         />
                     </View>
                 </View>
