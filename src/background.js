@@ -198,7 +198,7 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
 /**
  * Provides a mechanism for running code once a persistor has hydrated.
  */
-export class PersistNotifier {
+export class PersistMonitor {
     /**
      * Attaches to a persistor and executes onLoadedCallback if/when it becomes hydrated.
      * @param persistor the persistor to monitor for hydration
