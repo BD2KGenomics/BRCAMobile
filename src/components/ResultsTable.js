@@ -102,17 +102,6 @@ export default class ResultsTable extends Component {
                         </View>
 
                         <View>
-                            {/*
-                             <View style={styles.legend}>
-                             <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-                             <Icon {...patho_indicators['Pathogenic']} size={22} />
-                             <Text style={{marginLeft: 5, marginRight: 10}}>Pathogenic</Text>
-                             <Icon {...patho_indicators['Benign / Little Clinical Significance']} size={22} />
-                             <Text style={{marginLeft: 5, marginRight: 10}}>Benign</Text>
-                             </View>
-                             </View>
-                             */}
-
                             <Icon.Button {...ResultsTable.legendProps} name="help" onPress={() => this.showLegend()}>
                                 <Text style={{fontSize: 13, color: 'white', fontWeight: '600', marginRight: 5}}>legend</Text>
                             </Icon.Button>
