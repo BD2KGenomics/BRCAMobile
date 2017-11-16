@@ -11,7 +11,7 @@ const initialState = {
     isFetchingDetails: false,
     query: null,
     pageIndex: 0,
-    pageSize: 100,
+    pageSize: 50,
     totalResults: -1
 };
 
