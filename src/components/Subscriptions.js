@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 
 import SubscribeButton from './AnimatedSubscribeButton';
+import {ensureNonImmutable} from "../toolbox/misc";
 
 export default class Subscriptions extends Component {
     constructor(props) {
@@ -15,7 +16,9 @@ export default class Subscriptions extends Component {
             rowHasChanged: (r1, r2) => true
         });
 
-        const currentSubs = Object.values(props.subscriptions);
+        // convert subs to a JS object to bind it to a list
+        const subscriptions_js = ensureNonImmutable(props.subscriptions);
+        const currentSubs = Object.values(subscriptions_js);
 
         this.state = {
             originalSet: Object.assign({}, currentSubs),
@@ -57,7 +60,8 @@ export default class Subscriptions extends Component {
 
     renderRow(d) {
         // this checks the subscribing list directly vs. the frozen dataset we're manipulating
-        const subscribed = this.props.subscriptions.hasOwnProperty(d['Genomic_Coordinate_hg38']);
+        const subscribed = this.props.subscriptions.has(d['Genomic_Coordinate_hg38']);
+        console.log("sub render: ", d);
 
         return (
             <TouchableOpacity onPress={this.rowClicked.bind(this, d)}>

@@ -174,7 +174,7 @@ const mapStateToProps = (state) => {
     return {
         // subscription info
         token: state_subscribing.token,
-        subscriptions: state_subscribing.subscriptions && state_subscribing.subscriptions.toJS(),
+        subscriptions: state_subscribing.subscriptions,
         subsLastUpdatedBy: state_subscribing.subsLastUpdatedBy
     }
 };

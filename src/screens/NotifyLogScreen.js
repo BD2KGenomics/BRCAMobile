@@ -19,6 +19,7 @@ import {
     clear_all_notifications
 } from "../redux/notifylog/actions";
 import ScaryDebugNotice from "../components/ScaryDebugNotice";
+import {ensureNonImmutable} from "../toolbox/misc";
 
 class NotifyLogScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -73,7 +74,7 @@ class NotifyLogScreen extends LinkableMenuScreen {
 
     markAllRead() {
         // somehow dispatch updates to all the things we're viewing to be read
-        if (this.props.notifications.length > 0) {
+        if (this.props.notifications.filter(x => !x.read).size > 0) {
             Alert.alert(
                 'Mark Notifications as Read',
                 'Mark all notifications in this list as read?',
@@ -91,7 +92,7 @@ class NotifyLogScreen extends LinkableMenuScreen {
     }
 
     archiveAllNotifications() {
-        if (this.props.notifications.length > 0) {
+        if (this.props.notifications.size > 0) {
             Alert.alert(
                 'Archive All Notifications',
                 'Archive all notifications, so they no longer appear in this list?',
@@ -109,7 +110,10 @@ class NotifyLogScreen extends LinkableMenuScreen {
     }
 
     _aggNotifies(notifications) {
-        const reversedNotifies = notifications.filter(x => !x.archived).reverse();
+        // convert notifications to a js object if it isn't one already
+        const notifies_js = ensureNonImmutable(notifications);
+
+        const reversedNotifies = notifies_js.filter(x => !x.archived).reverse();
         const groupedNotifies = groupBy(reversedNotifies, x => x.version || "(unknown)");
 
         return Object.keys(groupedNotifies).reverse().map(k => {
@@ -244,7 +248,7 @@ class NotifyLogScreen extends LinkableMenuScreen {
                 </View>
 
                 <ScaryDebugNotice negPadding={2} marginBottom={-2} />
-                
+
                 <SectionList
                     style={styles.listContainer}
                     sections={groupedNotifies}
@@ -318,7 +322,7 @@ const mapStateToProps = (state) => {
 
     return {
         // subscription info
-        notifications: state_notifylog.notifications && state_notifylog.notifications.filter(x => !x.archived).toJS(),
+        notifications: state_notifylog.notifications,
         updatedAt: state_notifylog.updatedAt,
         latestVersion: state_notifylog.latestVersion
     }

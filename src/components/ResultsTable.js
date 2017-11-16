@@ -51,7 +51,7 @@ export default class ResultsTable extends Component {
     renderRow(d) {
         // get style for the following/not following icon column
         const followIconProps = follow_indicators[
-            (this.props.subscriptions.hasOwnProperty(d['Genomic_Coordinate_hg38']) ? "Following Variant" : "Not Following Variant")
+            (this.props.subscriptions.has(d['Genomic_Coordinate_hg38']) ? "Following Variant" : "Not Following Variant")
         ];
 
         const pathoIconProps = getIconByPathogenicity(d.Pathogenicity_expert);

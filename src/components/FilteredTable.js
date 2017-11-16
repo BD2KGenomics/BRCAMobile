@@ -11,6 +11,7 @@ import { query_variants, fetch_next_page } from '../redux/actions';
 
 import SearchBar from './SearchBar';
 import ResultsTable from './ResultsTable';
+import {ensureNonImmutable} from "../toolbox/misc";
 
 class FilteredTable extends Component {
     constructor(props) {
@@ -20,15 +21,19 @@ class FilteredTable extends Component {
             rowHasChanged: (r1, r2) => true
         });
 
+        const variants = ensureNonImmutable(props.variants);
+
         this.state = {
             searchText: this.props.initialText,
-            dataSource: this.ds.cloneWithRows(props.variants)
+            dataSource: this.ds.cloneWithRows(variants)
         };
     }
 
     componentWillReceiveProps(newProps) {
+        const variants = ensureNonImmutable(newProps.variants);
+
         this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(newProps.variants)
+            dataSource: this.state.dataSource.cloneWithRows(variants)
         });
     }
 
@@ -111,11 +116,11 @@ const mapStateToProps = (state) => {
 
     return {
         // subscription info
-        subscriptions: state_subscribing.subscriptions && state_subscribing.subscriptions.toJS(),
+        subscriptions: state_subscribing.subscriptions,
         // query info
         isLoading: state_browsing.isFetching,
         query: state_browsing.query,
-        variants: state_browsing.variants && state_browsing.variants.toJS(),
+        variants: state_browsing.variants,
         synonyms: state_browsing.synonyms,
         resultsCount: state_browsing.totalResults,
         pageIndex: state_browsing.pageIndex,

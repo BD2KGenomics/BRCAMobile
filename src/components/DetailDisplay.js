@@ -117,7 +117,7 @@ class DetailDisplay extends Component {
     }
 
     isSubscribed(d) {
-        return this.props.subscriptions.hasOwnProperty(d['Genomic_Coordinate_hg38']);
+        return this.props.subscriptions.has(d['Genomic_Coordinate_hg38']);
     }
 
     versions() {
@@ -366,8 +366,8 @@ const mapStateToProps = (state) => {
         // subscription info
         details_cache: state_browsing.details,
         isFetchingDetails: state_browsing.isFetchingDetails,
-        variants: state_browsing.variants && state_browsing.variants.toJS(), // FIXME: only include this variant?
-        subscriptions: state_subscribing.subscriptions && state_subscribing.subscriptions.toJS(),
+        // variants: state_browsing.variants, // FIXME: only include this variant?
+        subscriptions: state_subscribing.subscriptions,
         subsLastUpdatedBy: state_subscribing.subsLastUpdatedBy
     }
 };
