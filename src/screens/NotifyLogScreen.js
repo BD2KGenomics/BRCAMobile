@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { Navigation } from 'react-native-navigation';
 import Toast from 'react-native-simple-toast';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ScrollTopView from 'react-native-scrolltotop';
+import ScrollTopView from '../components/3rdparty/ScrollTopView';
 import {checkForUpdate} from "../background";
 import {store} from "../app";
 
@@ -250,6 +250,7 @@ class NotifyLogScreen extends LinkableMenuScreen {
                 <ScaryDebugNotice negPadding={2} marginBottom={-2} />
 
                 <SectionList
+                    ref="listview"
                     style={styles.listContainer}
                     sections={groupedNotifies}
                     renderItem={this.renderRow}
@@ -260,9 +261,23 @@ class NotifyLogScreen extends LinkableMenuScreen {
                             onRefresh={this.refreshNotifies}
                         />
                     }
+                    onScroll={this._onScroll.bind(this)}
                 />
+
+                { this.state.isNotAtTop ?
+                    <ScrollTopView root={this}
+                        onPress={() => this.refs.listview.scrollToLocation({ sectionIndex: -1, itemIndex: -1 })}
+                        top={Dimensions.get('window').height - 160}
+                        left={Dimensions.get('window').width - 80} /> : null
+                }
             </View>
         );
+    }
+
+    _onScroll(e) {
+        this.setState({
+            isNotAtTop: (e.nativeEvent.contentOffset.y > 100)
+        });
     }
 }
 

@@ -9,7 +9,6 @@ import { connect } from "react-redux";
 import { Navigation } from 'react-native-navigation';
 import Toast from 'react-native-simple-toast';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ScrollTopView from 'react-native-scrolltotop';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
 import {mark_notification_read, mark_visible_read, archive_all_notifications} from "../redux/notifylog/actions";

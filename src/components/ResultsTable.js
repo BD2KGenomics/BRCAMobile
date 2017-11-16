@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ScrollTopView from 'react-native-scrolltotop';
+import ScrollTopView from './3rdparty/ScrollTopView';
 
 import {follow_indicators, getIconByPathogenicity, patho_indicators} from "../metadata/icons";
 import LegendModal from "./LegendModal";
@@ -141,7 +141,7 @@ export default class ResultsTable extends Component {
 
                 { this.state.isNotAtTop ?
                     <ScrollTopView root={this}
-                        top={Dimensions.get('window').height - 220}
+                        top={Dimensions.get('window').height - 240}
                         left={Dimensions.get('window').width - 100} /> : null
                 }
 
