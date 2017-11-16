@@ -74,6 +74,7 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     const isDebugging = store_state.debugging.isDebugging;
     const isRefreshMocked = store_state.debugging.isRefreshMocked;
     const isQuickRefreshing = store_state.debugging.isQuickRefreshing;
+    const showsVersionInNotify = store_state.debugging.showsVersionInNotify;
     const targetHost = (isDebugging && isRefreshMocked ? "40.78.27.48:8500" : "brcaexchange.org");
 
     console.log("\n--- debug settings below: ---");
@@ -163,7 +164,7 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     const data_decoded = await data.json();
 
     // nab our list of subscriptions so we can skip announcing things that we aren't subscribed to
-    const subscriptions = store.getState().subscribing.subscriptions.keySeq();
+    const subscriptions = store_state.subscribing.subscriptions.keySeq();
 
     // announce all variants to notifylog reducer, which will filter to our desired ones
     // the filter is an optimization to keep us from notifying if we're not subscribed
@@ -180,7 +181,7 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
                     variant_id: x.id,
                     genome_id: x['Genomic_Coordinate_hg38'],
                     pathogenicity: x['Pathogenicity_expert'],
-                    title: `(v${latest}) ${simple_cDNA} has changed significance`,
+                    title: `${showsVersionInNotify ? `(v${latest}) ` : ''}${simple_cDNA} has changed significance`,
                     body: `The clinical significance of ${simple_cDNA} has changed to '${x['Pathogenicity_expert']}'`,
                     click_action: '' // ???
                 };

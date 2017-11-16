@@ -14,7 +14,7 @@ import SettingsList from 'react-native-settings-list';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
 import {
-    set_debug_msg_hidden, set_debugging, set_orange_header_hidden, set_quick_refresh,
+    set_debug_msg_hidden, set_debugging, set_notify_shows_version, set_orange_header_hidden, set_quick_refresh,
     set_refresh_mocked
 } from "../redux/debugging/actions";
 
@@ -144,6 +144,13 @@ class DebugScreen extends LinkableMenuScreen {
                     />
                     <SettingsList.Item
                         hasNavArrow={false}
+                        switchState={this.props.showsVersionInNotify}
+                        switchOnValueChange={() => { this.props.onSetNotifyShowsVersion(!this.props.showsVersionInNotify); }}
+                        hasSwitch={true}
+                        title='Show Version in Notify Title'
+                    />
+                    <SettingsList.Item
+                        hasNavArrow={false}
                         title='Target Host'
                         titleInfo={(this.props.isDebugging && this.props.isRefreshMocked) ? "40.78.27.48:8500" : "brcaexchange.org"}
                     />
@@ -254,6 +261,7 @@ const mapStateToProps = (state) => {
         isOrangeHeaderHidden: state.debugging.isOrangeHeaderHidden,
         isRefreshMocked: state.debugging.isRefreshMocked,
         isQuickRefreshing: state.debugging.isQuickRefreshing,
+        showsVersionInNotify: state.debugging.showsVersionInNotify,
         nextCheck:  state.notifylog.nextCheck, // min time to check for a new release, in milliseconds since the epoch
         latestVersion:  state.notifylog.latestVersion, // database version since last successful fetch
         updatedAt:  state.notifylog.updatedAt, // the time that we completed the update
@@ -276,6 +284,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         onSetQuickRefresh: (isQuickRefreshing) => {
             dispatch(set_quick_refresh(isQuickRefreshing))
+        },
+        onSetNotifyShowsVersion: (showsVersionInNotify) => {
+            dispatch(set_notify_shows_version(showsVersionInNotify))
         },
         onDebugPurgeNotifyState: () => {
             dispatch(debug_purge_notifystate())

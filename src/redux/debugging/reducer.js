@@ -1,6 +1,6 @@
 import {
     SET_DEBUG_MSG_HIDDEN,
-    SET_DEBUGGING, SET_ORANGE_HEADER_HIDDEN, SET_QUICK_REFRESH, SET_REFRESH_MOCKED
+    SET_DEBUGGING, SET_NOTIFY_SHOWS_VERSION, SET_ORANGE_HEADER_HIDDEN, SET_QUICK_REFRESH, SET_REFRESH_MOCKED
 } from './actions';
 import * as Immutable from "immutable";
 
@@ -9,7 +9,8 @@ const initialState = {
     isDebugMsgHidden: false,
     isOrangeHeaderHidden: false,
     isRefreshMocked: false,
-    isQuickRefreshing: false
+    isQuickRefreshing: false,
+    showsVersionInNotify: false,
 };
 
 export default function debuggingReducer(state=initialState, action) {
@@ -44,6 +45,11 @@ export default function debuggingReducer(state=initialState, action) {
         case SET_QUICK_REFRESH:
             return Object.assign({}, state, {
                 isQuickRefreshing: action.isQuickRefreshing
+            });
+
+        case SET_NOTIFY_SHOWS_VERSION:
+            return Object.assign({}, state, {
+                showsVersionInNotify: action.showsVersionInNotify
             });
 
         default:
