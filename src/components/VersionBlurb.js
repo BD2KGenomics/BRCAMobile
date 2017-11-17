@@ -46,7 +46,7 @@ class VersionBlurb extends Component {
     render() {
         return (
             <TouchableOpacity onPress={this.onTappedVersion}>
-                <Text style={styles.version}>brca-exchange mobile v1.3.3</Text>
+                <Text style={styles.version}>brca-exchange mobile v1.3.4</Text>
             </TouchableOpacity>
         );
     }
