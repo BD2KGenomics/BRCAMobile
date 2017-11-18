@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {
     Text, Button, TouchableHighlight, View, StyleSheet, Linking, Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export default class extends View {
+export default class extends Component {
     constructor(props) {
         super(props);
         this.handlePress = this.handlePress.bind(this);
@@ -39,8 +39,13 @@ export default class extends View {
 const styles = StyleSheet.create({
     brcalink: {
         position: 'absolute',
-        right: 10,
-        top: 10,
+        right: 20,
+        top: 20,
+
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
 
         borderRadius: 5,
         padding: 5,
