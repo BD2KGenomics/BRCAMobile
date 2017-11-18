@@ -19,7 +19,7 @@ import {
 } from "../redux/debugging/actions";
 
 import {persistControl} from "../app";
-import {debug_purge_notifystate} from "../redux/notifylog/actions";
+import {debug_purge_notifystate, set_nextcheck_time} from "../redux/notifylog/actions";
 
 class DebugScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -28,6 +28,7 @@ class DebugScreen extends LinkableMenuScreen {
         this.purgeReduxState = this.purgeReduxState.bind(this);
         this.purgeNotifyState = this.purgeNotifyState.bind(this);
         this.disableDevMode = this.disableDevMode.bind(this);
+        this.toggleQuickRefresh = this.toggleQuickRefresh.bind(this);
         this.toggleDebugMessage = this.toggleDebugMessage.bind(this);
     }
 
@@ -99,6 +100,19 @@ class DebugScreen extends LinkableMenuScreen {
         );
     }
 
+    toggleQuickRefresh() {
+        const newValue = !this.props.isQuickRefreshing;
+
+        // persist that value
+        this.props.onSetQuickRefresh(newValue);
+
+        // if we're enabling, reset our refresh timer
+        if (newValue) {
+            this.props.onSetNextcheckTime(null);
+            Toast.show("Backoff timer reset");
+        }
+    }
+
     toggleDebugMessage() {
         if (!this.props.isDebugMsgHidden) {
             Alert.alert(
@@ -140,7 +154,7 @@ class DebugScreen extends LinkableMenuScreen {
                     <SettingsList.Item
                         hasNavArrow={false}
                         switchState={this.props.isQuickRefreshing}
-                        switchOnValueChange={() => { this.props.onSetQuickRefresh(!this.props.isQuickRefreshing); }}
+                        switchOnValueChange={this.toggleQuickRefresh}
                         hasSwitch={true}
                         title='Quicker Refresh Interval'
                     />
@@ -289,6 +303,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         onSetNotifyShowsVersion: (showsVersionInNotify) => {
             dispatch(set_notify_shows_version(showsVersionInNotify))
+        },
+        onSetNextcheckTime: (nextCheck) => {
+            dispatch(set_nextcheck_time(nextCheck));
         },
         onDebugPurgeNotifyState: () => {
             dispatch(debug_purge_notifystate())
