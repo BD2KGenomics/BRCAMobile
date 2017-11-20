@@ -69,7 +69,9 @@ class FilteredTable extends Component {
     }
 
     onEndReached() {
-        if (this.props.query !== null && !this.props.isLoading) {
+        const hasMoreRecords = this.props.variants.size < this.props.resultsCount;
+
+        if (this.props.query !== null && !this.props.isLoading && hasMoreRecords) {
             this.props.onFetchNextPage();
         }
     }
