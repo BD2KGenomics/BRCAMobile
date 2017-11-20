@@ -60,20 +60,7 @@ registerScreens(store);
 // ----------------------------------------------------------------------
 
 async function bgTask() {
-    // maybe acquire the store here?
-
-    console.log('Hello from a background task');
-
-    /*
-    const sentinel = await AsyncStorage.getItem('@BRCAExchange:sentinel');
-    console.log("Sentinel retrieved in bgTask(): ", sentinel);
-    */
-
-    // const local_store = createStore(reducer, applyMiddleware(thunk), autoRehydrate());
-    // console.log("store contents: ", JSON.stringify(store.getState().toJSON()));
-
-    // const local_store = createStore(reducer, undefined, compose(applyMiddleware(thunk), autoRehydrate()));
-
+    console.log('background task initiating');
     console.log("rehydrate starting...");
 
     new PersistMonitor(persistControl, async () => {
@@ -85,9 +72,6 @@ async function bgTask() {
                 ignore_backoff: false,
                 ignore_older_version: false
             });
-
-            // check if the store's been updated
-            console.log("*** should be done, version is: ", store.getState().notifylog.latestVersion);
         }
         catch(err) {
             console.warn("Error when processing bg task: ", err);
@@ -139,13 +123,6 @@ export default class App {
         this.startApp();
         this.registerWithFCM();
 
-        /*
-        // put something into AsyncStorage for the bg task to find
-        const sentinel = `hello! ${1|(Math.random()*100)}`;
-        AsyncStorage.setItem('@BRCAExchange:sentinel', sentinel).then(() => {
-            console.log("Sentinel stored in initializeApp: ", sentinel);
-        });
-        */
     }
 
     startApp() {
