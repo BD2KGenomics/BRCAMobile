@@ -16,25 +16,15 @@ import {ensureNonImmutable} from "../toolbox/misc";
 class FilteredTable extends Component {
     constructor(props) {
         super(props);
-        this.ds = new ListView.DataSource({
-            // FIXME: this is hugely inefficient. actually check if we've had a subscription change
-            rowHasChanged: (r1, r2) => true
-        });
-
-        const variants = ensureNonImmutable(props.variants);
 
         this.state = {
-            searchText: this.props.initialText,
-            dataSource: this.ds.cloneWithRows(variants)
+            searchText: this.props.initialText
         };
-    }
 
-    componentWillReceiveProps(newProps) {
-        const variants = ensureNonImmutable(newProps.variants);
-
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(variants)
-        });
+        this.onChangeText = this.onChangeText.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onRowClicked = this.onRowClicked.bind(this);
+        this.onEndReached = this.onEndReached.bind(this);
     }
 
     //
@@ -83,8 +73,8 @@ class FilteredTable extends Component {
                     style={{flex: 0}}
                     text={this.state.searchText}
                     autoFocus={false}
-                    onChangeText={this.onChangeText.bind(this)}
-                    onSubmit={this.onSubmit.bind(this)} />
+                    onChangeText={this.onChangeText}
+                    onSubmit={this.onSubmit} />
 
                 <View style={{flex: 1}}>
                     <ResultsTable
@@ -92,10 +82,10 @@ class FilteredTable extends Component {
                         subscriptions={this.props.subscriptions}
                         resultsCount={this.props.resultsCount}
                         synonyms={this.props.synonyms}
-                        dataSource={this.state.dataSource}
+                        variants={this.props.variants}
                         isLoading={this.props.isLoading}
-                        onRowClicked={this.onRowClicked.bind(this)}
-                        onEndReached={this.onEndReached.bind(this)} />
+                        onRowClicked={this.onRowClicked}
+                        onEndReached={this.onEndReached} />
                 </View>
             </View>
         )

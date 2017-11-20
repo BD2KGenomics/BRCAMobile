@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {
     Text, TextInput, View, ListView, ScrollView, Image, TouchableOpacity, ActivityIndicator,
     Dimensions,
-    StyleSheet, Alert, Platform, Modal, Button, TouchableWithoutFeedback
+    StyleSheet, Alert, Platform, Modal, Button, TouchableWithoutFeedback, VirtualizedList
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -24,6 +24,7 @@ export default class ResultsTable extends Component {
         this.rowClicked = this.rowClicked.bind(this);
         this.renderHeader = this.renderHeader.bind(this);
         this.renderRow = this.renderRow.bind(this);
+        this.renderItem = this.renderItem.bind(this);
         this.renderFooter = this.renderFooter.bind(this);
         this._onScroll = this._onScroll.bind(this);
         this.showLegend = this.showLegend.bind(this);
@@ -77,6 +78,10 @@ export default class ResultsTable extends Component {
         );
     }
 
+    renderItem({ item }) {
+        return this.renderRow(item);
+    }
+
     renderFooter() {
         return (
             <ActivityIndicator style={{margin: 10}} size='large' animating={this.props.isLoading} />
@@ -113,23 +118,28 @@ export default class ResultsTable extends Component {
                     </View>
 
                     <View style={{flexGrow: 1, height: 410}}>
-                        <ListView
+                        <VirtualizedList
                             ref="listview"
                             style={styles.listContainer}
-                            enableEmptySections={true}
-                            pageSize={this.props.pageSize}
-                            dataSource={this.props.dataSource}
+                            data={this.props.variants}
                             onEndReached={this.props.onEndReached}
-                            // renderHeader={this.renderHeader}
-                            renderRow={this.renderRow}
-                            renderFooter={this.renderFooter}
+
+                            getItem={(data, index) => this.props.variants.get(index)}
+                            getItemCount={(data) => data.size}
+                            getItemLayout={(data, index) => ({length: 39, offset: 0, index})}
+                            keyExtractor={(item) => item.id}
+
+                            renderItem={this.renderItem}
+                            ListFooterComponent={this.renderFooter}
                             onScroll={this._onScroll}
                         />
+
                     </View>
                 </View>
 
                 { this.state.isNotAtTop ?
                     <ScrollTopView root={this}
+                        onPress={() => this.refs.listview.scrollToOffset({ offset: 0 })}
                         top={Dimensions.get('window').height - 240}
                         left={Dimensions.get('window').width - 100} /> : null
                 }
