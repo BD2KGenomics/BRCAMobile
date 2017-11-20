@@ -192,9 +192,6 @@ export default class App {
                     // console.log("initial notification: ", notif);
                     this.handleNotification(notif);
                 }
-                else {
-                    // console.log("no initial notification");
-                }
             })
             .catch(error => {
                 console.warn("error: ", error.message);
