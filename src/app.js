@@ -121,8 +121,13 @@ export default class App {
     initializeApp() {
         // a preamble to startApp()
         this.startApp();
-        this.registerWithFCM();
 
+        // notification-related initialization
+        // (partially disabled since we no longer rely on FCM notifications)
+        // this.registerWithFCM();
+        // this.subscribeToTopics();
+        this.attachFCMHandlers();
+        this.handleInitialNotification();
     }
 
     startApp() {
@@ -157,7 +162,9 @@ export default class App {
 
         // replace with dispatch to fetch token from actions
         store.dispatch(fetch_fcm_token());
+    }
 
+    attachFCMHandlers() {
         // ensure that we don't have any existing listeners hanging around
         DeviceEventEmitter.removeAllListeners(FCMEvent.Notification);
         DeviceEventEmitter.removeAllListeners(FCMEvent.RefreshToken);
@@ -165,7 +172,9 @@ export default class App {
         // set up some handlers for incoming data and control messages
         this.notificationListner = FCM.on(FCMEvent.Notification, this.handleNotification.bind(this));
         this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, this.handleTokenRefresh.bind(this));
+    }
 
+    subscribeToTopics() {
         // subscribe to get variant notices
         // we subscribe to everything and filter out what we don't care about
         // FIXME: switch this back to the 'production' topic
@@ -173,7 +182,9 @@ export default class App {
 
         // this is strictly a notification channel
         FCM.subscribeToTopic('/topics/TEST_database_updates_TEST');
+    }
 
+    handleInitialNotification() {
         FCM.getInitialNotification()
             .then(notif => {
                 // getInitialNotification() actually gives us the notification that launched us
