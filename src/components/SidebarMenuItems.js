@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
 import {
+    ScrollView,
     Text, View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -22,7 +23,7 @@ class SidebarMenuItems extends Component {
 
     render() {
         return (
-            <View style={{flex: 1}}>
+            <ScrollView style={{flex: 1}}>
                 <Icon.Button name="home" {...this.props.navbuttonProps}
                     onPress={ () => this.props.onNavigateRequest('Home', 'brca.HomeScreen', true) }>
                     <Text style={this.props.buttonStyle}>Home</Text>
@@ -81,7 +82,7 @@ class SidebarMenuItems extends Component {
                     <Text style={this.props.buttonStyle}>View Test</Text>
                 </Icon.Button>
                 */}
-            </View>
+            </ScrollView>
         );
     }
 }
