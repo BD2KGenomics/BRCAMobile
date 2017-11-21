@@ -10,6 +10,7 @@ import ScrollTopView from './3rdparty/ScrollTopView';
 
 import {follow_indicators, getIconByPathogenicity, patho_indicators} from "../metadata/icons";
 import LegendModal from "./LegendModal";
+import {ImmutableListView} from "react-native-immutable-list-view";
 
 export default class ResultsTable extends Component {
     constructor(props) {
@@ -26,7 +27,10 @@ export default class ResultsTable extends Component {
         this.renderRow = this.renderRow.bind(this);
         this.renderItem = this.renderItem.bind(this);
         this.renderFooter = this.renderFooter.bind(this);
+
         this._onScroll = this._onScroll.bind(this);
+        this.scrollToTop = this.scrollToTop.bind(this);
+
         this.showLegend = this.showLegend.bind(this);
         this.dismissLegend = this.dismissLegend.bind(this);
     }
@@ -84,64 +88,86 @@ export default class ResultsTable extends Component {
 
     renderFooter() {
         return (
-            <ActivityIndicator style={{margin: 10}} size='large' animating={this.props.isLoading} />
+            <View>
+                {/* this.props.isLoading */}
+                <ActivityIndicator style={{margin: 10}} size='large' animating={this.props.isLoading} />
+            </View>
         );
     }
 
     render() {
+        const resultsText =
+            `${this.props.resultsCount} variant${this.props.resultsCount !== 1 && 's'}` +
+            `${ (this.props.synonyms > 0) ? ` (synonyms: ${this.props.synonyms})` : '' }`;
+
         return (
-            <View style={{flex: 1}}>
-                <View style={{flex: 1, justifyContent: 'flex-start', backgroundColor: 'white'}}>
-                    <View style={{minHeight: 25, flexDirection: 'row', alignItems: 'center', paddingLeft: 5}}>
-                        <View style={{flexGrow: 1}}>
-                        {
-                            this.props.resultsCount > 0 ?
-                                <Text>
-                                    {/* loaded {this.props.dataSource.getRowCount()} out of */}
-                                    {this.props.resultsCount} variant{this.props.resultsCount !== 1 && 's'}&nbsp;
-                                    { (this.props.synonyms > 0) ? <Text>(synonyms: {this.props.synonyms})</Text> : '' }
-                                </Text>
-                                :
-                                (this.props.isLoading ? <Text>loading...</Text> : <Text>no results found</Text>)
-                        }
-                        </View>
-
-                        <View>
-                            <Icon.Button {...ResultsTable.legendProps} name="help" onPress={() => this.showLegend()}>
-                                <Text style={{fontSize: 13, color: 'white', fontWeight: '600', marginRight: 5}}>legend</Text>
-                            </Icon.Button>
-                        </View>
+            <View style={{flex: 1, justifyContent: 'flex-start', backgroundColor: 'white'}}>
+                <View style={{minHeight: 25, flexDirection: 'row', alignItems: 'center', paddingLeft: 5}}>
+                    <View style={{flexGrow: 1}}>
+                    {
+                        this.props.resultsCount > 0 ?
+                            <Text>{resultsText}</Text>
+                            :
+                            (this.props.isLoading ? <Text>loading...</Text> : <Text>no results found</Text>)
+                    }
                     </View>
 
-                    <View style={styles.headerContainer}>
-                        {this.renderHeader()}
-                    </View>
+                    {/* loaded {this.props.dataSource.getRowCount()} out of */}
+                    {/*
+                    {this.props.resultsCount} variant{this.props.resultsCount !== 1 && 's'}&nbsp;
+                    ${ (this.props.synonyms > 0) ? <Text>(synonyms: {this.props.synonyms})</Text> : '' }
+                    */}
 
-                    <View style={{flexGrow: 1, height: 410}}>
-                        <VirtualizedList
-                            ref="listview"
-                            style={styles.listContainer}
-                            data={this.props.variants}
-                            onEndReached={this.props.onEndReached}
-
-                            getItem={(data, index) => this.props.variants.get(index)}
-                            getItemCount={(data) => data.size}
-                            getItemLayout={(data, index) => ({length: 39, offset: 0, index})}
-                            keyExtractor={(item) => item.id}
-
-                            renderItem={this.renderItem}
-                            ListFooterComponent={this.renderFooter}
-                            onScroll={this._onScroll}
-                        />
-
+                    <View>
+                        <Icon.Button {...ResultsTable.legendProps} name="help" onPress={() => this.showLegend()}>
+                            <Text style={{fontSize: 13, color: 'white', fontWeight: '600', marginRight: 5}}>legend</Text>
+                        </Icon.Button>
                     </View>
                 </View>
 
-                { this.state.isNotAtTop ?
+                <View style={styles.headerContainer}>
+                    {this.renderHeader()}
+                </View>
+
+                {/*
+                <VirtualizedList
+                    ref="listview"
+                    style={styles.listContainer}
+                    data={this.props.variants}
+                    extraData={this.props.isLoading}
+                    onEndReached={this.props.onEndReached}
+
+                    getItem={(data, index) => data.get(index)}
+                    getItemCount={(data) => data.size}
+                    getItemLayout={(data, index) => ({length: 39, offset: 0, index})}
+                    keyExtractor={(item) => item.id}
+
+                    renderItem={this.renderItem}
+                    ListFooterComponent={this.renderFooter}
+                    onScroll={this._onScroll}
+                />
+                */}
+
+                <ImmutableListView
+                    ref="listview"
+                    style={styles.listContainer}
+                    immutableData={this.props.variants}
+
+                    renderRow={this.renderRow}
+                    renderFooter={this.renderFooter}
+                    renderEmptyInList={null}
+
+                    onEndReached={this.props.onEndReached}
+                    onScroll={this._onScroll}
+                />
+
+
+                { this.state.isNotAtTop &&
                     <ScrollTopView root={this}
-                        onPress={() => this.refs.listview.scrollToOffset({ offset: 0 })}
+                        onPress={this.scrollToTop}
                         top={Dimensions.get('window').height - 240}
-                        left={Dimensions.get('window').width - 100} /> : null
+                        left={Dimensions.get('window').width - 100}
+                    />
                 }
 
                 <LegendModal showLegend={this.state.showLegend} onDismissLegend={this.dismissLegend} />
@@ -154,6 +180,11 @@ export default class ResultsTable extends Component {
         this.setState({
             isNotAtTop: (e.nativeEvent.contentOffset.y > 100)
         });
+    }
+
+    scrollToTop() {
+        // this.refs.listview.scrollToOffset({ offset: 0 });
+        this.refs.listview.scrollTo({ x: 0, y: 0, animated: true });
     }
 
     showLegend() {
@@ -172,6 +203,7 @@ export default class ResultsTable extends Component {
 const styles = StyleSheet.create({
     listContainer: {
         marginTop: 0,
+        flexGrow: 1
         // backgroundColor: 'lightgreen'
     },
     headerContainer: {
