@@ -35,11 +35,7 @@
 {
   NSURL *jsCodeLocation;
 
-  #if DEBUG
-    jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.bundle?platform=ios&dev=true"];
-  #else
-    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-  #endif
+  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 
   // **********************************************
   // *** DON'T MISS: THIS IS HOW WE BOOTSTRAP *****
