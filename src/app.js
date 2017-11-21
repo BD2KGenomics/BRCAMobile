@@ -105,11 +105,12 @@ export default class App {
         if (Platform.OS === 'android') {
             Promise.resolve(Navigation.isAppLaunched())
                 .then(appLaunched => {
+                    // FIXME: debug why the app doesn't launch (or gets stuck for a long time) in certain cases
                     if (appLaunched) {
                         this.initializeApp();
-                    } else {
+                    }
+                    else {
                         new NativeEventsReceiver().appLaunched(this.initializeApp);
-                        // App hasn't been launched yet -> show the UI only when needed.
                     }
                 });
         }
