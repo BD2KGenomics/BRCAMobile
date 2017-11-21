@@ -66,14 +66,17 @@ public class MainApplication extends NavigationApplication {
         return getPackages();
     }
 
+    // react-native-navigation is incompatible with these RN 0.50 changes
 
     @Override
-    protected String getJSMainModuleName() {
+    public String getJSMainModuleName() {
       return "index";
     }
 
+    /*
     @Override
     public ReactNativeHost getReactNativeHost() {
         return mReactNativeHost;
     }
+    */
 }
