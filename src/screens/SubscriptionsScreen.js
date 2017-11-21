@@ -17,7 +17,7 @@ class SubscriptionsScreen extends LinkableMenuScreen {
 
         // store whether we originally had subscribing on visiting this page
         this.state = {
-            hadSubscriptions: this.props.subscriptions && Object.keys(this.props.subscriptions).length > 0,
+            hadSubscriptions: this.props.subscriptions && this.props.subscriptions.size > 0,
             token: ''
         };
 
@@ -94,12 +94,6 @@ class SubscriptionsScreen extends LinkableMenuScreen {
                         whenever the clinical significance of that variant changes in the BRCA Exchange database.
                     </Text>
                 </View>
-
-                {/*<View style={styles.logo}>*/}
-                    {/*<Image style={{width: 133, height: 67}} source={require('../../img/logos/brcaexchange.jpg')} />*/}
-                {/*</View>*/}
-
-                {/*<Text>Token: {this.props.token}</Text>*/}
             </ScrollView>
         );
     }
