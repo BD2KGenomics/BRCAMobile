@@ -97,8 +97,8 @@ export default class ResultsTable extends Component {
 
     render() {
         const resultsText =
-            `${this.props.resultsCount} variant${this.props.resultsCount !== 1 && 's'}` +
-            `${ (this.props.synonyms > 0) ? ` (synonyms: ${this.props.synonyms})` : '' }`;
+            `${this.props.resultsCount} variant${this.props.resultsCount !== 1 ? 's' : ''}` +
+            ((this.props.synonyms > 0) ? ` (synonyms: ${this.props.synonyms})` : '');
 
         return (
             <View style={{flex: 1, justifyContent: 'flex-start', backgroundColor: 'white'}}>
