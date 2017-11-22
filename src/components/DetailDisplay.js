@@ -197,7 +197,6 @@ class DetailDisplay extends Component {
 
     render() {
         const theseDetails = this.getTheseDetails();
-        console.log("Details: ", theseDetails);
 
         // if we're waiting on data, display a loader
         if (!theseDetails) {
