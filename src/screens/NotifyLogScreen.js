@@ -19,7 +19,7 @@ import {
     clear_all_notifications
 } from "../redux/notifylog/actions";
 import ScaryDebugNotice from "../components/ScaryDebugNotice";
-import {ensureNonImmutable} from "../toolbox/misc";
+import {ensureNonImmutable, makeCancelable} from "../toolbox/misc";
 
 class NotifyLogScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -40,6 +40,13 @@ class NotifyLogScreen extends LinkableMenuScreen {
         this.showUnread = this.showUnreadOrRead.bind(this, false);
 
         this.refreshNotifies = this.refreshNotifies.bind(this);
+    }
+
+    componentWillUnmount() {
+        // cancel the cancellable promise, if it exists
+        if (this.refreshPromise) {
+            this.refreshPromise.cancel();
+        }
     }
 
     static propTypes = {
@@ -190,19 +197,30 @@ class NotifyLogScreen extends LinkableMenuScreen {
             all_subscribed: false // treats every variant as if we're subscribed to it (produces a lot of results...)
         };
 
-        checkForUpdate(store, config)
-            .then(result => {
-                Toast.show(result);
-            })
-            .catch((err) => {
-                console.log(err);
-                Toast.show(err.message);
-            })
+        this.refreshPromise = makeCancelable(
+            checkForUpdate(store, config)
+                .then(result => {
+                    Toast.show(result);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Toast.show(err.message);
+                })
+        );
+
+        // splitting the promise here allows us to cancel the component-related updates that occur when
+        // the background task completes, which would otherwise throw an error if the component was unmounted
+
+        this.refreshPromise
+            .promise
             .then(() => {
                 this.setState({
                     refreshing: false
                 });
             })
+            .catch(() => {
+                console.log("NotifyLog bg task completion promise cancelled")
+            }) // ignore the cancelling rejection
     }
 
     render() {
