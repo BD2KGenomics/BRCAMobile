@@ -74,7 +74,6 @@ export default class LinkableMenuScreen extends Component {
                 else {
                     this.props.navigator.push(target);
                 }
-
             }
             else if (parts[0] === 'updated') {
                 const params = JSON.parse(parts[1]);
@@ -89,14 +88,11 @@ export default class LinkableMenuScreen extends Component {
                 })
             }
             else if (parts[0] === 'notifylog') {
-                const params = JSON.parse(parts[1]);
+                console.log("directing to notifylog...");
 
                 this.props.navigator.resetTo({
                     title: 'Notify Log',
-                    screen: 'brca.NotifyLogScreen',
-                    passProps: {
-                        variant_count: params.variant_count
-                    }
+                    screen: 'brca.NotifyLogScreen'
                 })
             }
         }
