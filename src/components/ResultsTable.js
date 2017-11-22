@@ -63,16 +63,16 @@ export default class ResultsTable extends Component {
     renderRow(d) {
         // get style for the following/not following icon column
         const followIconProps = follow_indicators[
-            (this.props.subscriptions.has(d['Genomic_Coordinate_hg38']) ? "Following Variant" : "Not Following Variant")
+            (d.get('subscribed') ? "Following Variant" : "Not Following Variant")
         ];
 
-        const pathoIconProps = getIconByPathogenicity(d.Pathogenicity_expert);
+        const pathoIconProps = getIconByPathogenicity(d.get('Pathogenicity_expert'));
 
         return (
-            <TouchableOpacity onPress={this.rowClicked.bind(this, d)}>
+            <TouchableOpacity onPress={this.rowClicked.bind(this, d.toJS())}>
               <View style={styles.row}>
-                <Text style={[styles.rowCell, styles.rowTextCell, {flex: 0.4}]} numberOfLines={1}>{d.Gene_Symbol}</Text>
-                <Text style={[styles.rowCell, styles.rowTextCell]} numberOfLines={1} ellipsizeMode="tail">{d.HGVS_cDNA.split(':')[1]}</Text>
+                <Text style={[styles.rowCell, styles.rowTextCell, {flex: 0.4}]} numberOfLines={1}>{d.get('Gene_Symbol')}</Text>
+                <Text style={[styles.rowCell, styles.rowTextCell]} numberOfLines={1} ellipsizeMode="tail">{d.get('HGVS_cDNA').split(':')[1]}</Text>
                 <View style={[styles.rowCell, { flex: 0.25, flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'nowrap' }]}>
                     <Icon {...pathoIconProps} size={22} />
                     <Icon {...followIconProps} size={22} />

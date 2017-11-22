@@ -37,7 +37,7 @@ export default function browsingReducer(state=initialState, action) {
 
         case RECEIVE_PAGE:
             return Object.assign({}, state, {
-                variants: state.variants.concat(action.items),
+                variants: state.variants.concat(Immutable.fromJS(action.items)),
                 totalResults: action.totalResults,
                 synonyms: action.synonyms,
                 isFetching: false

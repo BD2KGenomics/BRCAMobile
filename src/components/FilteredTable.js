@@ -82,7 +82,7 @@ class FilteredTable extends Component {
                         subscriptions={this.props.subscriptions}
                         resultsCount={this.props.resultsCount}
                         synonyms={this.props.synonyms}
-                        variants={this.props.variants}
+                        variants={this.props.variants_subbed}
                         isLoading={this.props.isLoading}
                         onRowClicked={this.onRowClicked}
                         onEndReached={this.onEndReached} />
@@ -116,7 +116,12 @@ const mapStateToProps = (state) => {
         synonyms: state_browsing.synonyms,
         resultsCount: state_browsing.totalResults,
         pageIndex: state_browsing.pageIndex,
-        pageSize: state_browsing.pageSize
+        pageSize: state_browsing.pageSize,
+
+        // dynamically annotate variants with subscription state
+        variants_subbed: state_browsing.variants.map(x =>
+            x.set('subscribed', state_subscribing.subscriptions.has(x.get('Genomic_Coordinate_hg38')))
+        )
     }
 };
 
