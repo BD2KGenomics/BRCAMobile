@@ -73,7 +73,7 @@ export default class ResultsTable extends Component {
               <View style={styles.row}>
                 <Text style={[styles.rowCell, styles.rowTextCell, {flex: 0.4}]} numberOfLines={1}>{d.get('Gene_Symbol')}</Text>
                 <Text style={[styles.rowCell, styles.rowTextCell]} numberOfLines={1} ellipsizeMode="tail">{d.get('HGVS_cDNA').split(':')[1]}</Text>
-                <View style={[styles.rowCell, { flex: 0.25, flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'nowrap' }]}>
+                <View style={[styles.rowCell, { flex: 0.25, flexDirection: 'row', justifyContent: 'flex-end', flexWrap: 'nowrap' }]}>
                     <Icon {...pathoIconProps} size={22} />
                     <Icon {...followIconProps} size={22} />
                 </View>
