@@ -17,11 +17,11 @@ export default class extends Component {
             'Open External Link',
             `View variant details on brcaexchange.org?`,
             [
+                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
                 { text: 'OK', onPress: () => {
                     console.log("Attempting to open ", targetURL);
                     Linking.openURL(targetURL);
-                } },
-                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                } }
             ],
             { cancelable: true }
         );
