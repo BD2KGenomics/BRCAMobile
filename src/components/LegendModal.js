@@ -26,6 +26,7 @@ export default class LegendModal extends Component {
         return (<Modal visible={this.props.showLegend}
             transparent={true}
             onRequestClose={() => this.props.onDismissLegend()}
+            supportedOrientations={['portrait', 'landscape']}
             animationType="fade">
 
             {/*
@@ -47,7 +48,7 @@ export default class LegendModal extends Component {
                                 const obj_style = patho_indicators[name];
 
                                 return (
-                                    <View key={idx} style={{minWidth: 250, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15}}>
+                                    <View key={idx} style={{minWidth: 260, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15}}>
                                         <Icon {...obj_style} size={22} />
                                         <Text style={{marginLeft: 5, marginRight: 10}}>{ obj_style.title || name }</Text>
                                     </View>
@@ -63,7 +64,7 @@ export default class LegendModal extends Component {
                                 const obj_style = follow_indicators[name];
 
                                 return (
-                                    <View key={idx} style={{minWidth: 250, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15}}>
+                                    <View key={idx} style={{minWidth: 260, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 15}}>
                                         <Icon {...obj_style} size={22} />
                                         <Text style={{marginLeft: 5, marginRight: 10}}>{name}</Text>
                                     </View>
