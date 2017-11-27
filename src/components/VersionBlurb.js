@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import debounce from 'lodash/debounce';
 import {Text, TouchableOpacity, StyleSheet} from "react-native";
 import Toast from 'react-native-simple-toast';
+import { version } from '../../package.json';
 
 import {set_debugging} from "../redux/debugging/actions";
 
@@ -46,7 +47,7 @@ class VersionBlurb extends Component {
     render() {
         return (
             <TouchableOpacity onPress={this.onTappedVersion}>
-                <Text style={styles.version}>brca-exchange mobile v1.3.9</Text>
+                <Text style={styles.version}>brca-exchange mobile v{ version }</Text>
             </TouchableOpacity>
         );
     }
