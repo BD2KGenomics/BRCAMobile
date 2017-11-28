@@ -35,6 +35,11 @@ xcode-select --install
 fastlane android test
 ```
 Runs all the tests
+### android alpha
+```
+fastlane android alpha
+```
+Submit a new Alpha Build to Play Store
 ### android beta
 ```
 fastlane android beta
