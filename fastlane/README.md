@@ -29,12 +29,38 @@ xcode-select --install
 </table>
 
 # Available Actions
+## iOS
+### ios test
+```
+fastlane ios test
+```
+Runs all the tests
+### ios beta
+```
+fastlane ios beta
+```
+Submit a new Beta Build to Apple TestFlight
+
+This will also make sure the profile is up to date
+### ios release
+```
+fastlane ios release
+```
+Deploy a new version to the App Store
+
+----
+
 ## Android
 ### android test
 ```
 fastlane android test
 ```
 Runs all the tests
+### android build
+```
+fastlane android build
+```
+Just build it
 ### android alpha
 ```
 fastlane android alpha
