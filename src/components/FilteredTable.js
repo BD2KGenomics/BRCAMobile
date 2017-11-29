@@ -121,13 +121,7 @@ const mapStateToProps = (state) => {
         // dynamically annotate variants with subscription state
         variants_subbed: state_browsing.variants
             .map(x =>
-                x.set('subscribed', state_subscribing.subscriptions.has(
-                    // quick hack to deal with previous versions storing js objects, not immutablejs maps
-                    // FIXME: we should ensure the state is well-formed at hydration
-                    Iterable.isIterable(x)
-                        ? x.get('Genomic_Coordinate_hg38')
-                        : x['Genomic_Coordinate_hg38']
-                ))
+                x.set('subscribed', state_subscribing.subscriptions.has(x.get('Genomic_Coordinate_hg38')))
             )
     }
 };
