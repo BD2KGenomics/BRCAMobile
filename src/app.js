@@ -7,7 +7,7 @@ import { Navigation, NativeEventsReceiver } from 'react-native-navigation';
 import {createStore, applyMiddleware, compose} from 'redux';
 import thunk from 'redux-thunk';
 
-import { persistStore, persistCombineReducers } from 'redux-persist';
+import { persistStore, persistCombineReducers, createMigrate } from 'redux-persist';
 import immutableTransform from 'redux-persist-transform-immutable';
 import storage from 'redux-persist/lib/storage';
 
@@ -32,9 +32,11 @@ import FCM, {
 const reducer = persistCombineReducers(
     {
         key: 'brca-exchg',
+        version: 1,
         transforms: [immutableTransform()],
         storage,
-        debug: true
+        debug: true,
+        migrate: createMigrate(migrations, { debug: true }),
     },
     {
         browsing: browsingReducer,
@@ -52,6 +54,7 @@ const persistControl = persistStore(store, null);
 // ----------------------------------------------------------------------
 
 import {registerScreens} from './screens';
+import migrations from "./redux/migrations";
 registerScreens(store);
 
 

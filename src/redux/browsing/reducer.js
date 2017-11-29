@@ -15,6 +15,9 @@ const initialState = {
     totalResults: -1
 };
 
+// exporting b/c we reset this reducer's state in the '0' migration
+export {initialState};
+
 // FIXME: we *really* need to centralize variant data into a single variant_id => data collection
 // different pages will have different retention needs, e.g. subscribing should always retain its variants' data
 
