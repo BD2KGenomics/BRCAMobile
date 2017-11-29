@@ -11,7 +11,7 @@ import { query_variants, fetch_next_page } from '../redux/actions';
 
 import SearchBar from './SearchBar';
 import ResultsTable from './ResultsTable';
-import {ensureNonImmutable} from "../toolbox/misc";
+import { Iterable } from 'immutable';
 
 class FilteredTable extends Component {
     constructor(props) {
@@ -119,9 +119,16 @@ const mapStateToProps = (state) => {
         pageSize: state_browsing.pageSize,
 
         // dynamically annotate variants with subscription state
-        variants_subbed: state_browsing.variants.map(x =>
-            x.set('subscribed', state_subscribing.subscriptions.has(x.get('Genomic_Coordinate_hg38')))
-        )
+        variants_subbed: state_browsing.variants
+            .map(x =>
+                x.set('subscribed', state_subscribing.subscriptions.has(
+                    // quick hack to deal with previous versions storing js objects, not immutablejs maps
+                    // FIXME: we should ensure the state is well-formed at hydration
+                    Iterable.isIterable(x)
+                        ? x.get('Genomic_Coordinate_hg38')
+                        : x['Genomic_Coordinate_hg38']
+                ))
+            )
     }
 };
 
