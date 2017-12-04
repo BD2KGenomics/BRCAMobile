@@ -29,6 +29,17 @@ platform :ios do
     scan
   end
 
+  desc "Just build it"
+  lane :build do
+    match(type: "appstore", git_url: "git@github.com:falquaddoomi/BRCAMobile-secrets.git")
+
+    gym(
+        scheme: "BRCAMobile Release",
+        workspace: "ios/BRCAMobile.xcworkspace",
+        output_directory: "fastlane/ios_build"
+    )
+  end
+
   desc "Submit a new Beta Build to Apple TestFlight"
   desc "This will also make sure the profile is up to date"
   lane :beta do
@@ -36,8 +47,9 @@ platform :ios do
 
     gym(
       scheme: "BRCAMobile Release",
-      workspace: "ios/BRCAMobile.xcworkspace"
-    ) # Build your app - more options available
+      workspace: "ios/BRCAMobile.xcworkspace",
+      output_directory: "fastlane/ios_build"
+    )
 
     pilot(skip_waiting_for_build_processing: true)
 
@@ -49,7 +61,7 @@ platform :ios do
   lane :release do
     # match(type: "appstore")
     # snapshot
-    gym # Build your app - more options available
+    gym
     # deliver(force: true)
     # frameit
   end
