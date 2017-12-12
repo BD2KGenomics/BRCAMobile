@@ -128,7 +128,8 @@ export default class App {
 
         // notification-related initialization
         // (partially disabled since we no longer rely on FCM notifications)
-        // this.registerWithFCM();
+        this.registerWithFCM();
+
         // this.subscribeToTopics();
         this.attachFCMHandlers();
         this.handleInitialNotification();
@@ -162,10 +163,15 @@ export default class App {
     // ---------------------------------------
 
     registerWithFCM() {
-        FCM.requestPermissions(); // on iOS, prompts for permission to receive push notifications
-
-        // replace with dispatch to fetch token from actions
-        store.dispatch(fetch_fcm_token());
+        // on iOS, prompts for permission to receive push notifications
+        FCM.requestPermissions()
+            .then(() => {
+                // replace with dispatch to fetch token from actions
+                store.dispatch(fetch_fcm_token());
+            })
+            .catch(() => {
+                console.log("user rejected push notification permissions");
+            });
     }
 
     attachFCMHandlers() {
@@ -203,8 +209,8 @@ export default class App {
     }
 
     handleNotification(notif) {
-        // console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
-        // console.log("payload: ", notif);
+        console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
+        console.log("payload: ", notif);
 
         // logic for dealing with clicking a notification
         if (notif.opened_from_tray) {
