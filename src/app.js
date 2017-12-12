@@ -12,7 +12,7 @@ import immutableTransform from 'redux-persist-transform-immutable';
 import storage from 'redux-persist/lib/storage';
 
 // redux reducers and actions
-import { browsingReducer, debuggingReducer, subscriptionsReducer, notifylogReducer } from './redux';
+import { generalReducer, browsingReducer, debuggingReducer, subscriptionsReducer, notifylogReducer } from './redux';
 import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
 
 // bg task imports
@@ -32,13 +32,14 @@ import FCM, {
 const reducer = persistCombineReducers(
     {
         key: 'brca-exchg',
-        version: 1,
+        version: 2,
         transforms: [immutableTransform()],
         storage,
         debug: true,
         migrate: createMigrate(migrations, { debug: true }),
     },
     {
+        general: generalReducer,
         browsing: browsingReducer,
         subscribing: subscriptionsReducer,
         notifylog: notifylogReducer,

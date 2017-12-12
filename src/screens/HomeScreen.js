@@ -3,12 +3,15 @@ import {
     Text, TextInput, View, ScrollView, Image, TouchableOpacity, StyleSheet,
     Alert, Platform
 } from 'react-native';
+import {connect} from "react-redux";
 
 import LinkableMenuScreen from './LinkableMenuScreen';
 import SearchBar from '../components/SearchBar';
 import ScaryDebugNotice from "../components/ScaryDebugNotice";
+import LicenseModal from "../components/LicenseModal";
+import {set_license_agreed} from "../redux/general/actions";
 
-export default class HomeScreen extends LinkableMenuScreen {
+class HomeScreen extends LinkableMenuScreen {
     constructor(props) {
         super(props);
         this.state = {
@@ -71,10 +74,36 @@ export default class HomeScreen extends LinkableMenuScreen {
                         <Image style={{width: 133, height: 67}} source={require('../../img/logos/brcaexchange.jpg')} />
                     </View>
                 </View>
+
+                <LicenseModal
+                    showLegend={!this.props.licenseAgreedVersion}
+                    onDismissLicense={() => { this.props.onSetLicenseAgreed(1); }}
+                />
             </ScrollView>
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        licenseAgreedVersion: state.general.licenseAgreedVersion
+    };
+};
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onSetLicenseAgreed: (version) => {
+            dispatch(set_license_agreed(version))
+        }
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(HomeScreen);
+
 
 const styles = StyleSheet.create({
     button: {

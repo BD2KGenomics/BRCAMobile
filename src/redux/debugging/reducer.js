@@ -2,7 +2,6 @@ import {
     SET_DEBUG_MSG_HIDDEN,
     SET_DEBUGGING, SET_NOTIFY_SHOWS_VERSION, SET_ORANGE_HEADER_HIDDEN, SET_QUICK_REFRESH, SET_REFRESH_MOCKED
 } from './actions';
-import * as Immutable from "immutable";
 
 const initialState = {
     isDebugging: false,
