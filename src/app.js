@@ -165,14 +165,19 @@ export default class App {
 
     registerWithFCM() {
         // on iOS, prompts for permission to receive push notifications
-        FCM.requestPermissions()
-            .then(() => {
-                // replace with dispatch to fetch token from actions
-                store.dispatch(fetch_fcm_token());
+        const perm_promise = FCM.requestPermissions();
+
+        if (perm_promise) {
+            perm_promise.then(() => {
+                console.log("user granted permission")
             })
             .catch(() => {
                 console.log("user rejected push notification permissions");
             });
+        }
+
+        // get an FCM token and store it in redux
+        store.dispatch(fetch_fcm_token());
     }
 
     attachFCMHandlers() {
