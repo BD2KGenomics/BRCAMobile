@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {
     Text, TextInput, View, ScrollView, Image, TouchableOpacity, StyleSheet,
-    Alert, Platform
+    Alert, Platform,
+    BackHandler
 } from 'react-native';
 import {connect} from "react-redux";
 
@@ -77,6 +78,7 @@ class HomeScreen extends LinkableMenuScreen {
 
                 <LicenseModal
                     showLegend={!this.props.licenseAgreedVersion}
+                    onDisagreeWithLicense={() => { BackHandler.exitApp(); }}
                     onDismissLicense={() => { this.props.onSetLicenseAgreed(1); }}
                 />
             </ScrollView>
