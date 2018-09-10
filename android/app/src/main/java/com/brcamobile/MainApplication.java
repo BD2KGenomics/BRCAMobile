@@ -3,6 +3,7 @@ package com.brcamobile;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
 import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -24,7 +25,6 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 import java.util.concurrent.TimeUnit;
 
 // react-native-fcm
-import com.evollu.react.fcm.FIRMessagingPackage;
 
 public class MainApplication extends NavigationApplication {
     // stetho

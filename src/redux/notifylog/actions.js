@@ -1,8 +1,3 @@
-import {
-    Platform, DeviceEventEmitter
-} from 'react-native';
-import FCM from "react-native-fcm";
-
 import {purge_details} from "../browsing/actions";
 import {announceBatchedNotifies, BufferNotifyManager} from "./helpers";
 

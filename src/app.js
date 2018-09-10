@@ -13,16 +13,10 @@ import storage from 'redux-persist/lib/storage';
 
 // redux reducers and actions
 import { generalReducer, browsingReducer, debuggingReducer, subscriptionsReducer, notifylogReducer } from './redux';
-import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
 
 // bg task imports
 import BackgroundTask from 'react-native-background-task';
 import {checkForUpdate, PersistMonitor} from "./background";
-
-// FCM event listener
-import FCM, {
-    FCMEvent
-} from "react-native-fcm";
 
 
 // ----------------------------------------------------------------------
@@ -127,13 +121,8 @@ export default class App {
         // a preamble to startApp()
         this.startApp();
 
-        // notification-related initialization
-        // (partially disabled since we no longer rely on FCM notifications)
-        this.registerWithFCM();
-
-        // this.subscribeToTopics();
-        this.attachFCMHandlers();
-        this.handleInitialNotification();
+        // FIXME: check if we need to handle an initial notification
+        // (we probably need to see how the new local notify lib launches the app)
     }
 
     startApp() {
@@ -156,100 +145,5 @@ export default class App {
         BackgroundTask.schedule({
             period: 900
         });
-    }
-
-
-    // ---------------------------------------
-    // --- FCM registration, notification reception
-    // ---------------------------------------
-
-    registerWithFCM() {
-        // on iOS, prompts for permission to receive push notifications
-        const perm_promise = FCM.requestPermissions();
-
-        if (perm_promise) {
-            perm_promise.then(() => {
-                console.log("user granted permission")
-            })
-            .catch(() => {
-                console.log("user rejected push notification permissions");
-            });
-        }
-
-        // get an FCM token and store it in redux
-        store.dispatch(fetch_fcm_token());
-    }
-
-    attachFCMHandlers() {
-        // ensure that we don't have any existing listeners hanging around
-        DeviceEventEmitter.removeAllListeners(FCMEvent.Notification);
-        DeviceEventEmitter.removeAllListeners(FCMEvent.RefreshToken);
-
-        // set up some handlers for incoming data and control messages
-        this.notificationListner = FCM.on(FCMEvent.Notification, this.handleNotification.bind(this));
-        this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, this.handleTokenRefresh.bind(this));
-    }
-
-    subscribeToTopics() {
-        // subscribe to get variant notices
-        // we subscribe to everything and filter out what we don't care about
-        // FIXME: switch this back to the 'production' topic
-        FCM.subscribeToTopic('/topics/TEST_variant_updates_debug_TEST');
-
-        // this is strictly a notification channel
-        FCM.subscribeToTopic('/topics/TEST_database_updates_TEST');
-    }
-
-    handleInitialNotification() {
-        FCM.getInitialNotification()
-            .then(notif => {
-                // getInitialNotification() actually gives us the notification that launched us
-                if (notif) {
-                    // console.log("initial notification: ", notif);
-                    this.handleNotification(notif);
-                }
-            })
-            .catch(error => {
-                console.warn("error: ", error.message);
-            });
-    }
-
-    handleNotification(notif) {
-        console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
-        console.log("payload: ", notif);
-
-        // logic for dealing with clicking a notification
-        if (notif.opened_from_tray) {
-            // notif.local_notification is true even if we're coming in from clicking it, apparently
-            // so we have to check notif.opened_from_tray first
-
-            let link_target = null;
-
-            if (notif.hasOwnProperty('announcement')) {
-                link_target = 'notifylog/' + JSON.stringify({ version: notif.version });
-            }
-            else if (notif.hasOwnProperty('variant_id')) {
-                link_target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
-            }
-
-            if (link_target) {
-                // console.log("Opened from tray, launching ", link_target);
-                Navigation.handleDeepLink({
-                    link: link_target
-                });
-            }
-
-            return;
-        }
-
-        // if we haven't returned by now, we want to dismiss the note
-        if (notif.hasOwnProperty("finish") && typeof notif.finish === "function") {
-            notif.finish();
-        }
-    }
-
-    handleTokenRefresh(token) {
-        console.log("TOKEN (refreshUnsubscribe)", token);
-        store.dispatch(receive_fcm_token(token));
     }
 }

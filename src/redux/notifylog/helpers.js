@@ -1,9 +1,4 @@
-import {
-    Platform, DeviceEventEmitter
-} from 'react-native';
-import FCM, {
-    FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType
-} from "react-native-fcm";
+// BufferNotifyManager merges multiple requests for notifications raised in a short timeframe into a single batched notification
 
 // ---------------------------------------
 // --- notification buffering
@@ -56,6 +51,11 @@ export class BufferNotifyManager {
 
 function showBatchedNotification(buffered_notifies) {
     // show batched notification
+    // FIXME: replace with new local notification method
+
+    console.error(`should be showing batched notify: ${buffered_notifies.length} variants have changed`);
+
+    /*
     FCM.presentLocalNotification({
         opened_from_tray: 0,
         priority: "high",
@@ -68,11 +68,16 @@ function showBatchedNotification(buffered_notifies) {
         show_in_foreground: true,
         local: true
     });
+    */
 }
 
 function showSingleNotification(notif) {
     // console.log("Showing: ", notif);
+    // FIXME: replace with new local notification method
 
+    console.error(`should be showing single notify: ${notif.title}`);
+
+    /*
     FCM.presentLocalNotification({
         opened_from_tray: 0,
         priority: "high",
@@ -86,6 +91,7 @@ function showSingleNotification(notif) {
         show_in_foreground: true,
         local: true
     });
+    */
 }
 
 export function announceBatchedNotifies(notifies) {

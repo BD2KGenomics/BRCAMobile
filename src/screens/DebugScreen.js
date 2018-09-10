@@ -220,15 +220,6 @@ class DebugScreen extends LinkableMenuScreen {
                 <View style={{paddingTop: 5, paddingLeft: 10}}>
                     <Text style={styles.settingsHeader}>Misc. Debug Information</Text>
                 </View>
-
-                <View style={styles.blurbHolder}>
-                    <Text style={[styles.prose, {fontWeight:'bold'}]}>
-                    FCM Token:
-                    </Text>
-                    <Text style={styles.prose} selectable={true}>
-                    { this.props.fcm_token || "no token" }
-                    </Text>
-                </View>
             </ScrollView>
         );
     }
@@ -271,7 +262,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-        fcm_token: state.subscribing.token,
         isDebugging: state.debugging.isDebugging,
         isDebugMsgHidden: state.debugging.isDebugMsgHidden,
         isOrangeHeaderHidden: state.debugging.isOrangeHeaderHidden,
