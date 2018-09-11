@@ -20,6 +20,9 @@ import {
 
 import {persistControl} from "../app";
 import {debug_purge_notifystate, set_nextcheck_time} from "../redux/notifylog/actions";
+import {MOCK_HOST} from '../background';
+
+import PushNotification from 'react-native-push-notification';
 
 class DebugScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -126,6 +129,23 @@ class DebugScreen extends LinkableMenuScreen {
         }
     }
 
+    testLocalNotify = () => {
+        const notif = {
+            title: 'test title',
+            body: 'test body, var: c.956a>c',
+            type: 'single_notify',
+            variant_id: 124306
+        };
+
+        PushNotification.localNotification({
+            title: notif.title,
+            message: notif.body,
+            category: notif.type,
+            tag: notif.type,
+            userInfo: { variant_id: notif.variant_id, type: notif.type }
+        });
+    };
+
     render() {
         return (
             <ScrollView style={styles.container}>
@@ -168,7 +188,7 @@ class DebugScreen extends LinkableMenuScreen {
                     <SettingsList.Item
                         hasNavArrow={false}
                         title='Target Host'
-                        titleInfo={(this.props.isDebugging && this.props.isRefreshMocked) ? "40.78.27.48:8500" : "brcaexchange.org"}
+                        titleInfo={(this.props.isDebugging && this.props.isRefreshMocked) ? MOCK_HOST : "brcaexchange.org"}
                     />
                     <SettingsList.Item
                         hasNavArrow={false}
@@ -215,11 +235,21 @@ class DebugScreen extends LinkableMenuScreen {
                         onPress={this.purgeReduxState}
                         title='Purge Redux State'
                     />
+
+                    <SettingsList.Header
+                        headerText="Miscellaneous"
+                        headerStyle={styles.settingsHeader}
+                    />
+                    <SettingsList.Item
+                        hasNavArrow={true}
+                        onPress={this.testLocalNotify}
+                        title='Test Local Notify'
+                    />
                 </SettingsList>
 
-                <View style={{paddingTop: 5, paddingLeft: 10}}>
-                    <Text style={styles.settingsHeader}>Misc. Debug Information</Text>
-                </View>
+                {/*<View style={{paddingTop: 5, paddingLeft: 10}}>*/}
+                    {/*<Text style={styles.settingsHeader}>Misc. Debug</Text>*/}
+                {/*</View>*/}
             </ScrollView>
         );
     }

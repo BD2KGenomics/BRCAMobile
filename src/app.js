@@ -1,5 +1,6 @@
 import {
-    Platform, DeviceEventEmitter, AsyncStorage
+    Platform, DeviceEventEmitter, AsyncStorage,
+    PushNotificationIOS
 } from 'react-native';
 import { Navigation, NativeEventsReceiver } from 'react-native-navigation';
 
@@ -18,6 +19,9 @@ import { generalReducer, browsingReducer, debuggingReducer, subscriptionsReducer
 import BackgroundTask from 'react-native-background-task';
 import {checkForUpdate, PersistMonitor} from "./background";
 
+// notifications
+import PushNotification from 'react-native-push-notification';
+import Toast from "react-native-simple-toast";
 
 // ----------------------------------------------------------------------
 // --- redux setup
@@ -120,9 +124,36 @@ export default class App {
     initializeApp() {
         // a preamble to startApp()
         this.startApp();
+        const app = this;
 
-        // FIXME: check if we need to handle an initial notification
-        // (we probably need to see how the new local notify lib launches the app)
+        // setup react-native-push-notification's notifications
+        PushNotification.configure({
+            // (required) Called when a remote or local notification is opened or received
+            onNotification: function(notification) {
+                app.handleNotification(notification);
+
+                // required on iOS only (see fetchCompletionHandler docs: https://facebook.github.io/react-native/docs/pushnotificationios.html)
+                notification.finish(PushNotificationIOS.FetchResult.NewData);
+            },
+
+            // IOS ONLY (optional): default: all - Permissions to register.
+            permissions: {
+                alert: true,
+                badge: true,
+                sound: true
+            },
+
+            // Should the initial notification be popped automatically
+            // default: true
+            popInitialNotification: true,
+
+            /**
+             * (optional) default: true
+             * - Specified if permissions (ios) and token (android and ios) will requested or not,
+             * - if not, you must call PushNotificationsHandler.requestPermissions() later
+             */
+            requestPermissions: true,
+        });
     }
 
     startApp() {
@@ -145,5 +176,42 @@ export default class App {
         BackgroundTask.schedule({
             period: 900
         });
+    }
+
+    handleNotification(notif) {
+        // console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
+        console.log("payload: ", notif);
+
+        // logic for dealing with clicking a notification
+        if (notif.hasOwnProperty('data')) {
+            if (notif.data.type === 'single_notify') {
+                Navigation.handleDeepLink({
+                    link: 'updated/' + JSON.stringify({ variant_id: notif.data.variant_id })
+                });
+            }
+            else {
+                Navigation.handleDeepLink({
+                    link: 'notifylog/x' // the second part isn't used
+                });
+            }
+        }
+
+        /*
+        let link_target = null;
+
+        if (notif.hasOwnProperty('announcement')) {
+            link_target = 'notifylog/' + JSON.stringify({ version: notif.version });
+        }
+        else if (notif.hasOwnProperty('variant_id')) {
+            link_target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
+        }
+
+        if (link_target) {
+            // console.log("Opened from tray, launching ", link_target);
+            Navigation.handleDeepLink({
+                link: link_target
+            });
+        }
+        */
     }
 }
