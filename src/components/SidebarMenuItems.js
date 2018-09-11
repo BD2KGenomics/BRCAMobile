@@ -17,7 +17,7 @@ class SidebarMenuItems extends Component {
 
     static propTypes = {
         navbuttonProps: PropTypes.object.isRequired,
-        buttonStyle: PropTypes.number.isRequired,
+        buttonStyle: PropTypes.object.isRequired,
         onNavigateRequest: PropTypes.func.isRequired
     };
 
