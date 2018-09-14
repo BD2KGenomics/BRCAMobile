@@ -36,14 +36,15 @@ export default class LicenseModal extends Component {
                             <Text style={styles.subheader}>Disclaimer and Data Use Policy</Text>
 
                             <Text style={styles.prose}>
-                            The information accessed through this app is not intended for direct diagnostic use or
-                            medical decision-making without review by a genetics professional. Individuals should not
-                            change their health behavior solely on the basis of information contained in this app.
-                            The BRCA Exchange does not independently verify the submitted information.
+                            Use of this app, and associated interpretation relating to gene variant pathogenicity, is subject to user discretion and responsibility. The information provided is presented with intent to educate. It is not intended to be a substitute for professional assessment of individual risk, nor for direct diagnostic use or medical decision-making without review by a genetics professional. Individuals should not change their health behavior solely on the basis of information contained on this website. The BRCA Exchange does not independently verify the submitted information. Gene variant classifications and classification methods are subject to change as further information becomes available.
                             </Text>
 
                             <Text style={styles.prose}>
-                            If you have questions about the information contained in this app, please see a health care professional.
+                            The BRCA Exchange App provides a notification function for variant classification updates. This functionality uses technologies that can fail and that are beyond of the control of BRCA Exchange. This functionality should hence not be relied on for clinical decision making.
+                            </Text>
+
+                            <Text style={styles.prose}>
+                            If you have questions about the information contained on this website, please see a healthcare professional.
                             </Text>
 
                             <Text>{' '}</Text>
