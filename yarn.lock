@@ -4464,6 +4464,10 @@ lodash@^4.16.5, lodash@^4.17.10, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.6.1:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
+lodash@^4.17.11:
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
+
 longest@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
@@ -5951,17 +5955,13 @@ react-motion@^0.5.2:
     prop-types "^15.5.8"
     raf "^3.1.0"
 
-react-native-background-fetch@2.0.x:
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-2.0.8.tgz#30332cc9bc56b6bbc5e75f1b0d14ce116775d8f2"
+react-native-background-fetch@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-2.4.3.tgz#4621cca2a8f9e96edbf0556afcd04873bd698f37"
   dependencies:
     fast-plist "^0.1.2"
     plist "^2.0.1"
     xcode "^0.9.1"
-
-react-native-background-task@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/react-native-background-task/-/react-native-background-task-0.2.1.tgz#9d110ed14b245e0d8b9ec8114ce24b33ddda65de"
 
 react-native-immutable-list-view@^0.6.2:
   version "0.6.2"
@@ -5970,9 +5970,9 @@ react-native-immutable-list-view@^0.6.2:
     immutable ">=3.8"
     prop-types "^15.5.10"
 
-react-native-navigation@^1.1.485:
-  version "1.1.485"
-  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-1.1.485.tgz#99b469ded59589888ddb76f0b2ebf8258b24b9e7"
+react-native-navigation@^1.1.486:
+  version "1.1.486"
+  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-1.1.486.tgz#0d7c20e0b84dbb958d20c7043de8db1e19fdaf6e"
   dependencies:
     lodash "4.x.x"
 

@@ -1,8 +1,5 @@
 apply plugin: "com.android.application"
 
-// FAISAL: for react-native-fcm
-apply plugin: 'com.google.gms.google-services'
-
 import com.android.build.OutputFile
 
 /**
@@ -161,22 +158,17 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-background-fetch')
-    compile project(':react-native-background-task')
-    // also for react-native-fcm, apparently decides the firebase SDK version?
-    compile 'com.google.firebase:firebase-core:10.0.1'
-
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     compile "com.facebook.react:react-native:+"  // From node_modules
 
-    // react-native-vector-icons
+    // project-specific includes
     compile project(':react-native-vector-icons')
-
-    // react-native-navigation
     compile project(':react-native-navigation')
+    compile project(':react-native-background-fetch')
+    compile project(':react-native-push-notification')
 
-    // stetho
+    // stetho (for debugging)
     compile 'com.facebook.stetho:stetho:1.5.0'
     compile 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 }

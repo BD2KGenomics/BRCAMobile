@@ -16,7 +16,7 @@ import storage from 'redux-persist/lib/storage';
 import { generalReducer, browsingReducer, debuggingReducer, subscriptionsReducer, notifylogReducer } from './redux';
 
 // bg task imports
-import BackgroundTask from 'react-native-background-task';
+import BackgroundFetch from 'react-native-background-fetch';
 import {checkForUpdate, PersistMonitor} from "./background";
 
 // notifications
@@ -81,13 +81,19 @@ async function bgTask() {
         finally {
             console.log("flushing changes and ending...");
             persistControl.flush();
-            BackgroundTask.finish();
+            BackgroundFetch.finish(BackgroundFetch.FETCH_RESULT_NO_DATA);
         }
     });
 }
 
-// attach background task
-BackgroundTask.define(bgTask);
+// this is top-level because headlessjs doesn't actually launch the app
+try {
+    console.log("Registering bg task...");
+    BackgroundFetch.registerHeadlessTask(bgTask);
+}
+catch (error) {
+    console.log("[rn-bg-fetch] registerHeadlessTask error'd: ", error)
+}
 
 // this is used in NotifyLog to allow the user to manually launch a refresh task
 // FIXME: consider making firing the background task a reducer action, so we don't need to send the store over?
@@ -172,9 +178,23 @@ export default class App {
             animationType: 'none'
         });
 
-        BackgroundTask.cancel();
-        BackgroundTask.schedule({
-            period: 900
+        // also set up the background task
+        BackgroundFetch.configure({
+            minimumFetchInterval: 30,
+            stopOnTerminate: false,
+            startOnBoot: true,
+            enableHeadless: true
+        }, () => {
+            console.log("[rn-bg-fetch] received fetch event");
+            bgTask()
+                .then((result) => {
+                    console.log("[rn-bg-fetch] completed with result: ", result);
+                })
+                .catch((error) => {
+                    console.warn("[rn-bg-fetch] errored out during run: ", error);
+                });
+        }, (error) => {
+            console.warn("[rn-bg-fetch] failed to start: ", error);
         });
     }
 

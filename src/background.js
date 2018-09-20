@@ -1,7 +1,6 @@
 import {
     NetInfo
 } from 'react-native';
-import BackgroundTask from 'react-native-background-task';
 import {
     observe_batched_notifications, observe_notification, set_nextcheck_time,
     set_updated_to_version
