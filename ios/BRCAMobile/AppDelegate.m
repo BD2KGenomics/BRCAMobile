@@ -1,50 +1,29 @@
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 #import "AppDelegate.h"
 
-// **********************************************
-// *** DON'T MISS: THE NEXT LINE IS IMPORTANT ***
-// **********************************************
-#import "RCCManager.h"
-
-// previous includes that i assume are now invalid?
-// #import "RCTBundleURLProvider.h"
-// #import "RCTRootView.h"
-
-// suggested by react-native upgrader when moving from 0.37 to 0.41
 #import <React/RCTBundleURLProvider.h>
+#import "RCCManager.h"
 #import <React/RCTRootView.h>
 
-// FAISAL: for react-native-fcm
-#import "RNFIRMessaging.h"
+#import <React/RCTPushNotificationManager.h>
 
-// FAISAL: for testing notifications in the simulator
-// FIXME: remove this for release
-#import "UIApplication+SimulatorRemoteNotifications.h"
+#import <UserNotifications/UserNotifications.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  /*
   NSURL *jsCodeLocation;
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 
-  // **********************************************
-  // *** DON'T MISS: THIS IS HOW WE BOOTSTRAP *****
-  // **********************************************
-  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  self.window.backgroundColor = [UIColor whiteColor];
-  [[RCCManager sharedInstance] initBridgeWithBundleURL:jsCodeLocation];
-  
-  /*
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"BRCAMobile"
                                                initialProperties:nil
@@ -56,49 +35,58 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  */
-
-  // FAISAL: more mystery code for react-native-fcm
-  [FIRApp configure];
-  [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
+  return YES;
+   */
   
-  // FAISAL: yet more mystery code for faking push notifications
-  #if DEBUG
-      [application listenForRemoteNotifications];
-  #endif
+  NSURL *jsCodeLocation;
+#ifdef DEBUG
+  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+#else
+  jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+#endif
   
+  // setup notification center delegate, allowing us to display foreground notifications
+  UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+  center.delegate = self;
+  
+  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  self.window.backgroundColor = [UIColor whiteColor];
+  [[RCCManager sharedInstance] initBridgeWithBundleURL:jsCodeLocation launchOptions:launchOptions];
   return YES;
 }
 
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler
+// Required to register for notifications
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
-  [RNFIRMessaging willPresentNotification:notification withCompletionHandler:completionHandler];
+  [RCTPushNotificationManager didRegisterUserNotificationSettings:notificationSettings];
 }
-
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)())completionHandler
+// Required for the register event.
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-  [RNFIRMessaging didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
+  [RCTPushNotificationManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+}
+// Required for the notification event. You must call the completion handler after handling the remote notification.
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+  [RCTPushNotificationManager didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+}
+// Required for the registrationError event.
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+  [RCTPushNotificationManager didFailToRegisterForRemoteNotificationsWithError:error];
+}
+// Required for the localNotification event.
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+  [RCTPushNotificationManager didReceiveLocalNotification:notification];
 }
 
-//You can skip this method if you don't want to use local notification
--(void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-  [RNFIRMessaging didReceiveLocalNotification:notification];
-}
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
-  
-//  NSLog(@"Remote notification = %@", userInfo);
-//  
-//  if ( application.applicationState == UIApplicationStateActive ) {
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Remote notification received"
-//                                                    message:[NSString stringWithFormat:@"application:didReceiveRemoteNotification:\n%@", [userInfo description]]
-//                                                   delegate:self
-//                                          cancelButtonTitle:@"Got it!"
-//                                          otherButtonTitles:nil];
-//    [alert show];
-//  }
-  
-  [RNFIRMessaging didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+// allows us to see notifications if received in the foreground
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
+{
+  // mark the notification as ok to show in the foreground
+  completionHandler(UNNotificationPresentationOptionAlert);
 }
 
 @end

@@ -1,7 +1,6 @@
 import {
     NetInfo
 } from 'react-native';
-import BackgroundTask from 'react-native-background-task';
 import {
     observe_batched_notifications, observe_notification, set_nextcheck_time,
     set_updated_to_version
@@ -12,6 +11,8 @@ import {announceBatchedNotifies} from "./redux/notifylog/helpers";
 // next time = POLL_PERIOD + random(0, POLL_PERIOD)
 const QUICK_POLL_PERIOD = 5*60*1000; // 5 minutes
 const POLL_PERIOD = 12*60*60*1000; // half a day in msec
+
+export const MOCK_HOST = "dainsleif.pw:8500"; // used to be "40.78.27.48:8500"
 
 /**
  * Creates a URL for fetching summary variant data for the given release_ID
@@ -75,7 +76,7 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     const isRefreshMocked = store_state.debugging.isRefreshMocked;
     const isQuickRefreshing = store_state.debugging.isQuickRefreshing;
     const showsVersionInNotify = store_state.debugging.showsVersionInNotify;
-    const targetHost = (isDebugging && isRefreshMocked ? "40.78.27.48:8500" : "brcaexchange.org");
+    const targetHost = (isDebugging && isRefreshMocked ? MOCK_HOST : "brcaexchange.org");
 
     console.log("\n--- debug settings below: ---");
     console.log("isDebugging: ", isDebugging);

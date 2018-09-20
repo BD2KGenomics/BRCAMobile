@@ -1,14 +1,11 @@
 import {
-    SUBSCRIBE, UNSUBSCRIBE,
-    BEGIN_FETCH_FCM_TOKEN, RECEIVE_FCM_TOKEN
+    SUBSCRIBE, UNSUBSCRIBE
 } from './actions';
 import * as Immutable from "immutable";
 
 const initialState = {
     subscriptions: Immutable.Map(),
-    subsLastUpdatedBy: null,
-    isFetchingToken: false,
-    token: null
+    subsLastUpdatedBy: null
 };
 
 // FIXME: we *really* need to centralize variant data into a single variant_id => data collection
@@ -26,18 +23,6 @@ export default function subscriptionsReducer(state=initialState, action) {
             return Object.assign({}, state, {
                 subscriptions: state.subscriptions.delete(action.item['Genomic_Coordinate_hg38']),
                 subsLastUpdatedBy: action.origin
-            });
-
-        case BEGIN_FETCH_FCM_TOKEN:
-            return Object.assign({}, state, {
-                isFetchingToken: true,
-                token: null
-            });
-
-        case RECEIVE_FCM_TOKEN:
-            return Object.assign({}, state, {
-                isFetchingToken: false,
-                token: action.token
             });
 
         default:

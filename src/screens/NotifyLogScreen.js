@@ -204,7 +204,7 @@ class NotifyLogScreen extends LinkableMenuScreen {
                 })
                 .catch((err) => {
                     console.log(err);
-                    Toast.show(err.message);
+                    Toast.show(`ERROR: ${err.message}`);
                 })
         );
 

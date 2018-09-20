@@ -49,52 +49,11 @@ export default class SubscribeButton extends Component {
         if (this.props.onSubscriptionChanged) {
             this.props.onSubscriptionChanged();
         }
-
-        // this method triggers after subscribed is set
-        // thus if subscribed is true we're transitioning from nonsubbed to subbed
-
-        this.state.widthValue.setValue(this.props.subscribed ? this.getMinWidth() : this.getMaxWidth());
-
-        Animated.sequence([
-            // first, fade out the caption text
-            Animated.timing(
-                this.state.innerOpacity,
-                {
-                    toValue: 0,
-                    duration: 300,
-                    // useNativeDriver: true
-                }
-            ),
-
-            // then, rescale/recolor in parallel
-            Animated.timing(
-                this.state.widthValue,
-                {
-                    toValue: this.props.subscribed ? this.getMaxWidth() : this.getMinWidth(),
-                    duration: 200,
-                    // useNativeDriver: true
-                }
-            ),
-
-            // restore the caption text
-            Animated.timing(
-                this.state.innerOpacity,
-                {
-                    toValue: 1,
-                    duration: 300,
-                    // useNativeDriver: true
-                }
-            )
-
-        ]).start();
     }
 
-    componentWillReceiveProps(nextProps) {
-        // to explain this weirdness, our subscription status changes before this method fires
-        // we need to put ourselves in the opposite state so that we can animate changing to the new one
-        // (but only do this if we're updating from an event fired on another screen, not this one)
-        if (nextProps.subscribed !== this.props.subscribed && nextProps.subsLastUpdatedBy !== this.props.activeScreen) {
-            this.state.widthValue.setValue(nextProps.subscribed ? this.getMinWidth() : this.getMaxWidth());
+    componentDidUpdate(prevProps) {
+        if (prevProps.subscribed !== this.props.subscribed) {
+            this.animateSubscriptionChange();
         }
     }
 
@@ -108,13 +67,13 @@ export default class SubscribeButton extends Component {
 
     getCaption() {
         let response = "";
-        let transitioned = this.state.pastSubscribed;  // (this.props.subscribed);
+        const transitioned = this.state.pastSubscribed;  // (this.props.subscribed);
 
         if (this.props.abbreviated) {
-            response = (transitioned)?"following":"not following";
+            response = transitioned ? "following" : "not following";
         }
         else {
-            response = (transitioned)?"following variant":"not following variant";
+            response = transitioned ? "following variant" : "not following variant";
         }
 
         return response;
@@ -143,6 +102,42 @@ export default class SubscribeButton extends Component {
                 </Animated.View>
             </AnimatedTouchableHighlight>
         );
+    }
+
+    animateSubscriptionChange() {
+        // this method triggers after subscribed is set
+        // thus if subscribed is true we're transitioning from nonsubbed to subbed
+        this.state.widthValue.setValue(this.props.subscribed ? this.getMaxWidth() : this.getMinWidth());
+
+        Animated.sequence([
+            // first, fade out the caption text
+            Animated.timing(
+                this.state.innerOpacity,
+                {
+                    toValue: 0,
+                    duration: 300
+                }
+            ),
+
+            // then, rescale/recolor in parallel
+            Animated.timing(
+                this.state.widthValue,
+                {
+                    toValue: this.props.subscribed ? this.getMinWidth() : this.getMaxWidth(),
+                    duration: 200
+                }
+            ),
+
+            // restore the caption text
+            Animated.timing(
+                this.state.innerOpacity,
+                {
+                    toValue: 1,
+                    duration: 300
+                }
+            )
+
+        ]).start();
     }
 }
 

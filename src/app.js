@@ -1,5 +1,6 @@
 import {
-    Platform, DeviceEventEmitter, AsyncStorage
+    Platform, DeviceEventEmitter, AsyncStorage,
+    PushNotificationIOS
 } from 'react-native';
 import { Navigation, NativeEventsReceiver } from 'react-native-navigation';
 
@@ -13,17 +14,14 @@ import storage from 'redux-persist/lib/storage';
 
 // redux reducers and actions
 import { generalReducer, browsingReducer, debuggingReducer, subscriptionsReducer, notifylogReducer } from './redux';
-import { fetch_fcm_token, receive_fcm_token } from './redux/actions';
 
 // bg task imports
-import BackgroundTask from 'react-native-background-task';
+import BackgroundFetch from 'react-native-background-fetch';
 import {checkForUpdate, PersistMonitor} from "./background";
 
-// FCM event listener
-import FCM, {
-    FCMEvent
-} from "react-native-fcm";
-
+// notifications
+import PushNotification from 'react-native-push-notification';
+import Toast from "react-native-simple-toast";
 
 // ----------------------------------------------------------------------
 // --- redux setup
@@ -83,13 +81,19 @@ async function bgTask() {
         finally {
             console.log("flushing changes and ending...");
             persistControl.flush();
-            BackgroundTask.finish();
+            BackgroundFetch.finish(BackgroundFetch.FETCH_RESULT_NO_DATA);
         }
     });
 }
 
-// attach background task
-BackgroundTask.define(bgTask);
+// this is top-level because headlessjs doesn't actually launch the app
+try {
+    console.log("Registering bg task...");
+    BackgroundFetch.registerHeadlessTask(bgTask);
+}
+catch (error) {
+    console.log("[rn-bg-fetch] registerHeadlessTask error'd: ", error)
+}
 
 // this is used in NotifyLog to allow the user to manually launch a refresh task
 // FIXME: consider making firing the background task a reducer action, so we don't need to send the store over?
@@ -126,14 +130,36 @@ export default class App {
     initializeApp() {
         // a preamble to startApp()
         this.startApp();
+        const app = this;
 
-        // notification-related initialization
-        // (partially disabled since we no longer rely on FCM notifications)
-        this.registerWithFCM();
+        // setup react-native-push-notification's notifications
+        PushNotification.configure({
+            // (required) Called when a remote or local notification is opened or received
+            onNotification: function(notification) {
+                app.handleNotification(notification);
 
-        // this.subscribeToTopics();
-        this.attachFCMHandlers();
-        this.handleInitialNotification();
+                // required on iOS only (see fetchCompletionHandler docs: https://facebook.github.io/react-native/docs/pushnotificationios.html)
+                notification.finish(PushNotificationIOS.FetchResult.NewData);
+            },
+
+            // IOS ONLY (optional): default: all - Permissions to register.
+            permissions: {
+                alert: true,
+                badge: true,
+                sound: true
+            },
+
+            // Should the initial notification be popped automatically
+            // default: true
+            popInitialNotification: true,
+
+            /**
+             * (optional) default: true
+             * - Specified if permissions (ios) and token (android and ios) will requested or not,
+             * - if not, you must call PushNotificationsHandler.requestPermissions() later
+             */
+            requestPermissions: true,
+        });
     }
 
     startApp() {
@@ -152,104 +178,60 @@ export default class App {
             animationType: 'none'
         });
 
-        BackgroundTask.cancel();
-        BackgroundTask.schedule({
-            period: 900
+        // also set up the background task
+        BackgroundFetch.configure({
+            minimumFetchInterval: 30,
+            stopOnTerminate: false,
+            startOnBoot: true,
+            enableHeadless: true
+        }, () => {
+            console.log("[rn-bg-fetch] received fetch event");
+            bgTask()
+                .then((result) => {
+                    console.log("[rn-bg-fetch] completed with result: ", result);
+                })
+                .catch((error) => {
+                    console.warn("[rn-bg-fetch] errored out during run: ", error);
+                });
+        }, (error) => {
+            console.warn("[rn-bg-fetch] failed to start: ", error);
         });
     }
 
-
-    // ---------------------------------------
-    // --- FCM registration, notification reception
-    // ---------------------------------------
-
-    registerWithFCM() {
-        // on iOS, prompts for permission to receive push notifications
-        const perm_promise = FCM.requestPermissions();
-
-        if (perm_promise) {
-            perm_promise.then(() => {
-                console.log("user granted permission")
-            })
-            .catch(() => {
-                console.log("user rejected push notification permissions");
-            });
-        }
-
-        // get an FCM token and store it in redux
-        store.dispatch(fetch_fcm_token());
-    }
-
-    attachFCMHandlers() {
-        // ensure that we don't have any existing listeners hanging around
-        DeviceEventEmitter.removeAllListeners(FCMEvent.Notification);
-        DeviceEventEmitter.removeAllListeners(FCMEvent.RefreshToken);
-
-        // set up some handlers for incoming data and control messages
-        this.notificationListner = FCM.on(FCMEvent.Notification, this.handleNotification.bind(this));
-        this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, this.handleTokenRefresh.bind(this));
-    }
-
-    subscribeToTopics() {
-        // subscribe to get variant notices
-        // we subscribe to everything and filter out what we don't care about
-        // FIXME: switch this back to the 'production' topic
-        FCM.subscribeToTopic('/topics/TEST_variant_updates_debug_TEST');
-
-        // this is strictly a notification channel
-        FCM.subscribeToTopic('/topics/TEST_database_updates_TEST');
-    }
-
-    handleInitialNotification() {
-        FCM.getInitialNotification()
-            .then(notif => {
-                // getInitialNotification() actually gives us the notification that launched us
-                if (notif) {
-                    // console.log("initial notification: ", notif);
-                    this.handleNotification(notif);
-                }
-            })
-            .catch(error => {
-                console.warn("error: ", error.message);
-            });
-    }
-
     handleNotification(notif) {
-        console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
+        // console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
         console.log("payload: ", notif);
 
         // logic for dealing with clicking a notification
-        if (notif.opened_from_tray) {
-            // notif.local_notification is true even if we're coming in from clicking it, apparently
-            // so we have to check notif.opened_from_tray first
-
-            let link_target = null;
-
-            if (notif.hasOwnProperty('announcement')) {
-                link_target = 'notifylog/' + JSON.stringify({ version: notif.version });
-            }
-            else if (notif.hasOwnProperty('variant_id')) {
-                link_target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
-            }
-
-            if (link_target) {
-                // console.log("Opened from tray, launching ", link_target);
+        if (notif.hasOwnProperty('data')) {
+            if (notif.data.type === 'single_notify') {
                 Navigation.handleDeepLink({
-                    link: link_target
+                    link: 'updated/' + JSON.stringify({ variant_id: notif.data.variant_id })
                 });
             }
-
-            return;
+            else {
+                Navigation.handleDeepLink({
+                    link: 'notifylog/x' // the second part isn't used
+                });
+            }
         }
 
-        // if we haven't returned by now, we want to dismiss the note
-        if (notif.hasOwnProperty("finish") && typeof notif.finish === "function") {
-            notif.finish();
-        }
-    }
+        /*
+        let link_target = null;
 
-    handleTokenRefresh(token) {
-        console.log("TOKEN (refreshUnsubscribe)", token);
-        store.dispatch(receive_fcm_token(token));
+        if (notif.hasOwnProperty('announcement')) {
+            link_target = 'notifylog/' + JSON.stringify({ version: notif.version });
+        }
+        else if (notif.hasOwnProperty('variant_id')) {
+            link_target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
+        }
+
+        if (link_target) {
+            // console.log("Opened from tray, launching ", link_target);
+            Navigation.handleDeepLink({
+                link: link_target
+            });
+        }
+        */
     }
 }
