@@ -32,11 +32,20 @@ platform :ios do
   desc "Just build it"
   lane :build do
     match(type: "appstore", git_url: "git@github.com:falquaddoomi/BRCAMobile-secrets.git")
+    udid = sigh(output_path: "./provisions")
 
     gym(
-        scheme: "BRCAMobile Release",
-        workspace: "ios/BRCAMobile.xcworkspace",
-        output_directory: "fastlane/ios_build"
+        scheme: "BRCAMobile",
+        project: "ios/BRCAMobile.xcodeproj",
+        output_directory: "fastlane/ios_build",
+        clean: true,
+        xcargs: "PROVISIONING_PROFILE_SPECIFIER='#{udid}'",
+        export_options: {
+          method: "app-store",
+          provisioningProfiles: {
+            "com.brcamobile.BRCAMobile" => "match AppStore com.brcamobile.BRCAMobile"
+          }
+        }
     )
   end
 
@@ -46,8 +55,8 @@ platform :ios do
     match(type: "appstore", git_url: "git@github.com:falquaddoomi/BRCAMobile-secrets.git")
 
     gym(
-      scheme: "BRCAMobile Release",
-      workspace: "ios/BRCAMobile.xcworkspace",
+      scheme: "BRCAMobile",
+      project: "ios/BRCAMobile.xcodeproj",
       output_directory: "fastlane/ios_build"
     )
 
