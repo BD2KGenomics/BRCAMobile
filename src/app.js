@@ -95,6 +95,9 @@ catch (error) {
     console.log("[rn-bg-fetch] registerHeadlessTask error'd: ", error)
 }
 
+// min time between background task executions
+const FETCH_PERIOD = 60;
+
 // this is used in NotifyLog to allow the user to manually launch a refresh task
 // FIXME: consider making firing the background task a reducer action, so we don't need to send the store over?
 export {store, persistControl};
@@ -180,7 +183,7 @@ export default class App {
 
         // also set up the background task
         BackgroundFetch.configure({
-            minimumFetchInterval: 30,
+            minimumFetchInterval: FETCH_PERIOD,
             stopOnTerminate: false,
             startOnBoot: true,
             enableHeadless: true
@@ -202,36 +205,23 @@ export default class App {
         // console.log(`handleNotification() called: (tray?: ${notif.opened_from_tray}, local?: ${notif.local_notification})`);
         console.log("payload: ", notif);
 
+        const data = notif.hasOwnProperty('data')
+            ? notif.data
+            : (notif.hasOwnProperty('userInfo') ? notif.userInfo : null);
+
         // logic for dealing with clicking a notification
-        if (notif.hasOwnProperty('data')) {
-            if (notif.data.type === 'single_notify') {
+        if (data) {
+            if (data.type === 'single_notify') {
                 Navigation.handleDeepLink({
-                    link: 'updated/' + JSON.stringify({ variant_id: notif.data.variant_id })
+                    link: 'updated/' + JSON.stringify({ variant_id: data.variant_id })
                 });
             }
             else {
                 Navigation.handleDeepLink({
-                    link: 'notifylog/x' // the second part isn't used
+                    // the second part isn't used, but needs to be specified due to the split on '/'
+                    link: 'notifylog/x'
                 });
             }
         }
-
-        /*
-        let link_target = null;
-
-        if (notif.hasOwnProperty('announcement')) {
-            link_target = 'notifylog/' + JSON.stringify({ version: notif.version });
-        }
-        else if (notif.hasOwnProperty('variant_id')) {
-            link_target = 'updated/' + JSON.stringify({ variant_id: notif.variant_id });
-        }
-
-        if (link_target) {
-            // console.log("Opened from tray, launching ", link_target);
-            Navigation.handleDeepLink({
-                link: link_target
-            });
-        }
-        */
     }
 }
