@@ -57,23 +57,10 @@ function showBatchedNotification(buffered_notifies) {
         message: `The clinical significance of ${buffered_notifies.length} variants have changed`,
         category: 'batched_notify',
         tag: 'batched_notify',
-        userInfo: { type: 'batched_notify' }
+        userInfo: { type: 'batched_notify' },
+        largeIcon: "ic_launcher",
+        smallIcon: "ic_stat_brca_notify"
     });
-
-    /*
-    FCM.presentLocalNotification({
-        opened_from_tray: 0,
-        priority: "high",
-        icon: "ic_stat_brca_notify",
-        title: `${buffered_notifies.length} variants have changed`,
-        body: `The clinical significance of ${buffered_notifies.length} variants have changed`,
-        variant_count: buffered_notifies.length,
-        announcement: true,
-        click_action: (Platform.OS === "android") ? "fcm.ACTION.HELLO" : buffered_notifies[0].click_action,
-        show_in_foreground: true,
-        local: true
-    });
-    */
 }
 
 function showSingleNotification(notif) {
@@ -82,24 +69,10 @@ function showSingleNotification(notif) {
         message: notif.body,
         category: 'single_notify',
         tag: 'single_notify',
-        userInfo: { variant_id: notif.variant_id, type: 'single_notify' }
+        userInfo: { variant_id: notif.variant_id, type: 'single_notify' },
+        largeIcon: "ic_launcher",
+        smallIcon: "ic_stat_brca_notify"
     });
-
-    /*
-    FCM.presentLocalNotification({
-        opened_from_tray: 0,
-        priority: "high",
-        icon: "ic_stat_brca_notify",
-        title: notif.title,
-        body: notif.body,
-        variant_id: notif.variant_id,
-        variant_count: 1,
-        announcement: true, // makes the notify handler go to the notifylog vs. the details view
-        click_action: (Platform.OS === "android") ? "fcm.ACTION.HELLO" : notif.click_action,
-        show_in_foreground: true,
-        local: true
-    });
-    */
 }
 
 export function showNotification(title, message, batched) {
