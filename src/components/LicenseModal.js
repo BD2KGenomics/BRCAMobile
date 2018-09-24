@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import React, {Component} from 'react';
 import {
-    Modal, Text, TouchableOpacity, View, Button,
+    Platform, Modal, Text, TouchableOpacity, View, Button,
     StyleSheet, ScrollView
 } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -27,11 +27,6 @@ export default class LicenseModal extends Component {
 
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.25)', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}>
                     <View style={styles.legendModal}>
-                        <View style={styles.legendModalHeader}>
-                            {/*<Icon name="help" color="white" size={22} />*/}
-                            <Text style={styles.legendModalTitle}>License Agreement</Text>
-                        </View>
-
                         <ScrollView style={{flex: 1, padding: 20, marginBottom: 20}}>
                             <Text style={styles.subheader}>Disclaimer and Data Use Policy</Text>
 
@@ -50,10 +45,14 @@ export default class LicenseModal extends Component {
                             <Text>{' '}</Text>
                         </ScrollView>
 
-                        <View style={{padding: 20, paddingTop: 10, borderTopColor: "#eee", borderTopWidth: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                            <TouchableOpacity style={[styles.modalButton, styles.exitModalButton]} onPress={() => this.props.onDisagreeWithLicense()}>
-                                <Text style={[styles.modalButtonText, styles.exitModalButtonText]}>Exit</Text>
-                            </TouchableOpacity>
+                        <View style={{padding: 20, paddingTop: 10, borderTopColor: "#eee", borderTopWidth: 1, flexDirection: 'row', justifyContent: 'space-around'}}>
+                            {
+                                Platform.OS !== 'ios' && (
+                                    <TouchableOpacity style={[styles.modalButton, styles.exitModalButton]} onPress={() => this.props.onDisagreeWithLicense()}>
+                                        <Text style={[styles.modalButtonText, styles.exitModalButtonText]}>Exit</Text>
+                                    </TouchableOpacity>
+                                )
+                            }
 
                             <TouchableOpacity style={[styles.modalButton, styles.closeModalButton]} onPress={() => this.props.onDismissLicense()}>
                                 <Text style={[styles.modalButtonText, styles.closeModalButtonText]}>I Agree</Text>
@@ -74,9 +73,11 @@ const styles = StyleSheet.create({
         bottom: 0,
         borderColor: '#a6a6a6',
         borderWidth: 1,
-        borderRadius: 3,
+        borderRadius: 5,
         padding: 0,
-        margin: 30,
+        margin: 35,
+        marginLeft: 8,
+        marginRight: 8,
 
         shadowRadius: 15,
         shadowColor: 'black',
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
 
     subheader: {
         fontWeight: '800',
-        fontSize: 16,
+        fontSize: 17,
         marginTop: 5,
         marginBottom: 10
     },
