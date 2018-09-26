@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {connect} from "react-redux";
+import {set_license_agreed} from "../redux/general/actions";
 
 // import {screens} from '../metadata/screens';
 
@@ -54,6 +55,15 @@ class SidebarMenuItems extends Component {
                     <Text style={this.props.buttonStyle}>User Guide</Text>
                 </Icon.Button>
 
+                <Icon.Button name="warning" {...this.props.navbuttonProps}
+                    onPress={ () => {
+                        // first, clear the disclaimer bit, then go home
+                        this.props.onUnsetLicenseAgreed();
+                        this.props.onNavigateRequest('Home', 'brca.HomeScreen', true);
+                    } }>
+                    <Text style={this.props.buttonStyle}>Disclaimer</Text>
+                </Icon.Button>
+
                 {
                     this.props.isDebugging &&
                     <Icon.Button name="bug-report" {...this.props.navbuttonProps}
@@ -61,27 +71,6 @@ class SidebarMenuItems extends Component {
                         <Text style={this.props.buttonStyle}>Dev Settings</Text>
                     </Icon.Button>
                 }
-
-                {/*
-                    screens.filter(x => x.hasOwnProperty('sidebar') && x.sidebar != null)
-                        .map((x, idx) => {
-                            const sideOpts = x.sidebar;
-
-                            return (
-                                <Icon.Button key={idx} name={sideOpts.icon} {...this.props.navbuttonProps}
-                                    onPress={ () => this.props.onNavigateRequest(sideOpts.title, screen.name, sideOpts.resetStack) }>
-                                    <Text style={this.props.buttonStyle}>{sideOpts.title}</Text>
-                                </Icon.Button>
-                            );
-                        })
-                */}
-
-                {/*
-                <Icon.Button name="help" {...this.props.navbuttonProps}
-                    onPress={ () => this.props.onNavigateRequest('View Test', 'brca.ViewTestScreen', false) }>
-                    <Text style={this.props.buttonStyle}>View Test</Text>
-                </Icon.Button>
-                */}
             </ScrollView>
         );
     }
@@ -94,6 +83,15 @@ const mapStateToProps = (state) => {
     };
 };
 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onUnsetLicenseAgreed: () => {
+            dispatch(set_license_agreed(null))
+        }
+    }
+};
+
 export default connect(
-    mapStateToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(SidebarMenuItems);
