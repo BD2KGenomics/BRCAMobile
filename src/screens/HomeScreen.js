@@ -12,6 +12,8 @@ import ScaryDebugNotice from "../components/ScaryDebugNotice";
 import LicenseModal from "../components/LicenseModal";
 import {set_license_agreed} from "../redux/general/actions";
 
+import { version } from '../../package.json';
+
 class HomeScreen extends LinkableMenuScreen {
     constructor(props) {
         super(props);
@@ -77,9 +79,9 @@ class HomeScreen extends LinkableMenuScreen {
                 </View>
 
                 <LicenseModal
-                    showLegend={!this.props.licenseAgreedVersion}
+                    showLegend={!this.props.licenseAgreedVersion || this.props.licenseAgreedVersion !== version}
                     onDisagreeWithLicense={() => { BackHandler.exitApp(); }}
-                    onDismissLicense={() => { this.props.onSetLicenseAgreed(1); }}
+                    onDismissLicense={() => { this.props.onSetLicenseAgreed(version); }}
                 />
             </ScrollView>
         );
@@ -95,8 +97,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onSetLicenseAgreed: (version) => {
-            dispatch(set_license_agreed(version))
+        onSetLicenseAgreed: (newVersion) => {
+            dispatch(set_license_agreed(newVersion))
         }
     }
 };
