@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    View, Text,
+    View, Text, TouchableHighlight,
     ScrollView,
     StyleSheet, Platform, Dimensions
 } from 'react-native';
@@ -8,6 +8,19 @@ import {
 import LinkableMenuScreen from './LinkableMenuScreen';
 import MarkdownProse from "../components/MarkdownProse";
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
+import Icon from "react-native-vector-icons/MaterialIcons";
+
+
+// ===================================================================================================
+// === tabbed help page holder
+// ===================================================================================================
+
+const routeMap = [
+    { key: 'intro', title: 'Intro', fullTitle: 'Introduction' },
+    { key: 'search', title: 'Search', fullTitle: 'Searching for Variants' },
+    { key: 'follow', title: 'Follow', fullTitle: 'Following Variants' },
+    { key: 'info', title: 'Info', fullTitle: 'Additional Information' },
+];
 
 export default class HelpScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -15,12 +28,7 @@ export default class HelpScreen extends LinkableMenuScreen {
 
         this.state = {
             index: 0,
-            routes: [
-                { key: 'intro', title: 'Intro' },
-                { key: 'search', title: 'Search' },
-                { key: 'follow', title: 'Follow' },
-                { key: 'info', title: 'Info' },
-            ],
+            routes: routeMap,
         };
     }
 
@@ -65,21 +73,60 @@ export default class HelpScreen extends LinkableMenuScreen {
 
 class HelpPage extends React.Component {
     render() {
+        console.log(this.props);
+
+        const myIndex = routeMap.findIndex(x => x.key === this.props.route.key);
+        const prevItem = myIndex > 0 ? routeMap[myIndex-1] : null;
+        const nextItem = myIndex < routeMap.length-1 ? routeMap[myIndex+1] : null;
+
         return (
             <ScrollView style={styles.container}>
-                <View style={{margin: 20}}>
+                {
+                    prevItem && (
+                        <View style={{margin: 20, marginBottom: 0, marginLeft: 10, justifyContent: 'flex-start', flexDirection: "row", flex: 1}}>
+                            <TouchableHighlight underlayColor={'white'}
+                                onPress={() => this.props.jumpTo(prevItem.key)}>
+                                <View style={{flexDirection: "row", alignItems: "center"}}>
+                                    <Icon name="keyboard-arrow-left" size={26} color={"#2b99ff"} />
+                                    <Text style={{fontSize: 18, color: "#2b99ff"}}>{`Back to ${prevItem.fullTitle}`}</Text>
+                                </View>
+                            </TouchableHighlight>
+                        </View>
+                    )
+                }
+
+                <View style={{margin: 20, marginBottom: 10}}>
                     <MarkdownProse>
                     {this.props.children}
                     </MarkdownProse>
                 </View>
+
+                {
+                    nextItem && (
+                        <View style={{margin: 20, marginTop: 0, marginBottom: 40, justifyContent: 'flex-end', flexDirection: "row", flex: 1}}>
+                            <TouchableHighlight underlayColor={'white'}
+                                onPress={() => this.props.jumpTo(nextItem.key)}>
+                                <View style={{flexDirection: "row", alignItems: "center"}}>
+                                    <Text style={{fontSize: 18, color: "#2b99ff"}}>{nextItem.fullTitle}</Text>
+                                    <Icon name="keyboard-arrow-right" size={26} color={"#2b99ff"} />
+                                </View>
+                            </TouchableHighlight>
+                        </View>
+                    )
+                }
             </ScrollView>
         );
     }
 }
 
-const IntroRoute = () => (
-    <HelpPage>
-        {`
+
+// ===================================================================================================
+// === help page definitions
+// ===================================================================================================
+
+const IntroRoute = (props) => (
+    <HelpPage route={props.route} jumpTo={props.jumpTo}>
+{`
 # How to Use This App
 
 The BRCA Exchange app is a mobile interface to the BRCA Exchange, a data portal for BRCA1 and BRCA2 genetic variants. You can use this app to browse information on [brcaexchange.org](http://brcaexchange.org), and to follow variants in which you are interested. Following a variant means that you will be notified when experts have decided to update the variant’s clinical significance.
@@ -89,24 +136,18 @@ The BRCA Exchange app has two main features:
 1.  Searching for and viewing variant information
 2.  Following variants for notifications about changes in expert opinions
 
-**Table of Contents:**
-  1. Introduction and Navigating Within the App
-  2. Searching for Variants
-  3. Following Variant Changes
-  4. Additional Information
-
 ## Navigating Within the App
 
 The navigation sidebar allows you to access different parts of the app. Press the menu icon (☰) in the top-left corner of the screen to toggle the display of the sidebar. Show the sidebar by swiping from the left-hand side of the screen, and swipe in the opposite direction to hide it.
 
 The following sections will provide more information on each item in the sidebar. “Home” and “Search Variants” features allow you to look for variants of interest in the app(see “Searching for Variants”). “Followed Variants” and “Notify Log” allow you to manage your followed variants and their notifications (see “Following Variant Changes”).
-                `}
+`}
     </HelpPage>
 );
 
-const SearchRoute = () => (
-    <HelpPage>
-        {`
+const SearchRoute = (props) => (
+    <HelpPage route={props.route} jumpTo={props.jumpTo}>
+{`
 # Search for and View Variants
 
 Search for a variant by using the search box on the Home screen or on the Search Variants screen.
@@ -126,14 +167,14 @@ Tapping an individual variant in the list will take you to the “Variant Detail
 The variant details page displays more in-depth information about the selected variant. The header consists of the standard name (HGVS) for the variant and a button in the top-right corner that links to that variant’s information on [brcaexchange.org](http://brcaexchange.org). There is also a “follow” toggle button below the title whose functionality will be explained in the next section.
 
 The remainder of the page has two sections. The first is a general list of information about the variant, which includes additional identifiers for the variant and comments on its significance. The second is a “version history” section at the end of the screen, which chronicles when the variant was introduced into the database and its clinical significance with each database update.
-                `}
+`}
     </HelpPage>
 );
 
 
-const FollowRoute = () => (
-    <HelpPage>
-        {`
+const FollowRoute = (props) => (
+    <HelpPage route={props.route} jumpTo={props.jumpTo}>
+{`
 # Follow Variants & Receive Notifications
 
 Following a variant allows you to 1) keep a list of variants in which you’re interested, and 2) receive updates as push notifications when the variant’s clinical significance changes. You can follow a variant by tapping the “follow” button on the Variant Details page; once tapped, it will toggle into a green button labeled “following variant”. You may tap it again to unfollow the variant.
@@ -163,21 +204,27 @@ If you wish to clear all the indicators at once, you may use the “Mark as Read
 ## Where Is My List of Followed Variants Stored?
 
 For privacy purposes, the variants that you are following are stored locally on your phone. When the app queries for updates, it receives a full list of changed variants and then locally filters it down to your followed variants to determine which updates to show you. In summary, the list of followed variants is never transmitted from your phone. In the event that you delete the app or get a new phone, you will need to re-follow your variant(s) of interest.
-                `}
+`}
     </HelpPage>
 );
 
-const InfoRoute = () => (
-    <HelpPage>
-        {`
+const InfoRoute = (props) => (
+    <HelpPage route={props.route} jumpTo={props.jumpTo}>
+{`
 # Additional Information
 
 The remaining entries in the navigation sidebar are “About This App” and “User Guide”. “About This App” contains some informational text about the app, a link to the full website, [brcaexchange.org](http://brcaexchange.org), and a short list of attributions to the various organizations that have contributed data and development effort to the project.
 
-The second item, “User Guide”, is the page you are currently reading. If you have any further questions, please feel free to contact us: [brca-exchange-contact@genomicsandhealth.org](mailto:brca-exchange-contact@genomicsandhealth.org).
-                `}
+The second item, “User Guide”, is the page you are currently reading.
+
+If you have any further questions, please feel free to contact us: [brca-exchange-contact@genomicsandhealth.org](mailto:brca-exchange-contact@genomicsandhealth.org).
+`}
     </HelpPage>
 );
+
+// ===================================================================================================
+// === page styles
+// ===================================================================================================
 
 const styles = StyleSheet.create({
     container: {
