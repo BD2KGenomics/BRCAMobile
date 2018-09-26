@@ -1,12 +1,9 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
-    Text, Image, View, ScrollView,
-    TouchableOpacity,
+    Text, View,
     StyleSheet,
-    AlertIOS
+    SafeAreaView
 } from 'react-native';
-
-// import VersionNumber from 'react-native-version-number';
 
 import BaseSideMenu from './BaseSideMenu';
 import SidebarMenuItems from "../components/SidebarMenuItems";
@@ -30,21 +27,23 @@ export default class SideMenu extends BaseSideMenu {
         };
 
         return (
-            <View style={styles.container}>
-                <View style={styles.titleBar}>
-                    <Text style={styles.title}>BRCA Exchange</Text>
-                </View>
+            <SafeAreaView style={{flex: 1, backgroundColor: '#555' }}>
+                <View style={styles.container}>
+                    <View style={styles.titleBar}>
+                        <Text style={styles.title}>BRCA Exchange</Text>
+                    </View>
 
-                <View style={{flex: 1}}>
-                    <SidebarMenuItems
-                        onNavigateRequest={this.navigateTo}
-                        buttonStyle={styles.button}
-                        navbuttonProps={navbuttonProps}
-                    />
-                </View>
+                    <View style={{flex: 1}}>
+                        <SidebarMenuItems
+                            onNavigateRequest={this.navigateTo}
+                            buttonStyle={styles.button}
+                            navbuttonProps={navbuttonProps}
+                        />
+                    </View>
 
-                <VersionBlurb />
-            </View>
+                    <VersionBlurb />
+                </View>
+            </SafeAreaView>
         );
     }
 }
@@ -60,7 +59,8 @@ const styles = StyleSheet.create({
         width: 300
     },
     titleBar: {
-        padding: 19,
+        padding: 9,
+        paddingLeft: 19,
         width: 300,
         flex: 0,
         flexDirection: 'row',
