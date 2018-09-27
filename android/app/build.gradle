@@ -101,7 +101,7 @@ android {
         applicationId "com.brcamobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 25
+        versionCode 26
         versionName "1.4.3"
         ndk {
             abiFilters "armeabi-v7a", "x86"
