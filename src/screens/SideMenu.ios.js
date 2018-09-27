@@ -29,21 +29,23 @@ export default class SideMenu extends BaseSideMenu {
         // <SafeAreaView style={{flex: 1, backgroundColor: '#555' }}> </SafeAreaView>
 
         return (
-            <View style={styles.container}>
-                <View style={styles.titleBar}>
-                    <Text style={styles.title}>BRCA Exchange</Text>
-                </View>
+            <SafeAreaView style={{flex: 1, backgroundColor: '#555' }}>
+                <View style={styles.container}>
+                    <View style={styles.titleBar}>
+                        <Text style={styles.title}>BRCA Exchange</Text>
+                    </View>
 
-                <View style={{flex: 1}}>
-                    <SidebarMenuItems
-                        onNavigateRequest={this.navigateTo}
-                        buttonStyle={styles.button}
-                        navbuttonProps={navbuttonProps}
-                    />
-                </View>
+                    <View style={{flex: 1}}>
+                        <SidebarMenuItems
+                            onNavigateRequest={this.navigateTo}
+                            buttonStyle={styles.button}
+                            navbuttonProps={navbuttonProps}
+                        />
+                    </View>
 
-                <VersionBlurb />
-            </View>
+                    <VersionBlurb />
+                </View>
+            </SafeAreaView>
         );
     }
 }
@@ -59,8 +61,8 @@ const styles = StyleSheet.create({
         width: 300
     },
     titleBar: {
-        padding: 19,
-        // paddingLeft: 19,
+        padding: 9,
+        paddingLeft: 19,
         width: 300,
         flex: 0,
         flexDirection: 'row',
