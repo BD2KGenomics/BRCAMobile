@@ -9,7 +9,7 @@ import {connect} from "react-redux";
 import LinkableMenuScreen from './LinkableMenuScreen';
 import SearchBar from '../components/SearchBar';
 import ScaryDebugNotice from "../components/ScaryDebugNotice";
-import LicenseModal from "../components/LicenseModal";
+import DisclaimerModal from "../components/DisclaimerModal";
 import {set_license_agreed} from "../redux/general/actions";
 
 import { version } from '../../package.json';
@@ -78,7 +78,7 @@ class HomeScreen extends LinkableMenuScreen {
                     </View>
                 </View>
 
-                <LicenseModal
+                <DisclaimerModal
                     showLegend={!this.props.licenseAgreedVersion || this.props.licenseAgreedVersion !== version}
                     onDisagreeWithLicense={() => { BackHandler.exitApp(); }}
                     onDismissLicense={() => { this.props.onSetLicenseAgreed(version); }}
