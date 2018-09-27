@@ -8,7 +8,7 @@ import { version } from '../../package.json';
 import {set_debugging} from "../redux/debugging/actions";
 
 const DEBUG_TOGGLE_CLICKS = 5; // number of times to click the version to toggle debugging
-const DEBUG_TOGGLE_DELAY = 500; // max time in msec between taps
+const DEBUG_TOGGLE_DELAY = 800; // max time in msec between taps
 
 class VersionBlurb extends Component {
     constructor(props) {
