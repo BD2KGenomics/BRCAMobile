@@ -7,10 +7,27 @@ import {StyleSheet} from "react-native";
 import Markdown from "react-native-markdown-renderer";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+function openLink(node) {
+    Alert.alert(
+        'Open External Link',
+        `Open link to ${node.attributes.href}?`,
+        [
+            { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+            { text: 'OK', onPress: () => {
+                    console.log("Attempting to open ", node.attributes.href);
+                    Linking.openURL(node.attributes.href).catch((reason) => {
+                        Alert.alert("Failed to open link", reason.toString());
+                    });
+                } }
+        ],
+        { cancelable: true }
+    );
+}
+
 const rules = {
     link: (node, children, parent, styles) => {
         return (
-            <Text key={node.key} style={styles.link} onPress={() => this.openLink(node)}>
+            <Text key={node.key} style={styles.link} onPress={() => openLink(node)}>
                 {children}
             </Text>
         );
@@ -38,23 +55,6 @@ const rules = {
 };
 
 export default class MarkdownProse extends React.Component {
-    openLink(node) {
-        Alert.alert(
-            'Open External Link',
-            `Open link to ${node.attributes.href}?`,
-            [
-                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-                { text: 'OK', onPress: () => {
-                        console.log("Attempting to open ", node.attributes.href);
-                        Linking.openURL(node.attributes.href).catch((reason) => {
-                            Alert.alert("Failed to open link", reason.toString());
-                        });
-                    } }
-            ],
-            { cancelable: true }
-        );
-    }
-
     render() {
         return (
             <Markdown style={markdownStyles} rules={rules}>
