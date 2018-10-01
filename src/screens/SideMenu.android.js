@@ -66,11 +66,13 @@ const styles = StyleSheet.create({
         width: 300
     },
     titlebutton: {
-        height: 39,
+        // height: 39,
         width: 260,
         flex: 0,
         flexDirection: 'row',
+        alignItems: 'center',
         justifyContent: 'flex-start',
+        paddingBottom: 12,
         marginBottom: 8,
         borderBottomWidth: 1,
         borderBottomColor: '#eee'
