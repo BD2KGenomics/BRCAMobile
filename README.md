@@ -25,3 +25,14 @@ GNU-compatible environment, but development is mostly conducted on OS X 10.11.
 The project should build and begin running on whichever device your build tools are configured to deploy. For
 Android, it will typically prefer a connected phone with developer mode enabled, and for iOS it will typically launch
 the simulator.
+
+Cryptic advice that appears to fix missing third-party source files for building the iOS version:
+```
+if [ ! -d "node_modules/react-native/third-party" ]; then
+    cd node_modules/react-native ; ./scripts/ios-install-third-party.sh
+    cd ../../
+    cd node_modules/react-native/third-party/glog-0.3.5/
+    ../../scripts/ios-configure-glog.sh
+    cd ../../../../
+fi
+```
