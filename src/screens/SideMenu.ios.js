@@ -9,6 +9,16 @@ import BaseSideMenu from './BaseSideMenu';
 import SidebarMenuItems from "../components/SidebarMenuItems";
 import VersionBlurb from "../components/VersionBlurb";
 
+// quick hack to
+import DeviceInfo from 'react-native-device-info';
+
+function isNotched() {
+    const model = DeviceInfo.getModel();
+    const isNotched = model && model.startsWith("iPhone X");
+    console.log(`Model: ${model}; notched?: ${isNotched ? 'yes' : 'no'}`);
+    return isNotched;
+}
+
 export default class SideMenu extends BaseSideMenu {
     constructor(props) {
         super(props);
@@ -26,26 +36,22 @@ export default class SideMenu extends BaseSideMenu {
             underlayColor: "#555"
         };
 
-        // <SafeAreaView style={{flex: 1, backgroundColor: '#555' }}> </SafeAreaView>
-
         return (
-            <SafeAreaView style={{flex: 1, backgroundColor: '#555' }}>
-                <View style={styles.container}>
-                    <View style={styles.titleBar}>
-                        <Text style={styles.title}>BRCA Exchange</Text>
-                    </View>
-
-                    <View style={{flex: 1}}>
-                        <SidebarMenuItems
-                            onNavigateRequest={this.navigateTo}
-                            buttonStyle={styles.button}
-                            navbuttonProps={navbuttonProps}
-                        />
-                    </View>
-
-                    <VersionBlurb />
+            <View style={[styles.container, isNotched() ? styles.containerNotched : null]}>
+                <View style={styles.titleBar}>
+                    <Text style={styles.title}>BRCA Exchange</Text>
                 </View>
-            </SafeAreaView>
+
+                <View style={{flex: 1}}>
+                    <SidebarMenuItems
+                        onNavigateRequest={this.navigateTo}
+                        buttonStyle={styles.button}
+                        navbuttonProps={navbuttonProps}
+                    />
+                </View>
+
+                <VersionBlurb />
+            </View>
         );
     }
 }
@@ -53,12 +59,16 @@ export default class SideMenu extends BaseSideMenu {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop: 20,
         opacity: 1,
         backgroundColor: '#555',
         alignItems: 'flex-start',
         // backgroundColor: 'white',
         justifyContent: 'flex-start',
         width: 300
+    },
+    containerNotched: {
+        paddingTop: 44
     },
     titleBar: {
         padding: 9,

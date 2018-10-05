@@ -3,6 +3,7 @@ package com.brcamobile;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
 import com.facebook.react.ReactNativeHost;

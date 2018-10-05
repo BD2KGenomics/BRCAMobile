@@ -21,6 +21,7 @@
     "react": "16.4.1",
     "react-native": "0.56.0",
     "react-native-background-fetch": "^2.4.3",
+    "react-native-device-info": "^0.22.6",
     "react-native-immutable-list-view": "^0.6.2",
     "react-native-markdown-renderer": "^3.2.8",
     "react-native-navigation": "^1.1.486",
