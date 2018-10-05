@@ -49,6 +49,31 @@ platform :ios do
     )
   end
 
+  desc "Build for Browserstack"
+    lane :bstack do
+      match(type: "appstore", git_url: "git@github.com:falquaddoomi/BRCAMobile-secrets.git")
+      udid = sigh(output_path: "./provisions")
+
+      gym(
+          scheme: "BRCAMobile",
+          project: "ios/BRCAMobile.xcodeproj",
+          output_directory: "fastlane/ios_build",
+          clean: false,
+          xcargs: "PROVISIONING_PROFILE_SPECIFIER='#{udid}'",
+          export_options: {
+            method: "ad-hoc",
+            provisioningProfiles: {
+              "com.brcamobile.BRCAMobile" => "match AppStore com.brcamobile.BRCAMobile"
+            }
+          }
+      )
+
+      upload_to_browserstack_app_live(
+        browserstack_username: ENV["BROWSERSTACK_USERNAME"],
+        browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"]
+      )
+    end
+
   desc "Submit a new Beta Build to Apple TestFlight"
   desc "This will also make sure the profile is up to date"
   lane :beta do

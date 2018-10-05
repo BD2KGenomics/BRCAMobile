@@ -26,6 +26,11 @@ Runs all the tests
 fastlane ios build
 ```
 Just build it
+### ios bstack
+```
+fastlane ios bstack
+```
+Build for Browserstack
 ### ios beta
 ```
 fastlane ios beta
