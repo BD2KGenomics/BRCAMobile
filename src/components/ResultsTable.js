@@ -68,11 +68,13 @@ export default class ResultsTable extends Component {
 
         const pathoIconProps = getIconByPathogenicity(d.get('Pathogenicity_expert'));
 
+        const cDNA = d.get('HGVS_cDNA').split(':')[1];
+
         return (
-            <TouchableOpacity onPress={this.rowClicked.bind(this, d.toJS())}>
+            <TouchableOpacity testID={`result-${cDNA}`} accessibilityIdentifier={`result-${cDNA}`} onPress={this.rowClicked.bind(this, d.toJS())}>
               <View style={styles.row}>
                 <Text style={[styles.rowCell, styles.rowTextCell, {flex: 0.4}]} numberOfLines={1}>{d.get('Gene_Symbol')}</Text>
-                <Text style={[styles.rowCell, styles.rowTextCell]} numberOfLines={1} ellipsizeMode="tail">{d.get('HGVS_cDNA').split(':')[1]}</Text>
+                <Text style={[styles.rowCell, styles.rowTextCell]} numberOfLines={1} ellipsizeMode="tail">{cDNA}</Text>
                 <View style={[styles.rowCell, { flex: 0.25, flexDirection: 'row', justifyContent: 'flex-end', flexWrap: 'nowrap' }]}>
                     <Icon {...pathoIconProps} size={22} />
                     <Icon {...followIconProps} size={22} />
@@ -150,6 +152,7 @@ export default class ResultsTable extends Component {
 
                 <ImmutableListView
                     ref="listview"
+                    testID="results-listview"
                     style={styles.listContainer}
                     immutableData={this.props.variants}
 

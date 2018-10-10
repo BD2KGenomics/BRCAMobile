@@ -47,7 +47,7 @@ export default class DisclaimerModal extends Component {
                         )
                     }
 
-                    <TouchableOpacity style={[styles.modalButton, styles.closeModalButton]} onPress={() => this.props.onDismissLicense()}>
+                    <TouchableOpacity style={[styles.modalButton, styles.closeModalButton]} testID="disclaimer-agree" onPress={() => this.props.onDismissLicense()}>
                         <Text style={[styles.modalButtonText, styles.closeModalButtonText]}>I Agree</Text>
                     </TouchableOpacity>
                 </View>

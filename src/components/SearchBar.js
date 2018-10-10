@@ -41,6 +41,7 @@ export default class SearchBar extends Component {
         return (
             <View style={styles.searchboxContainer}>
               <TextInput style={styles.searchboxInput}
+                  testID="searchbox-textinput"
                   placeholder='search for "c.1105G>A" or "brca1"'
                   value={this.props.text}
                   onChangeText={this.handleChangeText}

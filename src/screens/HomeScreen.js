@@ -58,7 +58,7 @@ class HomeScreen extends LinkableMenuScreen {
             <ScrollView style={{flex: 1, padding: 0, backgroundColor: 'white'}}>
                 <ScaryDebugNotice />
 
-                <View style={{padding: 20}}>
+                <View style={{padding: 20}} testID="home-searchbar">
                     <SearchBar
                         text={this.state.searchText}
                         autoFocus={false}
