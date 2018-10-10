@@ -66,6 +66,16 @@
                ReferencedContainer = "container:BRCAMobile.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3A2B63A62168ED22009CAA0E"
+               BuildableName = "Screenshot.xctest"
+               BlueprintName = "Screenshot"
+               ReferencedContainer = "container:BRCAMobile.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
