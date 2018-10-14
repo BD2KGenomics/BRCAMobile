@@ -52,7 +52,7 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/ios_build/*
-
+/screenshots
 /provisions
 
 # Bundle artifact
