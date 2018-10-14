@@ -1,4 +1,13 @@
 import React, {Component} from 'react';
+import {Platform} from "react-native";
+
+export const defaultNavButtons = {
+    leftButtons: [{
+        icon: (Platform.OS === 'ios') ? require('../../img/navicon_menu.png') : null,
+        testID: "hamburger-menu",
+        id: 'sideMenu'
+    }]
+};
 
 export default class BaseSideMenu extends Component {
     constructor(props) {

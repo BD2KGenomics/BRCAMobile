@@ -10,6 +10,7 @@ import { subscribe, unsubscribe } from '../redux/actions';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
 import Subscriptions from '../components/Subscriptions';
+import {defaultNavButtons} from "./BaseSideMenu";
 
 class SubscriptionsScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -24,12 +25,7 @@ class SubscriptionsScreen extends LinkableMenuScreen {
         this.onGoSearch = this.onGoSearch.bind(this);
     }
 
-    static navigatorButtons = {
-        leftButtons: [{
-            icon: (Platform.OS === 'ios') ? require('../../img/navicon_menu.png') : null,
-            id: 'sideMenu'
-        }]
-    };
+    static navigatorButtons = defaultNavButtons;
 
     onRowClicked(d) {
         this.props.navigator.push({

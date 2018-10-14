@@ -13,6 +13,7 @@ import DisclaimerModal from "../components/DisclaimerModal";
 import {set_license_agreed} from "../redux/general/actions";
 
 import { version } from '../../package.json';
+import {defaultNavButtons} from "./BaseSideMenu";
 
 class HomeScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -22,12 +23,7 @@ class HomeScreen extends LinkableMenuScreen {
         }
     }
 
-    static navigatorButtons = {
-        leftButtons: [{
-            icon: (Platform.OS === 'ios') ? require('../../img/navicon_menu.png') : null,
-            id: 'sideMenu'
-        }]
-    };
+    static navigatorButtons = defaultNavButtons;
 
     onChangeText(text) {
         this.setState({

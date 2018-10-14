@@ -24,33 +24,33 @@ class SidebarMenuItems extends Component {
 
     render() {
         return (
-            <ScrollView style={{flex: 1}}>
-                <Icon.Button name="home" testID="home" {...this.props.navbuttonProps}
+            <ScrollView style={{flex: 1}} testID="navbar-holder">
+                <Icon.Button name="home" testID="nav-home" {...this.props.navbuttonProps}
                     onPress={ () => this.props.onNavigateRequest('Home', 'brca.HomeScreen', true) }>
                     <Text style={this.props.buttonStyle}>Home</Text>
                 </Icon.Button>
 
-                <Icon.Button name="search" testID="search" {...this.props.navbuttonProps}
+                <Icon.Button name="search" testID="nav-search" {...this.props.navbuttonProps}
                     onPress={ () => this.props.onNavigateRequest('Search', 'brca.SearchScreen', false) }>
                     <Text style={this.props.buttonStyle}>Search Variants</Text>
                 </Icon.Button>
 
-                <Icon.Button name="bookmark" testID="following" {...this.props.navbuttonProps}
+                <Icon.Button name="bookmark" testID="nav-following" {...this.props.navbuttonProps}
                     onPress={ () => this.props.onNavigateRequest('Following', 'brca.SubscriptionsScreen', false) }>
                     <Text style={this.props.buttonStyle}>Followed Variants</Text>
                 </Icon.Button>
 
-                <Icon.Button name="speaker-notes" testID="notify-log" {...this.props.navbuttonProps}
+                <Icon.Button name="speaker-notes" testID="nav-notify-log" {...this.props.navbuttonProps}
                     onPress={ () => this.props.onNavigateRequest('Notify Log', 'brca.NotifyLogScreen', false) }>
                     <Text style={this.props.buttonStyle}>Notify Log</Text>
                 </Icon.Button>
 
-                <Icon.Button name="info" testID="about" {...this.props.navbuttonProps}
+                <Icon.Button name="info" testID="nav-about" {...this.props.navbuttonProps}
                     onPress={ () => this.props.onNavigateRequest('About', 'brca.AboutScreen', false) }>
                     <Text style={this.props.buttonStyle}>About This App</Text>
                 </Icon.Button>
 
-                <Icon.Button name="help" testID="user-guide" {...this.props.navbuttonProps}
+                <Icon.Button name="help" testID="nav-user-guide" {...this.props.navbuttonProps}
                     onPress={ () => this.props.onNavigateRequest('Usage Guide', 'brca.HelpScreen', false) }>
                     <Text style={this.props.buttonStyle}>User Guide</Text>
                 </Icon.Button>

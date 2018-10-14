@@ -23,6 +23,7 @@ import {debug_purge_notifystate, set_nextcheck_time} from "../redux/notifylog/ac
 import {MOCK_HOST} from '../background';
 
 import PushNotification from 'react-native-push-notification';
+import {defaultNavButtons} from "./BaseSideMenu";
 
 class DebugScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -35,12 +36,7 @@ class DebugScreen extends LinkableMenuScreen {
         this.toggleDebugMessage = this.toggleDebugMessage.bind(this);
     }
 
-    static navigatorButtons = {
-        leftButtons: [{
-            icon: (Platform.OS === 'ios') ? require('../../img/navicon_menu.png') : null,
-            id: 'sideMenu'
-        }]
-    };
+    static navigatorButtons = defaultNavButtons;
 
     static navigatorStyle = {
         drawUnderTabBar: true

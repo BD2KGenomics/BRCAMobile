@@ -9,6 +9,7 @@ import LinkableMenuScreen from './LinkableMenuScreen';
 import MarkdownProse from "../components/MarkdownProse";
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import Icon from "react-native-vector-icons/MaterialIcons";
+import {defaultNavButtons} from "./BaseSideMenu";
 
 
 // ===================================================================================================
@@ -32,12 +33,7 @@ export default class HelpScreen extends LinkableMenuScreen {
         };
     }
 
-    static navigatorButtons = {
-        leftButtons: [{
-            icon: (Platform.OS === 'ios') ? require('../../img/navicon_menu.png') : null,
-            id: 'sideMenu'
-        }]
-    };
+    static navigatorButtons = defaultNavButtons;
 
     static navigatorStyle = {
         drawUnderTabBar: true

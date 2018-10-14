@@ -10,18 +10,14 @@ import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
+import {defaultNavButtons} from "./BaseSideMenu";
 
 class AboutScreen extends LinkableMenuScreen {
     constructor(props) {
         super(props);
     }
 
-    static navigatorButtons = {
-        leftButtons: [{
-            icon: (Platform.OS === 'ios') ? require('../../img/navicon_menu.png') : null,
-            id: 'sideMenu'
-        }]
-    };
+    static navigatorButtons = defaultNavButtons;
 
     static navigatorStyle = {
         drawUnderTabBar: true

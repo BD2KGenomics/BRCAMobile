@@ -20,6 +20,7 @@ import {
 } from "../redux/notifylog/actions";
 import ScaryDebugNotice from "../components/ScaryDebugNotice";
 import {ensureNonImmutable, makeCancelable} from "../toolbox/misc";
+import {defaultNavButtons} from "./BaseSideMenu";
 
 class NotifyLogScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -57,12 +58,7 @@ class NotifyLogScreen extends LinkableMenuScreen {
         showRead: false
     };
 
-    static navigatorButtons = {
-        leftButtons: [{
-            icon: (Platform.OS === 'ios') ? require('../../img/navicon_menu.png') : null,
-            id: 'sideMenu'
-        }]
-    };
+    static navigatorButtons = defaultNavButtons;
 
     showUnreadOrRead(showRead) {
         if (showRead) {

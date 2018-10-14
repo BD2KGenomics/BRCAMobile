@@ -10,18 +10,14 @@ import {
 import LinkableMenuScreen from './LinkableMenuScreen';
 import FilteredTable from '../components/FilteredTable';
 import DismissableKeyboard from "../toolbox/DismissableKeyboard";
+import {defaultNavButtons} from "./BaseSideMenu";
 
 export default class SearchScreen extends LinkableMenuScreen {
     constructor(props) {
         super(props);
     }
 
-    static navigatorButtons = {
-        leftButtons: [{
-            icon: (Platform.OS === 'ios') ? require('../../img/navicon_menu.png') : null,
-            id: 'sideMenu'
-        }]
-    };
+    static navigatorButtons = defaultNavButtons;
 
     static navigatorStyle = {
         drawUnderTabBar: false

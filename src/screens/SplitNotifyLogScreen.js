@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import LinkableMenuScreen from './LinkableMenuScreen';
 import {mark_notification_read, mark_visible_read, archive_all_notifications} from "../redux/notifylog/actions";
+import {defaultNavButtons} from "./BaseSideMenu";
 
 class SplitNotifyLogScreen extends LinkableMenuScreen {
     constructor(props) {
@@ -43,12 +44,7 @@ class SplitNotifyLogScreen extends LinkableMenuScreen {
         showRead: false
     };
 
-    static navigatorButtons = {
-        leftButtons: [{
-            icon: (Platform.OS === 'ios') ? require('../../img/navicon_menu.png') : null,
-            id: 'sideMenu'
-        }]
-    };
+    static navigatorButtons = defaultNavButtons;
 
     showUnreadOrRead(showRead) {
         console.log(this.props.navigator);
