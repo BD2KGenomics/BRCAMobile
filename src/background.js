@@ -12,7 +12,7 @@ import {announceBatchedNotifies} from "./redux/notifylog/helpers";
 const QUICK_POLL_PERIOD = 5*60*1000; // 5 minutes
 const POLL_PERIOD = 12*60*60*1000; // half a day in msec
 
-export const MOCK_HOST = "dainsleif.pw:8500"; // used to be "40.78.27.48:8500"
+export const MOCK_HOST = "http://dainsleif.pw:8500"; // used to be "40.78.27.48:8500"
 
 /**
  * Creates a URL for fetching summary variant data for the given release_ID
@@ -48,7 +48,7 @@ function makeReleaseURL(release_ID, target_host) {
     const changes_str = change_types.map(x => `&change_types=${x}`).join('');
     const column_str = column.map(x => `&column=${x}`).join('');
 
-    return `http://${target_host}/backend/data/?format=json&page_size=100000${include_str}${changes_str}${column_str}&release=${release_ID}`;
+    return `${target_host}/backend/data/?format=json&page_size=100000${include_str}${changes_str}${column_str}&release=${release_ID}`;
 }
 
 /**
@@ -76,7 +76,7 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     const isRefreshMocked = store_state.debugging.isRefreshMocked;
     const isQuickRefreshing = store_state.debugging.isQuickRefreshing;
     const showsVersionInNotify = store_state.debugging.showsVersionInNotify;
-    const targetHost = (isDebugging && isRefreshMocked ? MOCK_HOST : "brcaexchange.org");
+    const targetHost = (isDebugging && isRefreshMocked ? MOCK_HOST : "https://brcaexchange.org");
 
     console.log("\n--- debug settings below: ---");
     console.log("isDebugging: ", isDebugging);
@@ -119,7 +119,7 @@ export async function checkForUpdate(store, { ignore_backoff, ignore_older_versi
     // ================================================================================================
 
     // fetch the release metadata to see if there's a new release...
-    const targetReleasesURL = `http://${targetHost}/backend/data/releases`;
+    const targetReleasesURL = `${targetHost}/backend/data/releases`;
     console.log("accessing ", targetReleasesURL, "...");
     const response = await fetch(targetReleasesURL, {headers: {'Cache-Control': 'no-cache'}});
 

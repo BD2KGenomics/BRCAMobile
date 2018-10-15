@@ -41,7 +41,7 @@ export function queryVariantsForPage(query, page_num, page_size) {
     ];
     const column_str = column.map(x => `&column=${x}`).join('');
 
-    let queryString = 'http://brcaexchange.org/backend/data/?' + encodeParams(args) + include_params + column_str;
+    let queryString = 'https://brcaexchange.org/backend/data/?' + encodeParams(args) + include_params + column_str;
     console.log("Query Request: " + queryString);
 
     return fetch(queryString)
@@ -55,7 +55,7 @@ export function fetchDetails(variantID) {
         variant_id: variantID
     };
 
-    let queryString = 'http://brcaexchange.org/backend/data/variant/?' + encodeParams(args);
+    let queryString = 'https://brcaexchange.org/backend/data/variant/?' + encodeParams(args);
     // console.log("Details Request: ", queryString);
 
     return fetch(queryString)

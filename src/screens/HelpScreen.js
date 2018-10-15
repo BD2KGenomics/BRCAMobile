@@ -125,7 +125,7 @@ const IntroRoute = (props) => (
 {`
 # How to Use This App
 
-The BRCA Exchange app is a mobile interface to the BRCA Exchange, a data portal for BRCA1 and BRCA2 genetic variants. You can use this app to browse information on [brcaexchange.org](http://brcaexchange.org), and to follow variants in which you are interested. Following a variant means that you will be notified when experts have decided to update the variant’s clinical significance.
+The BRCA Exchange app is a mobile interface to the BRCA Exchange, a data portal for BRCA1 and BRCA2 genetic variants. You can use this app to browse information on [brcaexchange.org](https://brcaexchange.org), and to follow variants in which you are interested. Following a variant means that you will be notified when experts have decided to update the variant’s clinical significance.
 
 The BRCA Exchange app has two main features:
 
@@ -148,7 +148,7 @@ const SearchRoute = (props) => (
 
 Search for a variant by using the search box on the Home screen or on the Search Variants screen.
 
-The name of your variant may be located on a Genetic Test report. You can use a variety of variant names to search; you can also search the database for all variants that fit a certain criteria. Search criteria can include its standard name(s) including HGVS Nucleotide (which is used in this app as an informal identifier for each variant), clinical significance (e.g., “Pathogenic” or “Benign”), or genomic coordinates. For more information, please visit [brcaexchange.org](http://brcaexchange.org/help).
+The name of your variant may be located on a Genetic Test report. You can use a variety of variant names to search; you can also search the database for all variants that fit a certain criteria. Search criteria can include its standard name(s) including HGVS Nucleotide (which is used in this app as an informal identifier for each variant), clinical significance (e.g., “Pathogenic” or “Benign”), or genomic coordinates. For more information, please visit [brcaexchange.org](https://brcaexchange.org/help).
 
 ## Review Search Results
 
@@ -160,7 +160,7 @@ Tapping an individual variant in the list will take you to the “Variant Detail
 
 ## View Variant Details
 
-The variant details page displays more in-depth information about the selected variant. The header consists of the standard name (HGVS) for the variant and a button in the top-right corner that links to that variant’s information on [brcaexchange.org](http://brcaexchange.org). There is also a “follow” toggle button below the title whose functionality will be explained in the next section.
+The variant details page displays more in-depth information about the selected variant. The header consists of the standard name (HGVS) for the variant and a button in the top-right corner that links to that variant’s information on [brcaexchange.org](https://brcaexchange.org). There is also a “follow” toggle button below the title whose functionality will be explained in the next section.
 
 The remainder of the page has two sections. The first is a general list of information about the variant, which includes additional identifiers for the variant and comments on its significance. The second is a “version history” section at the end of the screen, which chronicles when the variant was introduced into the database and its clinical significance with each database update.
 `}
@@ -209,7 +209,7 @@ const InfoRoute = (props) => (
 {`
 # Additional Information
 
-The remaining entries in the navigation sidebar are “About This App” and “User Guide”. “About This App” contains some informational text about the app, a link to the full website, [brcaexchange.org](http://brcaexchange.org), and a short list of attributions to the various organizations that have contributed data and development effort to the project.
+The remaining entries in the navigation sidebar are “About This App” and “User Guide”. “About This App” contains some informational text about the app, a link to the full website, [brcaexchange.org](https://brcaexchange.org), and a short list of attributions to the various organizations that have contributed data and development effort to the project.
 
 The second item, “User Guide”, is the page you are currently reading.
 

@@ -11,7 +11,7 @@ export default class extends Component {
     }
 
     handlePress() {
-        const targetURL = `http://brcaexchange.org/variant/${this.props.variantID}`;
+        const targetURL = `https://brcaexchange.org/variant/${this.props.variantID}`;
 
         Alert.alert(
             'Open External Link',
