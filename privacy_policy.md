@@ -1,4 +1,4 @@
-## Privacy Policy
+## BRCA Exchange App: Privacy Policy
 
 ENIGMA Consortium, Inc. releases the BRCA Exchange app as an open-source app, with source code available at the following address: https://github.com/BRCAChallenge/BRCAMobile. The BRCA Exchange app is provided by ENIGMA Consortium, Inc. at no cost and is intended for use as-is.
 
